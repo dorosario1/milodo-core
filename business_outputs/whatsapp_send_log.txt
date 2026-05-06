@@ -1,0 +1,12 @@
+SENT WHATSAPP SCRIPTS
+INITIAL
+Salut, j'ai une offre qui peut t'intéresser aujourd'hui. Tu veux le lien ?
+
+FOLLOW_UP
+Je te relance vite: l'offre est encore disponible, mais pas pour longtemps.
+
+CLOSING
+Dernière étape: confirme maintenant et je t'envoie l'accès direct.
+
+ABANDONED_CART
+Tu as laissé ton panier ouvert. Je peux te renvoyer le lien pour finaliser.

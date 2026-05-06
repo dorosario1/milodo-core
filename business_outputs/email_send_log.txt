@@ -1,0 +1,12 @@
+SENT EMAIL SEQUENCE
+EMAIL 1 - Découverte
+Objet: Une offre simple pour démarrer aujourd'hui
+Corps: Voici une solution claire pour obtenir un résultat rapide.
+
+EMAIL 2 - Preuve
+Objet: Pourquoi cette offre fonctionne
+Corps: Elle réduit la friction, clarifie la valeur et pousse à l'action.
+
+EMAIL 3 - Urgence
+Objet: Dernière chance avant fermeture
+Corps: L'offre est limitée. Passe à l'action maintenant.

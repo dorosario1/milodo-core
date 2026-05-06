@@ -1,0 +1,89 @@
+import shlex
+import subprocess
+from pathlib import Path
+
+
+def run_command(command, cwd=None, timeout=60):
+    print(f"Commande demandee: {command}")
+
+    try:
+        args = _to_args(command)
+
+        if not args:
+            return _result(False, "", "Commande vide", 1)
+
+        working_dir = Path(cwd) if cwd else None
+
+        completed = subprocess.run(
+            args,
+            cwd=str(working_dir) if working_dir else None,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=timeout,
+            shell=False,
+        )
+
+        success = completed.returncode == 0
+        print(f"Commande terminee: code {completed.returncode}")
+
+        return _result(
+            success,
+            completed.stdout,
+            completed.stderr,
+            completed.returncode,
+        )
+    except subprocess.TimeoutExpired as error:
+        print(f"Timeout commande apres {timeout}s")
+        return _result(
+            False,
+            error.stdout or "",
+            error.stderr or f"Timeout apres {timeout}s",
+            -1,
+        )
+    except Exception as error:
+        print(f"Erreur commande: {error}")
+        return _result(False, "", str(error), 1)
+
+
+def run_python(command):
+    print("Execution Python demandee")
+    return run_command(["python"] + _to_args(command))
+
+
+def run_pip(command):
+    print("Execution pip demandee")
+    return run_command(["python", "-m", "pip"] + _to_args(command))
+
+
+def run_npm(command):
+    print("Execution npm demandee")
+    return run_command(["npm"] + _to_args(command))
+
+
+def run_git(command):
+    print("Execution git demandee")
+    return run_command(["git"] + _to_args(command))
+
+
+def _to_args(command):
+    if command is None:
+        return []
+
+    if isinstance(command, (list, tuple)):
+        return [str(item) for item in command]
+
+    if isinstance(command, str):
+        return shlex.split(command, posix=False)
+
+    return [str(command)]
+
+
+def _result(success, stdout, stderr, return_code):
+    return {
+        "success": bool(success),
+        "stdout": stdout or "",
+        "stderr": stderr or "",
+        "return_code": int(return_code),
+    }
