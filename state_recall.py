@@ -2,6 +2,8 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from logger import log_info, log_error, log_warn, log_debug
+
 
 MILODO_DIR = Path(".milodo")
 PROJECTS_FILE = MILODO_DIR / "projects.json"
@@ -10,7 +12,7 @@ STATE_FILE = MILODO_DIR / "state.json"
 
 def load_projects():
     if not PROJECTS_FILE.exists():
-        print(f"Fichier projets introuvable: {PROJECTS_FILE}")
+        log_warn(f"Fichier introuvable : {PROJECTS_FILE}")
         return []
 
     try:
@@ -18,13 +20,13 @@ def load_projects():
             projects = json.load(file)
 
         if not isinstance(projects, list):
-            print(f"Format projets invalide: {PROJECTS_FILE}")
+            log_warn(f"Format projets invalide: {PROJECTS_FILE}")
             return []
 
-        print(f"Projets charges: {len(projects)}")
+        log_info(f"Mémoire chargée : {len(projects)} projets")
         return projects
     except (OSError, json.JSONDecodeError) as error:
-        print(f"Erreur chargement projets: {PROJECTS_FILE} ({error})")
+        log_error(f"Erreur lecture mémoire : {error}")
         return []
 
 
@@ -36,15 +38,15 @@ def save_state(state):
             json.dump(state, file, indent=2, ensure_ascii=False)
             file.write("\n")
 
-        print(f"Etat sauvegarde: {STATE_FILE}")
+        log_debug("Mémoire sauvegardée")
     except OSError as error:
-        print(f"Erreur sauvegarde etat: {STATE_FILE} ({error})")
+        log_error(f"Erreur lecture mémoire : {error}")
         raise
 
 
 def load_state():
     if not STATE_FILE.exists():
-        print(f"Fichier etat introuvable: {STATE_FILE}")
+        log_warn(f"Fichier introuvable : {STATE_FILE}")
         return _default_state()
 
     try:
@@ -52,35 +54,37 @@ def load_state():
             state = json.load(file)
 
         if not isinstance(state, dict):
-            print(f"Format etat invalide: {STATE_FILE}")
+            log_warn(f"Format etat invalide: {STATE_FILE}")
             return _default_state()
 
         state.setdefault("last_project", {})
         state.setdefault("updated_at", "")
 
-        print(f"Etat charge: {STATE_FILE}")
+        log_debug(f"Etat charge: {STATE_FILE}")
         return state
     except (OSError, json.JSONDecodeError) as error:
-        print(f"Erreur chargement etat: {STATE_FILE} ({error})")
+        log_error(f"Erreur lecture mémoire : {error}")
         return _default_state()
 
 
 def find_project_by_name(name):
     search_name = str(name).lower()
+    log_debug(f"Recherche projet : {name}")
 
     for project in load_projects():
         project_name = str(project.get("name", "")).lower()
 
         if project_name == search_name:
-            print(f"Projet trouve: {project.get('name', '')}")
+            log_debug(f"Projet trouve: {project.get('name', '')}")
             return project
 
-    print(f"Projet introuvable: {name}")
+    log_warn(f"Projet introuvable : {name}")
     return None
 
 
 def find_projects_by_type(project_type):
     search_type = str(project_type).lower()
+    log_debug(f"Recherche projet : {project_type}")
     matches = []
 
     for project in load_projects():
@@ -89,7 +93,9 @@ def find_projects_by_type(project_type):
         if any(str(item).lower() == search_type for item in project_types):
             matches.append(project)
 
-    print(f"Projets trouves par type {project_type}: {len(matches)}")
+    if not matches:
+        log_warn(f"Projet introuvable : {project_type}")
+    log_debug(f"Projets trouves par type {project_type}: {len(matches)}")
     return matches
 
 
@@ -98,7 +104,7 @@ def remember_last_project(project):
     state["last_project"] = project or {}
     state["updated_at"] = datetime.now(timezone.utc).isoformat()
     save_state(state)
-    print("Dernier projet memorise")
+    log_debug("Dernier projet memorise")
 
 
 def get_last_project():
@@ -106,9 +112,9 @@ def get_last_project():
     last_project = state.get("last_project", {})
 
     if last_project:
-        print(f"Dernier projet: {last_project.get('name', '')}")
+        log_debug(f"Dernier projet: {last_project.get('name', '')}")
     else:
-        print("Aucun dernier projet memorise")
+        log_warn("Aucun dernier projet memorise")
 
     return last_project
 

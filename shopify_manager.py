@@ -3,6 +3,8 @@ import json
 import os
 from pathlib import Path
 
+from logger import log_info, log_error, log_warn, log_debug
+
 
 try:
     import requests
@@ -14,14 +16,15 @@ BRANDING_FILE = Path(".milodo") / "shopify_branding.json"
 
 
 def create_product(product_data):
-    print("Creation produit Shopify demandee")
+    log_debug("Creation produit Shopify demandee")
 
     try:
         product = _normalize_product(product_data)
+        title = product.get("title", "")
         payload = {"product": product}
 
         if not _can_call_shopify():
-            print("Shopify API non configuree, payload prepare uniquement")
+            log_warn("Shopify API non configuree, payload prepare uniquement")
             return {
                 "success": False,
                 "payload": payload,
@@ -29,29 +32,39 @@ def create_product(product_data):
             }
 
         url = _shopify_url("products.json")
+        method = "POST"
+        safe_url = str(url).split("?")[0]
+        log_debug(f"Requête Shopify : {method} {safe_url}")
         response = requests.post(
             url,
             headers=_shopify_headers(),
             json=payload,
             timeout=30,
         )
+        status_code = response.status_code
+        log_debug(f"Réponse Shopify : status={status_code}")
 
-        if response.status_code in (200, 201):
-            print("Produit Shopify cree")
+        if status_code in (200, 201):
+            log_info(f"Produit créé : {title}")
             return {
                 "success": True,
                 "product": response.json().get("product", {}),
                 "error": "",
             }
 
-        print(f"Erreur creation produit Shopify: {response.status_code}")
+        log_error(f"Erreur Shopify : {status_code}")
         return {
             "success": False,
             "payload": payload,
             "error": response.text,
         }
     except Exception as error:
-        print(f"Erreur create_product: {error}")
+        title = ""
+        if isinstance(product_data, dict):
+            title = str(product_data.get("title", ""))
+        if title:
+            log_warn(f"Produit invalide ignoré : {title}")
+        log_error(f"Erreur Shopify : {error}")
         return {
             "success": False,
             "payload": {},
@@ -60,12 +73,12 @@ def create_product(product_data):
 
 
 def create_products_batch(products):
-    print("Creation batch produits Shopify demandee")
+    log_debug("Creation batch produits Shopify demandee")
 
     results = []
 
     if not isinstance(products, list):
-        print("Batch invalide: liste attendue")
+        log_error("Erreur Shopify : products doit etre une liste")
         return [{
             "success": False,
             "payload": {},
@@ -73,19 +86,20 @@ def create_products_batch(products):
         }]
 
     for index, product_data in enumerate(products, start=1):
-        print(f"Traitement produit {index}/{len(products)}")
+        log_debug(f"Traitement produit {index}/{len(products)}")
         results.append(create_product(product_data))
 
-    print(f"Batch termine: {len(results)} resultat(s)")
+    count = len(results)
+    log_info(f"Batch importé : {count} produits")
     return results
 
 
 def import_products_csv(csv_path):
     file_path = Path(csv_path)
-    print(f"Import CSV produits demande: {file_path}")
+    log_debug(f"Import CSV produits demande: {file_path}")
 
     if not file_path.exists():
-        print(f"CSV introuvable: {file_path}")
+        log_warn(f"CSV introuvable: {file_path}")
         return [{
             "success": False,
             "payload": {},
@@ -109,10 +123,10 @@ def import_products_csv(csv_path):
                     "inventory_quantity": row.get("inventory_quantity", row.get("quantity", "")),
                 })
 
-        print(f"Produits lus depuis CSV: {len(products)}")
+        log_info(f"CSV importé : {file_path}")
         return create_products_batch(products)
     except Exception as error:
-        print(f"Erreur import CSV: {error}")
+        log_error(f"Erreur Shopify : {error}")
         return [{
             "success": False,
             "payload": {},
@@ -121,7 +135,7 @@ def import_products_csv(csv_path):
 
 
 def update_inventory(product_id, quantity):
-    print(f"Mise a jour stock demandee: produit {product_id}")
+    log_debug(f"Mise a jour stock demandee: produit {product_id}")
 
     try:
         inventory_data = {
@@ -130,21 +144,21 @@ def update_inventory(product_id, quantity):
         }
 
         if not _can_call_shopify():
-            print("Shopify API non configuree, stock prepare uniquement")
+            log_warn("Shopify API non configuree, stock prepare uniquement")
             return {
                 "success": False,
                 "inventory": inventory_data,
                 "error": "Shopify API non configuree ou requests indisponible",
             }
 
-        print("Mise a jour stock simple non executee: inventory_item_id et location_id requis")
+        log_warn("Mise a jour stock simple non executee: inventory_item_id et location_id requis")
         return {
             "success": False,
             "inventory": inventory_data,
             "error": "inventory_item_id et location_id requis pour modifier le stock Shopify",
         }
     except Exception as error:
-        print(f"Erreur update_inventory: {error}")
+        log_error(f"Erreur Shopify : {error}")
         return {
             "success": False,
             "inventory": {},
@@ -153,7 +167,7 @@ def update_inventory(product_id, quantity):
 
 
 def update_branding_settings(brand_name=None, primary_color=None, logo_url=None):
-    print("Mise a jour branding demandee")
+    log_debug("Mise a jour branding demandee")
 
     try:
         BRANDING_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -177,14 +191,14 @@ def update_branding_settings(brand_name=None, primary_color=None, logo_url=None)
             json.dump(settings, file, indent=2, ensure_ascii=False)
             file.write("\n")
 
-        print(f"Branding sauvegarde localement: {BRANDING_FILE}")
+        log_info(f"Branding sauvegarde localement: {BRANDING_FILE}")
         return {
             "success": True,
             "settings": settings,
             "path": str(BRANDING_FILE),
         }
     except Exception as error:
-        print(f"Erreur update_branding_settings: {error}")
+        log_error(f"Erreur Shopify : {error}")
         return {
             "success": False,
             "settings": {},

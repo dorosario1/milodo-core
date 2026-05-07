@@ -1,5 +1,6 @@
 from intelligence import ai_plan
 from dag_engine import DAGEngine, Task
+from logger import log_info, log_error, log_warn, log_debug
 
 
 def _step(step_id, action, depends_on=None):
@@ -113,29 +114,42 @@ def _resolve_intent(goal, decision):
 
 
 def plan_goal(goal: str) -> list[dict]:
-    print(f"Planification objectif: {goal}")
+    try:
+        preview = str(goal)[:80].replace("\n", " ")
+        log_debug(f"Prompt planner : {preview}...")
 
-    decision = ai_plan(goal)
-    intent = _resolve_intent(goal, decision)
+        decision = ai_plan(goal)
+        if decision.get("_engine") == "fallback":
+            log_warn("Plan basique - IA limitée")
+        intent = _resolve_intent(goal, decision)
 
-    if intent == "shopify":
-        steps = _plan_shopify()
-    elif intent == "marketing":
-        steps = _plan_marketing()
-    elif intent == "web":
-        steps = _plan_web()
-    elif intent == "content":
-        steps = _plan_content()
-    else:
-        steps = _plan_general()
+        if intent == "shopify":
+            steps = _plan_shopify()
+        elif intent == "marketing":
+            steps = _plan_marketing()
+        elif intent == "web":
+            steps = _plan_web()
+        elif intent == "content":
+            steps = _plan_content()
+        else:
+            steps = _plan_general()
 
-    _validate_plan(steps)
-    print(f"Plan genere: {len(steps)} etape(s)")
-    return steps
+        _validate_plan(steps)
+        for step in steps:
+            description = step.get("action", "")
+            log_debug(f"Étape : {description}")
+        log_info(f"Plan généré : {len(steps)} étapes")
+        plan = steps
+        preview = str(plan)[:120].replace("\n", " ")
+        log_debug(f"Plan : {preview}...")
+        return steps
+    except Exception as error:
+        log_error(f"Erreur planification : {error}")
+        raise
 
 
 def build_dag_plan(goal):
-    print(f"Construction plan DAG: {goal}")
+    log_debug(f"Construction plan DAG: {goal}")
 
     steps = plan_goal(goal)
     tasks = steps_to_tasks(steps)
@@ -164,7 +178,7 @@ def build_dag_plan(goal):
 
 
 def steps_to_tasks(steps):
-    print("Conversion etapes vers taches DAG")
+    log_debug("Conversion etapes vers taches DAG")
 
     tasks = []
 
@@ -179,12 +193,12 @@ def steps_to_tasks(steps):
             dependencies,
         ))
 
-    print(f"Taches creees: {len(tasks)}")
+    log_debug(f"Taches creees: {len(tasks)}")
     return tasks
 
 
 def explain_plan(goal):
-    print(f"Explication plan demandee: {goal}")
+    log_debug(f"Explication plan demandee: {goal}")
 
     steps = plan_goal(goal)
     lines = [f"Plan pour: {goal}"]
@@ -213,4 +227,4 @@ def _make_task_action(task_id, action_name):
 
 
 if __name__ == "__main__":
-    print(plan_goal("lancer business shopify"))
+    log_info(plan_goal("lancer business shopify"))

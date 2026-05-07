@@ -1,5 +1,37 @@
 {
-  "mutationBoost": true,
-  "reproductionCostFactor": 1,
-  "pressureFactor": 1
+  "_comment": "Configuration MILODO CORE V2 - Modifie ce fichier selon ton environnement",
+
+  "ai": {
+    "provider": "fallback",
+    "_provider_options": "ollama | openai | fallback",
+
+    "ollama": {
+      "url": "http://localhost:11434",
+      "model": "llama3"
+    },
+
+    "openai": {
+      "api_key": "",
+      "model": "gpt-4o-mini"
+    }
+  },
+
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8520
+  },
+
+  "scanner": {
+    "roots": [
+      "Desktop",
+      "Documents",
+      "projects"
+    ]
+  },
+
+  "memory": {
+    "dir": ".milodo",
+    "max_entries": 1000
+  }
 }
+

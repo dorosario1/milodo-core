@@ -3,15 +3,17 @@ import py_compile
 import re
 from pathlib import Path
 
+from logger import log_info, log_error, log_warn, log_debug
+
 
 SKILLS_DIR = Path(__file__).resolve().parent / "skills"
 
 
 def scan_skills():
-    print(f"Scan skills: {SKILLS_DIR}")
+    log_debug(f"Scan skills: {SKILLS_DIR}")
 
     if not SKILLS_DIR.exists():
-        print("Dossier skills introuvable")
+        log_warn("Dossier skills introuvable")
         return []
 
     skill_files = []
@@ -21,20 +23,22 @@ def scan_skills():
             continue
 
         if skill_path.name.endswith(".disabled"):
+            log_debug(f"Skill désactivé ignoré : {skill_path.stem}")
             continue
 
         disabled_marker = skill_path.with_name(f"{skill_path.name}.disabled")
         if disabled_marker.exists():
-            print(f"Skill ignoree, desactivee: {skill_path.name}")
+            log_debug(f"Skill désactivé ignoré : {skill_path.stem}")
             continue
 
         skill_files.append(skill_path)
 
-    print(f"Skills detectees: {len(skill_files)}")
+    log_info(f"Scan skills : {len(skill_files)} trouvés")
     return skill_files
 
 
 def validate_skill(module):
+    log_debug("Validation skill")
     missing = []
 
     if not hasattr(module, "SKILL_NAME"):
@@ -58,9 +62,11 @@ def validate_skill(module):
 
 def load_skill(skill_path):
     path = Path(skill_path)
-    print(f"Chargement skill: {path}")
+    name = path.stem
+    log_debug(f"Chargement skill: {path}")
 
     if not path.exists():
+        log_warn(f"Skill invalide ignoré : {name}")
         return {
             "success": False,
             "path": str(path),
@@ -68,6 +74,7 @@ def load_skill(skill_path):
         }
 
     if path.name == "__init__.py" or path.suffix != ".py":
+        log_warn(f"Skill invalide ignoré : {name}")
         return {
             "success": False,
             "path": str(path),
@@ -76,9 +83,11 @@ def load_skill(skill_path):
 
     try:
         module_name = f"skills.{path.stem}"
+        log_debug(f"Validation import : {module_name}")
         spec = importlib.util.spec_from_file_location(module_name, path)
 
         if spec is None or spec.loader is None:
+            log_warn(f"Skill invalide ignoré : {name}")
             return {
                 "success": False,
                 "path": str(path),
@@ -91,6 +100,7 @@ def load_skill(skill_path):
         validation = validate_skill(module)
 
         if not validation.get("valid"):
+            log_warn(f"Skill invalide ignoré : {name}")
             return {
                 "success": False,
                 "path": str(path),
@@ -98,7 +108,7 @@ def load_skill(skill_path):
                 "missing": validation.get("missing", []),
             }
 
-        print(f"Skill chargee: {validation['name']}")
+        log_info(f"Skill chargé : {validation['name']}")
         return {
             "success": True,
             "path": str(path),
@@ -107,7 +117,7 @@ def load_skill(skill_path):
             "module": module,
         }
     except Exception as error:
-        print(f"Erreur chargement skill {path}: {error}")
+        log_error(f"Erreur chargement {name} : {error}")
         return {
             "success": False,
             "path": str(path),
@@ -116,7 +126,7 @@ def load_skill(skill_path):
 
 
 def load_all_skills():
-    print("Chargement toutes les skills")
+    log_debug("Chargement toutes les skills")
 
     result = {
         "loaded": [],
@@ -140,7 +150,7 @@ def load_all_skills():
         else:
             result["errors"].append(loaded_skill)
 
-    print(
+    log_info(
         "Chargement termine: "
         f"{len(result['loaded'])} chargee(s), "
         f"{len(result['invalid'])} invalide(s), "
@@ -150,8 +160,12 @@ def load_all_skills():
     return result
 
 
+def list_skills():
+    return load_all_skills().get("loaded", [])
+
+
 def create_skill(name, description, code):
-    print(f"Creation skill demandee: {name}")
+    log_info(f"Creation skill demandee: {name}")
 
     try:
         if not re.fullmatch(r"[A-Za-z0-9_]+", str(name or "")):
@@ -181,6 +195,7 @@ def create_skill(name, description, code):
         skill_path.write_text(content, encoding="utf-8")
 
         try:
+            log_debug(f"Validation syntaxe : {skill_path}")
             py_compile.compile(str(skill_path), doraise=True)
         except py_compile.PyCompileError as error:
             try:
@@ -198,6 +213,7 @@ def create_skill(name, description, code):
 
         for loaded_skill in load_result.get("loaded", []):
             if loaded_skill.get("name") == name:
+                log_info(f"Skill créé : {name}")
                 return {
                     "success": True,
                     "path": str(skill_path),

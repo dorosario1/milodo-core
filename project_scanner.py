@@ -1,6 +1,9 @@
 import json
 import os
+import time
 from pathlib import Path
+
+from logger import log_info, log_error, log_warn, log_debug
 
 
 PROJECT_MARKERS = {
@@ -44,22 +47,23 @@ def detect_project_types(directory):
 
 
 def scan_projects():
+    start_time = time.perf_counter()
     projects = []
     seen_paths = set()
 
-    print("MILODO project scanner")
-    print("Scan demarre")
+    log_debug("MILODO project scanner")
+    log_info("Scan démarré")
 
     for root in get_scan_roots():
         if not root.exists():
-            print(f"Dossier ignore, introuvable: {root}")
+            log_warn(f"Dossier introuvable : {root}")
             continue
 
         if not root.is_dir():
-            print(f"Chemin ignore, pas un dossier: {root}")
+            log_warn(f"Dossier introuvable : {root}")
             continue
 
-        print(f"Scan dossier: {root}")
+        log_debug(f"Scan dossier : {root}")
 
         for current_path, dir_names, _file_names in os.walk(root):
             dir_names[:] = [
@@ -72,7 +76,7 @@ def scan_projects():
             try:
                 project_types = detect_project_types(directory)
             except OSError as error:
-                print(f"Dossier ignore, lecture impossible: {directory} ({error})")
+                log_error(f"Erreur lecture : {directory}")
                 continue
 
             if not project_types:
@@ -90,10 +94,12 @@ def scan_projects():
                 "types": project_types,
             })
 
-            print(f"Projet detecte: {directory.name} [{', '.join(project_types)}]")
+            log_info(f"Projet : {directory.name} [{', '.join(project_types)}]")
 
     projects.sort(key=lambda project: project["path"].lower())
-    print(f"Scan termine: {len(projects)} projet(s) detecte(s)")
+    ms = int((time.perf_counter() - start_time) * 1000)
+    log_info(f"Scan terminé : {len(projects)} projet(s)")
+    log_debug(f"Scan terminé en {ms}ms")
 
     return projects
 
@@ -108,7 +114,7 @@ def save_projects(projects):
         json.dump(projects, file, indent=2, ensure_ascii=False)
         file.write("\n")
 
-    print(f"Resultats sauvegardes: {output_file}")
+    log_info(f"Resultats sauvegardes: {output_file}")
 
 
 def main():

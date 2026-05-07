@@ -3,6 +3,7 @@ import os
 from urllib import error, parse, request
 
 from intelligence import ai_plan
+from logger import log_info, log_error, log_warn, log_debug
 from marketing_agent import (
     generate_traffic_content,
     generate_whatsapp_scripts,
@@ -34,6 +35,10 @@ def write_output_file(name, content):
 
 
 def post_json(url, payload, headers):
+    action = "post_json"
+    log_debug(f"Routing action : {action}")
+    preview = str(payload)[:120].replace("\n", " ")
+    log_debug(f"Params action : {preview}...")
     data = json.dumps(payload).encode("utf-8")
     req = request.Request(url, data=data, headers=headers, method="POST")
     try:
@@ -45,6 +50,7 @@ def post_json(url, payload, headers):
                 "body": json.loads(text) if text else {},
             }
     except error.HTTPError as response_error:
+        log_error(f"Erreur routing : {response_error}")
         text = response_error.read().decode("utf-8", errors="replace")
         return {
             "success": False,
@@ -52,6 +58,7 @@ def post_json(url, payload, headers):
             "body": text,
         }
     except OSError as request_error:
+        log_error(f"Erreur routing : {request_error}")
         return {
             "success": False,
             "status_code": None,
@@ -60,6 +67,10 @@ def post_json(url, payload, headers):
 
 
 def post_form(url, payload):
+    action = "post_form"
+    log_debug(f"Routing action : {action}")
+    preview = str(payload)[:120].replace("\n", " ")
+    log_debug(f"Params action : {preview}...")
     data = parse.urlencode(payload).encode("utf-8")
     req = request.Request(url, data=data, method="POST")
     try:
@@ -71,6 +82,7 @@ def post_form(url, payload):
                 "body": json.loads(text) if text else {},
             }
     except error.HTTPError as response_error:
+        log_error(f"Erreur routing : {response_error}")
         text = response_error.read().decode("utf-8", errors="replace")
         return {
             "success": False,
@@ -78,6 +90,7 @@ def post_form(url, payload):
             "body": text,
         }
     except OSError as request_error:
+        log_error(f"Erreur routing : {request_error}")
         return {
             "success": False,
             "status_code": None,
@@ -87,7 +100,7 @@ def post_form(url, payload):
 
 def fallback_log(filename, content, action, message):
     file_path = write_output_file(filename, content)
-    print(message)
+    log_info(f"Action exécutée : {action}")
     return {
         "success": True,
         "action": action,
@@ -98,6 +111,8 @@ def fallback_log(filename, content, action, message):
 
 
 def autopost_content():
+    action = "autopost"
+    log_debug(f"Routing action : {action}")
     tiktok_content = read_output_file("tiktok_content.txt")
     instagram_content = read_output_file("instagram_content.txt")
     whatsapp_content = read_output_file("whatsapp_traffic.txt")
@@ -156,10 +171,10 @@ def autopost_content():
                 f"POSTED TO WhatsApp Traffic\n{whatsapp_content}",
             )
         )
-        return fallback_log("autopost_log.txt", content, "autopost", "[AGENT] content posted")
+        return fallback_log("autopost_log.txt", content, action, "[AGENT] content posted")
 
     files.append(write_output_file("autopost_api_result.json", json.dumps(posts, indent=2)))
-    print("[AGENT] content posted")
+    log_info(f"Action exécutée : {action}")
     return {
         "success": len(errors) == 0,
         "action": "autopost",
@@ -170,6 +185,8 @@ def autopost_content():
 
 
 def send_email_real():
+    action = "send_email"
+    log_debug(f"Routing action : {action}")
     email_sequence = read_output_file("email_sequence.txt")
     api_key = os.environ.get("BREVO_API_KEY", "")
     sender_email = os.environ.get("BREVO_SENDER_EMAIL", "")
@@ -180,7 +197,7 @@ def send_email_real():
         return fallback_log(
             "email_send_log.txt",
             f"SENT EMAIL SEQUENCE\n{email_sequence}",
-            "send_email",
+            action,
             "[AGENT] emails sent",
         )
 
@@ -198,7 +215,7 @@ def send_email_real():
         },
     )
     file_path = write_output_file("email_api_result.json", json.dumps(result, indent=2))
-    print("[AGENT] emails sent")
+    log_info(f"Action exécutée : {action}")
     return {
         "success": result["success"],
         "action": "send_email",
@@ -209,6 +226,8 @@ def send_email_real():
 
 
 def send_whatsapp_real():
+    action = "send_whatsapp"
+    log_debug(f"Routing action : {action}")
     scripts = read_output_file("whatsapp_sales_scripts.txt")
     token = os.environ.get("WHATSAPP_TOKEN", "")
     phone_number_id = os.environ.get("WHATSAPP_PHONE_NUMBER_ID", "")
@@ -218,7 +237,7 @@ def send_whatsapp_real():
         return fallback_log(
             "whatsapp_send_log.txt",
             f"SENT WHATSAPP SCRIPTS\n{scripts}",
-            "send_whatsapp",
+            action,
             "[AGENT] WhatsApp messages sent",
         )
 
@@ -236,7 +255,7 @@ def send_whatsapp_real():
         },
     )
     file_path = write_output_file("whatsapp_api_result.json", json.dumps(result, indent=2))
-    print("[AGENT] WhatsApp messages sent")
+    log_info(f"Action exécutée : {action}")
     return {
         "success": result["success"],
         "action": "send_whatsapp",
@@ -247,72 +266,81 @@ def send_whatsapp_real():
 
 
 def apply_goal_actions(goal):
+    action = "apply_goal_actions"
+    log_debug(f"Routing action : {action}")
+    preview = str({"goal": goal})[:120].replace("\n", " ")
+    log_debug(f"Params action : {preview}...")
     normalized_goal = str(goal or "").lower()
-    decision = ai_plan(goal)
-    intent = str(decision.get("intent", "")).lower()
-    command = str(decision.get("command", "")).lower()
-    output = {
-        "success": True,
-        "goal": goal,
-        "decision": decision,
-        "actions": [],
-        "files": [],
-        "shopify": {},
-        "errors": [],
-    }
+    try:
+        decision = ai_plan(goal)
+        intent = str(decision.get("intent", "")).lower()
+        command = str(decision.get("command", "")).lower()
+        output = {
+            "success": True,
+            "goal": goal,
+            "decision": decision,
+            "actions": [],
+            "files": [],
+            "shopify": {},
+            "errors": [],
+        }
 
-    def merge(result):
-        output["actions"].append(result.get("action"))
-        output["files"].extend(result.get("files", []))
-        if result.get("shopify"):
-            output["shopify"] = result["shopify"]
-        if not result.get("success", False):
+        def merge(result):
+            output["actions"].append(result.get("action"))
+            output["files"].extend(result.get("files", []))
+            if result.get("shopify"):
+                output["shopify"] = result["shopify"]
+            if not result.get("success", False):
+                output["success"] = False
+                output["errors"].extend(result.get("errors", []))
+
+        run_complete = "complete" in normalized_goal
+        run_auto = "auto" in normalized_goal
+
+        if (
+            run_complete
+            or run_auto
+            or "trafic" in normalized_goal
+            or "traffic" in normalized_goal
+            or intent == "marketing"
+            or "launch campaign" in command
+        ):
+            merge(generate_traffic_content())
+
+        if (
+            run_complete
+            or run_auto
+            or "funnel" in normalized_goal
+            or intent == "web"
+            or "create landing" in command
+        ):
+            merge(create_landing_page())
+            merge(create_email_sequence())
+
+        if run_complete or run_auto or "sales" in normalized_goal:
+            merge(generate_whatsapp_scripts())
+
+        if (
+            run_complete
+            or "optimize" in normalized_goal
+            or "shopify" in normalized_goal
+            or intent == "shopify"
+            or "optimize store" in command
+        ):
+            merge(optimize_shopify_products())
+
+        if run_auto:
+            merge(autopost_content())
+            merge(send_email_real())
+            merge(send_whatsapp_real())
+
+        if not output["actions"]:
             output["success"] = False
-            output["errors"].extend(result.get("errors", []))
+            output["errors"].append("unknown business goal")
+            log_warn(f"Action non reconnue : {goal}")
 
-    run_complete = "complete" in normalized_goal
-    run_auto = "auto" in normalized_goal
-
-    if (
-        run_complete
-        or run_auto
-        or "trafic" in normalized_goal
-        or "traffic" in normalized_goal
-        or intent == "marketing"
-        or "launch campaign" in command
-    ):
-        merge(generate_traffic_content())
-
-    if (
-        run_complete
-        or run_auto
-        or "funnel" in normalized_goal
-        or intent == "web"
-        or "create landing" in command
-    ):
-        merge(create_landing_page())
-        merge(create_email_sequence())
-
-    if run_complete or run_auto or "sales" in normalized_goal:
-        merge(generate_whatsapp_scripts())
-
-    if (
-        run_complete
-        or "optimize" in normalized_goal
-        or "shopify" in normalized_goal
-        or intent == "shopify"
-        or "optimize store" in command
-    ):
-        merge(optimize_shopify_products())
-
-    if run_auto:
-        merge(autopost_content())
-        merge(send_email_real())
-        merge(send_whatsapp_real())
-
-    if not output["actions"]:
-        output["success"] = False
-        output["errors"].append("unknown business goal")
-
-    print("[AGENT] business output:", output)
-    return output
+        log_info(f"Action exécutée : {action}")
+        return output
+    except Exception as error:
+        log_error(f"Erreur routing : {error}")
+        raise

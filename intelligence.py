@@ -7,14 +7,59 @@ import subprocess
 import json
 import os
 import re
+import time
+from pathlib import Path
 from typing import Dict, Any, Optional
+
+from logger import log_info, log_error, log_warn, log_debug
 
 
 class HybridIntelligence:
     def __init__(self):
+        self.config = self._load_config()
+        log_info(f"Config chargée : provider={self.config['provider']}")
         self.ollama_available = self._check_ollama()
         self.openai_available = self._check_openai()
         self.stats = {"ollama": 0, "openai": 0, "fallback": 0, "errors": []}
+
+    def _load_config(self) -> Dict[str, Any]:
+        default_config = {
+            "provider": "fallback",
+            "ollama": {
+                "url": "http://localhost:11434",
+                "model": "llama3",
+            },
+            "openai": {
+                "model": "gpt-4o-mini",
+            },
+        }
+
+        try:
+            config_path = Path(__file__).resolve().parent / "config.json"
+
+            if not config_path.exists():
+                return default_config
+
+            with config_path.open("r", encoding="utf-8") as file:
+                data = json.load(file)
+
+            ai_config = data.get("ai", {})
+            openai_config = ai_config.get("openai", {})
+            ollama_config = ai_config.get("ollama", {})
+
+            return {
+                "provider": ai_config.get("provider", default_config["provider"]),
+                "ollama": {
+                    "url": ollama_config.get("url", default_config["ollama"]["url"]),
+                    "model": ollama_config.get("model", default_config["ollama"]["model"]),
+                },
+                "openai": {
+                    "api_key": openai_config.get("api_key", ""),
+                    "model": openai_config.get("model", default_config["openai"]["model"]),
+                },
+            }
+        except Exception:
+            return default_config
 
     def _check_ollama(self) -> bool:
         try:
@@ -26,40 +71,53 @@ class HybridIntelligence:
     def _check_openai(self) -> bool:
         return bool(os.getenv("OPENAI_API_KEY"))
 
-    def ask_ollama(self, prompt: str, model: str = "llama3.2") -> Optional[str]:
+    def ask_ollama(self, prompt: str, model: str = None) -> Optional[str]:
         if not self.ollama_available:
             return None
         try:
+            model = model or self.config["ollama"]["model"]
+            env = os.environ.copy()
+            env["OLLAMA_HOST"] = self.config["ollama"]["url"]
+            start_time = time.perf_counter()
             result = subprocess.run(
                 ["ollama", "run", model, prompt],
                 capture_output=True,
                 text=True,
                 timeout=60,
+                env=env,
             )
+            ms = int((time.perf_counter() - start_time) * 1000)
+            log_debug(f"Réponse en {ms}ms")
             if result.returncode == 0:
                 self.stats["ollama"] += 1
                 return result.stdout.strip()
-        except Exception as e:
-            self.stats["errors"].append(str(e))
+        except Exception as error:
+            log_error(f"Ollama error: {error}")
+            self.stats["errors"].append(str(error))
         return None
 
-    def ask_openai(self, prompt: str, model: str = "gpt-3.5-turbo") -> Optional[str]:
+    def ask_openai(self, prompt: str, model: str = None) -> Optional[str]:
         if not self.openai_available:
             return None
         try:
             import openai
 
-            openai.api_key = os.getenv("OPENAI_API_KEY")
+            model = model or self.config["openai"]["model"]
+            openai.api_key = os.getenv("OPENAI_API_KEY") or self.config["openai"].get("api_key", "")
+            start_time = time.perf_counter()
             response = openai.ChatCompletion.create(
                 model=model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
                 max_tokens=500,
             )
+            ms = int((time.perf_counter() - start_time) * 1000)
+            log_debug(f"Réponse en {ms}ms")
             self.stats["openai"] += 1
             return response.choices[0].message.content
-        except Exception as e:
-            self.stats["errors"].append(str(e))
+        except Exception as error:
+            log_error(f"OpenAI error: {error}")
+            self.stats["errors"].append(str(error))
         return None
 
     def fallback(self, prompt: str) -> str:
@@ -83,11 +141,40 @@ class HybridIntelligence:
         if force_openai or self.is_complex(prompt):
             result = self.ask_openai(prompt)
             if result:
+                log_info(f"Provider utilisé : openai")
                 return self._parse(result, "openai")
+        provider = self.config["provider"]
+        if provider == "fallback":
+            log_info(f"Provider utilisé : fallback")
+            return self._parse(self.fallback(prompt), "fallback")
+        if provider == "openai":
+            result = self.ask_openai(prompt)
+            if result:
+                log_info(f"Provider utilisé : openai")
+                return self._parse(result, "openai")
+            log_warn("Fallback activé - provider principal échoué")
+            log_info(f"Provider utilisé : fallback")
+            return self._parse(self.fallback(prompt), "fallback")
+        if provider == "ollama":
+            result = self.ask_ollama(prompt)
+            if result:
+                log_info(f"Provider utilisé : ollama")
+                return self._parse(result, "ollama")
+            log_warn("Fallback activé - provider principal échoué")
+            log_info(f"Provider utilisé : fallback")
+            return self._parse(self.fallback(prompt), "fallback")
         if self.ollama_available:
             result = self.ask_ollama(prompt)
             if result:
+                log_info(f"Provider utilisé : ollama")
                 return self._parse(result, "ollama")
+        if self.openai_available:
+            response = self.ask_openai(prompt)
+
+            if response:
+                log_info(f"Provider utilisé : openai")
+                return self._parse(response, "openai")
+        log_info(f"Provider utilisé : fallback")
         return self._parse(self.fallback(prompt), "fallback")
 
     def _parse(self, raw: str, engine: str) -> Dict[str, Any]:
@@ -124,9 +211,9 @@ Réponds UNIQUEMENT au format JSON:
 
 def get_stats():
     stats = hybrid.get_stats()
-    print("\n Intelligence Stats:")
-    print(f"  Ollama: {stats['ollama']} appels")
-    print(f"  OpenAI: {stats['openai']} appels")
-    print(f"  Fallback: {stats['fallback']} appels")
+    log_info("\n Intelligence Stats:")
+    log_info(f"  Ollama: {stats['ollama']} appels")
+    log_info(f"  OpenAI: {stats['openai']} appels")
+    log_info(f"  Fallback: {stats['fallback']} appels")
     if stats["errors"]:
-        print(f"  Erreurs: {stats['errors'][-2:]}")
+        log_error(f"  Erreurs: {stats['errors'][-2:]}")

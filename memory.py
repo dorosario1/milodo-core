@@ -2,15 +2,17 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from logger import log_info, log_error, log_warn, log_debug
+
 
 MEMORY_FILE = Path(".milodo") / "memory.json"
 
 
 def load_memory():
-    print("Chargement memoire")
+    log_debug("Chargement memoire")
 
     if not MEMORY_FILE.exists():
-        print(f"Memoire introuvable: {MEMORY_FILE}")
+        log_warn("Mémoire vide")
         return _default_memory()
 
     try:
@@ -18,24 +20,26 @@ def load_memory():
             memory_data = json.load(file)
 
         if not isinstance(memory_data, dict):
-            print("Format memoire invalide")
+            log_error("Erreur mémoire : Format memoire invalide")
             return _default_memory()
 
         entries = memory_data.get("entries", [])
 
         if not isinstance(entries, list):
-            print("Format entrees memoire invalide")
+            log_error("Erreur mémoire : Format entrees memoire invalide")
             memory_data["entries"] = []
 
-        print(f"Memoire chargee: {len(memory_data['entries'])} entree(s)")
+        if not memory_data["entries"]:
+            log_warn("Mémoire vide")
+        log_info("Mémoire chargée")
         return memory_data
     except (OSError, json.JSONDecodeError) as error:
-        print(f"Erreur chargement memoire: {error}")
+        log_error(f"Erreur mémoire : {error}")
         return _default_memory()
 
 
 def save_memory(memory_data):
-    print("Sauvegarde memoire")
+    log_debug("Sauvegarde memoire")
 
     try:
         if not isinstance(memory_data, dict):
@@ -52,14 +56,14 @@ def save_memory(memory_data):
             json.dump({"entries": entries}, file, indent=2, ensure_ascii=False)
             file.write("\n")
 
-        print(f"Memoire sauvegardee: {MEMORY_FILE}")
+        log_debug("Mémoire sauvegardée")
         return {
             "success": True,
             "path": str(MEMORY_FILE),
             "entries_count": len(entries),
         }
     except Exception as error:
-        print(f"Erreur sauvegarde memoire: {error}")
+        log_error(f"Erreur mémoire : {error}")
         return {
             "success": False,
             "path": str(MEMORY_FILE),
@@ -68,7 +72,7 @@ def save_memory(memory_data):
 
 
 def add_memory_entry(entry_type, content):
-    print(f"Ajout memoire: {entry_type}")
+    log_debug(f"Entrée ajoutée : {entry_type}")
 
     memory_data = load_memory()
     entry = {
@@ -88,13 +92,15 @@ def add_memory_entry(entry_type, content):
 
 
 def get_memory_entries(entry_type=None):
-    print("Lecture historique memoire")
+    log_debug("Lecture historique memoire")
 
     memory_data = load_memory()
     entries = memory_data.get("entries", [])
 
     if entry_type is None:
-        print(f"Entrees retournees: {len(entries)}")
+        if not entries:
+            log_warn("Mémoire vide")
+        log_debug(f"Entrees retournees: {len(entries)}")
         return entries
 
     filtered = [
@@ -102,12 +108,14 @@ def get_memory_entries(entry_type=None):
         if str(entry.get("type", "")).lower() == str(entry_type).lower()
     ]
 
-    print(f"Entrees retournees pour {entry_type}: {len(filtered)}")
+    if not filtered:
+        log_warn("Mémoire vide")
+    log_debug(f"Entrees retournees pour {entry_type}: {len(filtered)}")
     return filtered
 
 
 def search_memory(query):
-    print(f"Recherche memoire: {query}")
+    log_debug(f"Recherche mémoire : {query}")
 
     search_text = str(query).lower()
     results = []
@@ -119,12 +127,14 @@ def search_memory(query):
         if search_text in entry_type or search_text in content:
             results.append(entry)
 
-    print(f"Resultats memoire: {len(results)}")
+    if not results:
+        log_warn("Mémoire vide")
+    log_debug(f"Resultats memoire: {len(results)}")
     return results
 
 
 def clear_memory():
-    print("Reinitialisation memoire")
+    log_debug("Reinitialisation memoire")
 
     result = save_memory(_default_memory())
 

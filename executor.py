@@ -2,15 +2,34 @@ import shlex
 import subprocess
 from pathlib import Path
 
+from logger import log_info, log_warn, log_error
+
+
+ALLOWED_COMMANDS = {
+    "git",
+    "python",
+    "pip",
+    "node",
+    "npm",
+    "docker",
+    "docker-compose",
+    "ollama"
+}
+
 
 def run_command(command, cwd=None, timeout=60):
-    print(f"Commande demandee: {command}")
-
     try:
         args = _to_args(command)
+        log_info(f"Commande demandee: {args}")
 
         if not args:
             return _result(False, "", "Commande vide", 1)
+
+        command_name = args[0]
+
+        if command_name not in ALLOWED_COMMANDS:
+            log_warn(f"Commande bloquee: {args}")
+            return _result(False, "", "Commande non autorisée", 1)
 
         working_dir = Path(cwd) if cwd else None
 
@@ -26,7 +45,7 @@ def run_command(command, cwd=None, timeout=60):
         )
 
         success = completed.returncode == 0
-        print(f"Commande terminee: code {completed.returncode}")
+        log_info(f"Commande terminee: code {completed.returncode}")
 
         return _result(
             success,
@@ -35,7 +54,7 @@ def run_command(command, cwd=None, timeout=60):
             completed.returncode,
         )
     except subprocess.TimeoutExpired as error:
-        print(f"Timeout commande apres {timeout}s")
+        log_error(f"Timeout commande apres {timeout}s")
         return _result(
             False,
             error.stdout or "",
@@ -43,7 +62,7 @@ def run_command(command, cwd=None, timeout=60):
             -1,
         )
     except Exception as error:
-        print(f"Erreur commande: {error}")
+        log_error(f"Erreur commande: {error}")
         return _result(False, "", str(error), 1)
 
 

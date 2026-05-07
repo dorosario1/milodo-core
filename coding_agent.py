@@ -2,11 +2,13 @@ from pathlib import Path
 
 import intelligence
 from file_tools import read_file, write_file, exists
+from logger import log_info, log_error, log_warn, log_debug
 from state_recall import get_last_project
 
 
 def generate_code(prompt):
-    print("Generation code demandee")
+    preview = str(prompt)[:80].replace("\n", " ")
+    log_debug(f"Prompt génération : {preview}...")
 
     full_prompt = _build_prompt(
         "Genere uniquement le code demande, sans explication inutile.",
@@ -16,16 +18,18 @@ def generate_code(prompt):
     result = _ask_intelligence(full_prompt)
 
     if not result:
-        print("IA indisponible, generation annulee")
+        log_warn("Fallback coding - IA indisponible")
         return ""
 
-    print("Code genere")
-    return _clean_code_result(result)
+    code = _clean_code_result(result)
+    log_info("Code généré via IA")
+    log_debug(f"Code généré : {len(code)} caractères")
+    return code
 
 
 def create_file(path, prompt):
     file_path = Path(path)
-    print(f"Creation fichier demandee: {file_path}")
+    log_debug(f"Creation fichier demandee: {file_path}")
 
     content = generate_code(prompt)
 
@@ -33,12 +37,13 @@ def create_file(path, prompt):
         raise RuntimeError("Creation annulee: aucun contenu genere")
 
     write_file(file_path, content)
+    log_info(f"Fichier créé : {file_path}")
     return content
 
 
 def modify_file(path, instruction):
     file_path = Path(path)
-    print(f"Modification fichier demandee: {file_path}")
+    log_debug(f"Modification fichier demandee: {file_path}")
 
     _ensure_file_exists(file_path)
     original_content = read_file(file_path)
@@ -51,18 +56,18 @@ def modify_file(path, instruction):
     updated_content = _ask_intelligence(prompt)
 
     if not updated_content:
-        print("Modification annulee: IA indisponible")
+        log_warn("Fallback coding - IA indisponible")
         return original_content
 
     updated_content = _clean_code_result(updated_content)
     write_file(file_path, updated_content)
-    print(f"Fichier modifie: {file_path}")
+    log_info(f"Fichier modifié : {file_path}")
     return updated_content
 
 
 def fix_file(path):
     file_path = Path(path)
-    print(f"Correction fichier demandee: {file_path}")
+    log_debug(f"Correction fichier demandee: {file_path}")
 
     _ensure_file_exists(file_path)
     original_content = read_file(file_path)
@@ -75,18 +80,18 @@ def fix_file(path):
     fixed_content = _ask_intelligence(prompt)
 
     if not fixed_content:
-        print("Correction annulee: IA indisponible")
+        log_warn("Fallback coding - IA indisponible")
         return original_content
 
     fixed_content = _clean_code_result(fixed_content)
     write_file(file_path, fixed_content)
-    print(f"Fichier corrige: {file_path}")
+    log_info(f"Fichier modifié : {file_path}")
     return fixed_content
 
 
 def explain_file(path):
     file_path = Path(path)
-    print(f"Explication fichier demandee: {file_path}")
+    log_debug(f"Explication fichier demandee: {file_path}")
 
     _ensure_file_exists(file_path)
     content = read_file(file_path)
@@ -99,15 +104,17 @@ def explain_file(path):
     explanation = _ask_intelligence(prompt)
 
     if not explanation:
-        print("Explication indisponible: IA indisponible")
+        log_warn("Fallback coding - IA indisponible")
         return "Explication indisponible: IA indisponible."
 
-    print(f"Explication generee: {file_path}")
+    log_info(f"Explication generee: {file_path}")
     return explanation.strip()
 
 
 def _ask_intelligence(prompt):
     try:
+        preview = str(prompt)[:80].replace("\n", " ")
+        log_debug(f"Prompt génération : {preview}...")
         hybrid = intelligence.hybrid
 
         result = hybrid.ask_ollama(prompt)
@@ -120,7 +127,7 @@ def _ask_intelligence(prompt):
 
         return None
     except Exception as error:
-        print(f"Erreur intelligence: {error}")
+        log_error(f"Erreur génération : {error}")
         return None
 
 
@@ -163,9 +170,9 @@ def _ensure_file_exists(path):
     file_path = Path(path)
 
     if not exists(file_path):
-        print(f"Fichier introuvable: {file_path}")
+        log_warn(f"Fichier introuvable: {file_path}")
         raise FileNotFoundError(f"Fichier introuvable: {file_path}")
 
     if not file_path.is_file():
-        print(f"Chemin invalide, fichier attendu: {file_path}")
+        log_warn(f"Chemin invalide, fichier attendu: {file_path}")
         raise IsADirectoryError(f"Chemin invalide, fichier attendu: {file_path}")

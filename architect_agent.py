@@ -1,11 +1,13 @@
 from pathlib import Path
 
 import intelligence
+from logger import log_info, log_error, log_warn, log_debug
 from state_recall import get_last_project, load_projects
 
 
 def design_architecture(prompt):
-    print("Architecture demandee")
+    preview = str(prompt)[:80].replace("\n", " ")
+    log_debug(f"Prompt architecture : {preview}...")
 
     full_prompt = _build_prompt(
         "Propose une architecture technique simple, stable et realiste. Retourne uniquement un plan textuel.",
@@ -15,15 +17,21 @@ def design_architecture(prompt):
     result = _ask_intelligence(full_prompt)
 
     if not result:
-        print("IA indisponible, fallback architecture utilise")
-        return _fallback_architecture(prompt)
+        log_warn("Planification basique - IA limitée")
+        plan = _fallback_architecture(prompt)
+        preview = str(plan)[:120].replace("\n", " ")
+        log_debug(f"Architecture : {preview}...")
+        return plan
 
-    print("Architecture generee")
-    return result.strip()
+    plan = result.strip()
+    log_info("Architecture générée : architecture")
+    preview = str(plan)[:120].replace("\n", " ")
+    log_debug(f"Architecture : {preview}...")
+    return plan
 
 
 def plan_project_structure(project_name, project_type):
-    print(f"Plan structure demande: {project_name} ({project_type})")
+    log_debug(f"Plan structure demande: {project_name} ({project_type})")
 
     prompt = (
         f"Projet: {project_name}\n"
@@ -37,15 +45,21 @@ def plan_project_structure(project_name, project_type):
     ))
 
     if not result:
-        print("IA indisponible, fallback structure utilise")
-        return _fallback_structure(project_name, project_type)
+        log_warn("Planification basique - IA limitée")
+        plan = _fallback_structure(project_name, project_type)
+        preview = str(plan)[:120].replace("\n", " ")
+        log_debug(f"Architecture : {preview}...")
+        return plan
 
-    print("Structure projet generee")
-    return result.strip()
+    plan = result.strip()
+    log_info(f"Architecture générée : {project_name}")
+    preview = str(plan)[:120].replace("\n", " ")
+    log_debug(f"Architecture : {preview}...")
+    return plan
 
 
 def generate_technical_roadmap(project_goal):
-    print("Roadmap technique demandee")
+    log_debug("Roadmap technique demandee")
 
     prompt = _build_prompt(
         "Genere une roadmap technique simple en phases courtes et actionnables.",
@@ -55,16 +69,22 @@ def generate_technical_roadmap(project_goal):
     result = _ask_intelligence(prompt)
 
     if not result:
-        print("IA indisponible, fallback roadmap utilise")
-        return _fallback_roadmap(project_goal)
+        log_warn("Planification basique - IA limitée")
+        plan = _fallback_roadmap(project_goal)
+        preview = str(plan)[:120].replace("\n", " ")
+        log_debug(f"Architecture : {preview}...")
+        return plan
 
-    print("Roadmap technique generee")
-    return result.strip()
+    plan = result.strip()
+    log_info("Architecture générée : roadmap")
+    preview = str(plan)[:120].replace("\n", " ")
+    log_debug(f"Architecture : {preview}...")
+    return plan
 
 
 def review_architecture(path):
     project_path = Path(path)
-    print(f"Analyse architecture demandee: {project_path}")
+    log_debug(f"Analyse architecture demandee: {project_path}")
 
     last_project = get_last_project()
     known_projects = load_projects()
@@ -83,15 +103,23 @@ def review_architecture(path):
     ))
 
     if not result:
-        print("IA indisponible, fallback analyse utilise")
-        return _fallback_review(project_path, last_project)
+        log_warn("Planification basique - IA limitée")
+        plan = _fallback_review(project_path, last_project)
+        preview = str(plan)[:120].replace("\n", " ")
+        log_debug(f"Architecture : {preview}...")
+        return plan
 
-    print("Analyse architecture generee")
-    return result.strip()
+    plan = result.strip()
+    log_info(f"Architecture générée : {project_path.name}")
+    preview = str(plan)[:120].replace("\n", " ")
+    log_debug(f"Architecture : {preview}...")
+    return plan
 
 
 def _ask_intelligence(prompt):
     try:
+        preview = str(prompt)[:80].replace("\n", " ")
+        log_debug(f"Prompt architecture : {preview}...")
         hybrid = intelligence.hybrid
 
         result = hybrid.ask_ollama(prompt)
@@ -104,7 +132,7 @@ def _ask_intelligence(prompt):
 
         return None
     except Exception as error:
-        print(f"Erreur intelligence: {error}")
+        log_error(f"Erreur planification : {error}")
         return None
 
 
