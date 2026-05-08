@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Gourmet - Contact</title>
+    <style>
+        body {
+            background-color: #1a1a2e;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+        
+        header {
+            background-color: #333;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        nav li {
+            margin-right: 20px;
+        }
+        
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.2s ease-in-out;
+        }
+        
+        nav a:hover {
+            color: #ccc;
+        }
+        
+        .hero {
+            height: 100vh;
+            background-image: linear-gradient(to bottom, #1a1a2e, #333);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            color: #fff;
+        }
+        
+        .hero span {
+            font-family: 'Playfair Display', serif;
+            font-size: 96px;
+        }
+        
+        .contact-form {
+            padding: 20px;
+            background-color: #444;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .contact-form input[type="text"], .contact-form input[type="email"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .contact-form textarea {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            clear: both;
+        }
+        
+        .footer p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Accueil</a></li>
+                <li><a href="#">Menu</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Le Gourmet - Contact</h1>
+        <p>Pour nous contacter, n'hésitez pas à utiliser le formulaire ci-dessous.</p>
+    </section>
+
+    <section class="contact">
+        <div class="contact-form">
+            <h2>Contactez-nous</h2>
+            <form>
+                <label for="nom">Nom :</label>
+                <input type="text" id="nom" name="nom"><br><br>
+                <label for="email">Email :</label>
+                <input type="email" id="email" name="email"><br><br>
+                <label for="message">Message :</label>
+                <textarea id="message" name="message"></textarea><br><br>
+                <button>Envoyer</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="footer">
+        <p>&copy; 2023 Le Gourmet. Tous droits réservés.</p>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

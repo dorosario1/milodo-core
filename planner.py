@@ -148,10 +148,52 @@ def plan_goal(goal: str) -> list[dict]:
         raise
 
 
+def plan_to_actions(plan_text, goal):
+    text = f"{plan_text or ''} {goal or ''}".lower()
+    actions = []
+
+    def add_action(action, params=None):
+        item = {
+            "action": action,
+            "params": dict(params or {}),
+        }
+
+        if item not in actions:
+            actions.append(item)
+
+    if "landing" in text or "accueil" in text or "homepage" in text:
+        add_action("create_landing", {"type": "landing"})
+
+    if "vitrine" in text or "site vitrine" in text:
+        add_action("create_site", {"type": "vitrine"})
+
+    if "page menu" in text or "menu" in text:
+        add_action("create_page", {"name": "menu"})
+
+    if "page contact" in text or "contact" in text:
+        add_action("create_page", {"name": "contact"})
+
+    if "test" in text:
+        add_action("run_tests")
+
+    if "documentation" in text or "readme" in text:
+        add_action("generate_docs")
+
+    if "git" in text or "versionner" in text:
+        add_action("git_init")
+
+    if not actions:
+        add_action("generate_code", {"prompt": goal})
+
+    return actions
+
+
 def build_dag_plan(goal):
     log_debug(f"Construction plan DAG: {goal}")
 
     steps = plan_goal(goal)
+    plan_text = "\n".join(str(step.get("action", "")) for step in steps)
+    actions = plan_to_actions(plan_text, goal)
     tasks = steps_to_tasks(steps)
     engine = DAGEngine()
 
@@ -163,6 +205,8 @@ def build_dag_plan(goal):
     return {
         "goal": goal,
         "steps": steps,
+        "plan": plan_text,
+        "actions": actions,
         "tasks": [
             {
                 "id": task.id,

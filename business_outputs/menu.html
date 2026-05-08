@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Gourmet</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Accueil</a></li>
+                <li><a href="#">Menu</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1>Le Gourmet : Découvrez notre cuisine élégante</h1>
+        <p>Un restaurant sombre élégant où la qualité et le service se mélangent.</p>
+        <img src="logo.jpg" alt="Logo du restaurant">
+    </section>
+
+    <!-- Presentation -->
+    <section class="presentation">
+        <h2>Nous sommes Le Gourmet</h2>
+        <p>Notre mission est de vous offrir une expérience culinaire unique et inoubliable.</p>
+        <p>À la maison, nous utilisons les ingrédients frais et de saison pour créer des plats qui résonnent avec votre sensibilité gastronomique.</p>
+    </section>
+
+    <!-- Plats vedettes -->
+    <section class="plats-vedettes">
+        <h2>Nos plats vedettes</h2>
+        <div class="plat">
+            <h3>Le Filet Mignon</h3>
+            <p>Découvrez notre filet mignon cuit à point, servie avec une sauce crémeuse et des légumes sautés.</p>
+            <p>Prix : 40€</p>
+        </div>
+        <div class="plat">
+            <h3>Le Poisson Grillé</h3>
+            <p>Un poisson frais grillé à la perfection, accompagné de salades et de légumes.</p>
+            <p>Prix : 35€</p>
+        </div>
+    </section>
+
+    <!-- Témoignages -->
+    <section class="temoignages">
+        <h2>Que disent nos clients ?</h2>
+        <div class="temoignage">
+            <p>"Le Gourmet est le meilleur restaurant de la ville ! La qualité des plats et le service sont irréprochables."</p>
+            <img src="photo.jpg" alt="Photo du client">
+        </div>
+    </section>
+
+    <!-- Formulaire contact -->
+    <section class="formulaire-contact">
+        <h2>Nous contacter</h2>
+        <form>
+            <input type="text" placeholder="Nom et prénom">
+            <input type="email" placeholder="Adresse e-mail">
+            <textarea placeholder="Message"></textarea>
+            <button>Envoyer</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2023 Le Gourmet. Tous droits réservés.</p>
+        <ul>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">Facebook</a></li>
+            <li><a href="#">Twitter</a></li>
+        </ul>
+    </footer>
+
+    <!-- Script de navigation -->
+    <script>
+        const navLinks = document.querySelectorAll('nav ul li a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const currentUrl = window.location.pathname;
+                if (link.href === currentUrl) return;
+
+                navLinks.forEach(otherLink => {
+                    otherLink.classList.remove('active');
+                });
+                link.classList.add('active');
+
+                // Afficher le contenu de la page ciblée
+            });
+        });
+    </script>
+</body>
+</html>

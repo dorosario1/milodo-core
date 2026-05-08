@@ -12,6 +12,7 @@ import project_scanner
 import shopify_manager
 import skill_loader
 import state_recall
+from action_executor import execute_actions
 from chat_server import start_server
 from dag_engine import DAGEngine
 from dag_builder import build_dag_from_goal
@@ -196,8 +197,26 @@ def command_plan(goal):
 
 
 def command_run(goal):
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+
     print(f"[MILODO] Run DAG: {goal}")
     dag_plan = build_dag_plan(goal)
+    actions = dag_plan.get("actions", [])
+    output_dir = Path(__file__).resolve().parent / "business_outputs"
+    project_name = str(goal).replace("site vitrine restaurant", "").replace("avec menu et contact", "").strip() or "milodo_project"
+
+    for item in actions:
+        action_name = item.get("action")
+        params = item.setdefault("params", {})
+
+        if action_name in {"create_landing", "create_site", "generate_site"}:
+            params.setdefault("name", project_name)
+
+        if action_name == "create_page":
+            page_name = params.get("name", "page")
+            params.setdefault("content", f"<h1>{page_name.title()}</h1>\n<p>{goal}</p>\n")
+
     tasks = steps_to_tasks(dag_plan["steps"])
     engine = DAGEngine()
 
@@ -205,14 +224,25 @@ def command_run(goal):
         engine.add_task(task)
 
     result = engine.run()
+    action_result = execute_actions(actions, output_dir)
+
+    print(f"✅ {action_result.get('completed', 0)}/{action_result.get('total', 0)} actions réussies")
+    print(f"Projet créé dans : {output_dir}")
+
+    if action_result.get("failed", 0):
+        print("❌ Erreurs éventuelles")
+        for item in action_result.get("results", []):
+            if not item.get("success"):
+                print(f" - {item.get('action')}: {item.get('error')}")
 
     print({
-        "success": result.get("success", False),
+        "success": result.get("success", False) and action_result.get("success", False),
         "goal": goal,
         "plan": dag_plan,
         "result": result,
+        "actions": action_result,
     })
-    return 0 if result.get("success", False) else 1
+    return 0 if result.get("success", False) and action_result.get("success", False) else 1
 
 
 def command_remember(entry_type, content):

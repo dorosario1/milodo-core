@@ -19,8 +19,19 @@ class HybridIntelligence:
         self.config = self._load_config()
         log_info(f"Config chargée : provider={self.config['provider']}")
         self.ollama_available = self._check_ollama()
+        try:
+            import requests
+            r = requests.get("http://localhost:11434/api/tags", timeout=3)
+            if r.status_code == 200:
+                self.ollama_available = True
+                log_info("Ollama détecté sur localhost:11434")
+        except Exception:
+            self.ollama_available = False
         self.openai_available = self._check_openai()
         self.stats = {"ollama": 0, "openai": 0, "fallback": 0, "errors": []}
+
+    def __call__(self):
+        return self
 
     def _load_config(self) -> Dict[str, Any]:
         default_config = {
@@ -47,7 +58,7 @@ class HybridIntelligence:
             openai_config = ai_config.get("openai", {})
             ollama_config = ai_config.get("ollama", {})
 
-            return {
+            config = {
                 "provider": ai_config.get("provider", default_config["provider"]),
                 "ollama": {
                     "url": ollama_config.get("url", default_config["ollama"]["url"]),
@@ -58,6 +69,16 @@ class HybridIntelligence:
                     "model": openai_config.get("model", default_config["openai"]["model"]),
                 },
             }
+
+            # Fallback vers variable d'environnement si api_key vide
+            if not config.get("openai", {}).get("api_key", ""):
+                import os
+                env_key = os.environ.get("OPENAI_API_KEY", "")
+                if env_key:
+                    config["openai"]["api_key"] = env_key
+                    log_info("Clé API chargée depuis OPENAI_API_KEY")
+
+            return config
         except Exception:
             return default_config
 
@@ -72,25 +93,26 @@ class HybridIntelligence:
         return bool(os.getenv("OPENAI_API_KEY"))
 
     def ask_ollama(self, prompt: str, model: str = None) -> Optional[str]:
-        if not self.ollama_available:
-            return None
         try:
-            model = model or self.config["ollama"]["model"]
-            env = os.environ.copy()
-            env["OLLAMA_HOST"] = self.config["ollama"]["url"]
+            import requests
+
+            model = model or self.config.get("ollama", {}).get("model", "llama3.2")
+            url = self.config.get("ollama", {}).get("url", "http://localhost:11434")
             start_time = time.perf_counter()
-            result = subprocess.run(
-                ["ollama", "run", model, prompt],
-                capture_output=True,
-                text=True,
-                timeout=60,
-                env=env,
+            r = requests.post(
+                f"{url}/api/generate",
+                json={
+                    "model": model,
+                    "prompt": prompt,
+                    "stream": False,
+                },
+                timeout=300,
             )
             ms = int((time.perf_counter() - start_time) * 1000)
             log_debug(f"Réponse en {ms}ms")
-            if result.returncode == 0:
+            if r.status_code == 200:
                 self.stats["ollama"] += 1
-                return result.stdout.strip()
+                return r.json().get("response", "")
         except Exception as error:
             log_error(f"Ollama error: {error}")
             self.stats["errors"].append(str(error))
@@ -155,11 +177,13 @@ class HybridIntelligence:
             log_warn("Fallback activé - provider principal échoué")
             log_info(f"Provider utilisé : fallback")
             return self._parse(self.fallback(prompt), "fallback")
-        if provider == "ollama":
-            result = self.ask_ollama(prompt)
-            if result:
+        if self.config.get("provider") == "ollama" and self.ollama_available:
+            response = self.ask_ollama(prompt)
+
+            if response:
                 log_info(f"Provider utilisé : ollama")
-                return self._parse(result, "ollama")
+                return self._parse(response, "ollama")
+        if provider == "ollama":
             log_warn("Fallback activé - provider principal échoué")
             log_info(f"Provider utilisé : fallback")
             return self._parse(self.fallback(prompt), "fallback")

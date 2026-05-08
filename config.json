@@ -2,12 +2,12 @@
   "_comment": "Configuration MILODO CORE V2 - Modifie ce fichier selon ton environnement",
 
   "ai": {
-    "provider": "fallback",
+    "provider": "ollama",
     "_provider_options": "ollama | openai | fallback",
 
     "ollama": {
       "url": "http://localhost:11434",
-      "model": "llama3"
+      "model": "llama3.2"
     },
 
     "openai": {
