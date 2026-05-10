@@ -4,95 +4,143 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Gourmet</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a2e;
+        }
+        
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        nav li {
+            margin-right: 20px;
+        }
+        
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.2s ease-in-out;
+        }
+        
+        nav a:hover {
+            color: #ccc;
+        }
+        
+        .menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 100px;
+            background-color: #333;
+        }
+        
+        .plats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .plat {
+            background-color: #444;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .plat h2 {
+            margin-top: 0;
+        }
+        
+        .testimoniale {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background-color: #444;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .testimoniale p {
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            clear: both;
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <nav>
             <ul>
                 <li><a href="#">Accueil</a></li>
-                <li><a href="#">Menu</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
     </header>
-
-    <!-- Hero -->
-    <section class="hero">
-        <h1>Le Gourmet : Découvrez notre cuisine élégante</h1>
-        <p>Un restaurant sombre élégant où la qualité et le service se mélangent.</p>
-        <img src="logo.jpg" alt="Logo du restaurant">
-    </section>
-
-    <!-- Presentation -->
-    <section class="presentation">
-        <h2>Nous sommes Le Gourmet</h2>
-        <p>Notre mission est de vous offrir une expérience culinaire unique et inoubliable.</p>
-        <p>À la maison, nous utilisons les ingrédients frais et de saison pour créer des plats qui résonnent avec votre sensibilité gastronomique.</p>
-    </section>
-
-    <!-- Plats vedettes -->
-    <section class="plats-vedettes">
-        <h2>Nos plats vedettes</h2>
-        <div class="plat">
-            <h3>Le Filet Mignon</h3>
-            <p>Découvrez notre filet mignon cuit à point, servie avec une sauce crémeuse et des légumes sautés.</p>
-            <p>Prix : 40€</p>
-        </div>
-        <div class="plat">
-            <h3>Le Poisson Grillé</h3>
-            <p>Un poisson frais grillé à la perfection, accompagné de salades et de légumes.</p>
-            <p>Prix : 35€</p>
-        </div>
-    </section>
-
-    <!-- Témoignages -->
-    <section class="temoignages">
-        <h2>Que disent nos clients ?</h2>
-        <div class="temoignage">
-            <p>"Le Gourmet est le meilleur restaurant de la ville ! La qualité des plats et le service sont irréprochables."</p>
-            <img src="photo.jpg" alt="Photo du client">
-        </div>
-    </section>
-
-    <!-- Formulaire contact -->
-    <section class="formulaire-contact">
-        <h2>Nous contacter</h2>
-        <form>
-            <input type="text" placeholder="Nom et prénom">
-            <input type="email" placeholder="Adresse e-mail">
-            <textarea placeholder="Message"></textarea>
-            <button>Envoyer</button>
-        </form>
-    </section>
-
-    <!-- Footer -->
+    <main>
+        <section id="hero">
+            <h1>Le Gourmet</h1>
+            <p>Bienvenue dans notre monde de saveurs !</p>
+            <img src="logo.png" alt="Logo Le Gourmet">
+        </section>
+        <section id="présentation">
+            <h2>Nos plats</h2>
+            <p>Celebré pour ses ingrédients frais et sa cuisine créative, notre restaurant vous propose une expérience culinaire inoubliable.</p>
+            <img src="plats.jpg" alt="Plats du jour">
+        </section>
+        <section id="plat-vedettes">
+            <h2>Plats vedettes</h2>
+            <div class="plats">
+                <div class="plat">
+                    <h2>Poulet rôti aux herbes</h2>
+                    <p>Découvrez notre poulet rôti aux herbes fraîches et aromatisées, servi avec une salade de légumes frais.</p>
+                    <p>12€</p>
+                </div>
+                <div class="plat">
+                    <h2>Mousseline de saumon</h2>
+                    <p>Dégustez notre mousseline de saumon fraîchement pêché, servis avec une salade de fruits rouges.</p>
+                    <p>25€</p>
+                </div>
+                <div class="plat">
+                    <h2>Créme brûlée</h2>
+                    <p>Découvrez notre crème brûlée riche et crémeuse, servis avec une sauce au chocolat.</p>
+                    <p>8€</p>
+                </div>
+            </div>
+        </section>
+        <section id="testimoniale">
+            <h2>Que les clients disent...</h2>
+            <div class="testimoniale">
+                <p>"Le Gourmet est une expérience culinaire inoubliable ! Les plats sont délicieux et la service est impeccable."</p>
+                <img src="testimonal.jpg" alt="Testimonial">
+            </div>
+        </section>
+    </main>
     <footer>
         <p>&copy; 2023 Le Gourmet. Tous droits réservés.</p>
-        <ul>
-            <li><a href="#">Instagram</a></li>
-            <li><a href="#">Facebook</a></li>
-            <li><a href="#">Twitter</a></li>
-        </ul>
     </footer>
-
-    <!-- Script de navigation -->
-    <script>
-        const navLinks = document.querySelectorAll('nav ul li a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                const currentUrl = window.location.pathname;
-                if (link.href === currentUrl) return;
-
-                navLinks.forEach(otherLink => {
-                    otherLink.classList.remove('active');
-                });
-                link.classList.add('active');
-
-                // Afficher le contenu de la page ciblée
-            });
-        });
-    </script>
 </body>
 </html>

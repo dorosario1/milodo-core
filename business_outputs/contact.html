@@ -3,92 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Gourmet - Contact</title>
+    <title>Le Gourmet</title>
     <style>
+        /* Fond */
         body {
             background-color: #1a1a2e;
             font-family: Arial, sans-serif;
-            color: #fff;
         }
-        
+
+        /* Header */
         header {
-            background-color: #333;
+            background-color: #2f4f7f;
+            color: #fff;
             padding: 20px;
             text-align: center;
         }
-        
-        nav ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
+
+        header nav {
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
-        
-        nav li {
+
+        header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        header nav li {
             margin-right: 20px;
         }
-        
-        nav a {
+
+        header nav a {
             color: #fff;
             text-decoration: none;
-            transition: color 0.2s ease-in-out;
         }
-        
-        nav a:hover {
-            color: #ccc;
-        }
-        
+
+        /* Hero */
         .hero {
+            background-image: url('herosite.jpg');
+            background-size: cover;
             height: 100vh;
-            background-image: linear-gradient(to bottom, #1a1a2e, #333);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 48px;
             color: #fff;
         }
-        
-        .hero span {
-            font-family: 'Playfair Display', serif;
-            font-size: 96px;
+
+        /* Presentation */
+        .presentation {
+            padding: 20px;
+            text-align: center;
         }
-        
+
+        .presentation h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .presentation p {
+            font-size: 18px;
+            color: #fff;
+        }
+
+        /* Plats vedettes */
+        .plats-vedettes {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .plats-vedettes img {
+            width: 200px;
+            height: 150px;
+            margin: 10px;
+        }
+
+        /* Témoignages */
+        .temoignages {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .temoignages img {
+            width: 150px;
+            height: 100px;
+            margin: 10px;
+        }
+
+        /* Formulaire contact */
         .contact-form {
             padding: 20px;
-            background-color: #444;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        
-        .contact-form input[type="text"], .contact-form input[type="email"] {
+
+        .contact-form input {
+            width: 50%;
             padding: 10px;
             margin-bottom: 20px;
+            border: none;
             border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         .contact-form textarea {
+            width: 50%;
             padding: 10px;
             margin-bottom: 20px;
+            border: none;
             border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        
-        .footer {
-            background-color: #333;
+
+        .contact-form button {
+            width: 50%;
+            padding: 10px;
+            background-color: #2f4f7f;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2f4f7f;
             color: #fff;
             padding: 20px;
             text-align: center;
             clear: both;
         }
-        
-        .footer p {
+
+        footer p {
             margin-bottom: 10px;
         }
     </style>
 </head>
-
 <body>
     <header>
         <nav>
@@ -101,29 +157,41 @@
     </header>
 
     <section class="hero">
-        <h1>Le Gourmet - Contact</h1>
-        <p>Pour nous contacter, n'hésitez pas à utiliser le formulaire ci-dessous.</p>
+        <h1>Bienvenue chez Le Gourmet !</h1>
+        <p>Cuissons des plats délicieux avec amour et soin pour vous faire découvrir de nouvelles saveurs.</p>
     </section>
 
-    <section class="contact">
-        <div class="contact-form">
-            <h2>Contactez-nous</h2>
-            <form>
-                <label for="nom">Nom :</label>
-                <input type="text" id="nom" name="nom"><br><br>
-                <label for="email">Email :</label>
-                <input type="email" id="email" name="email"><br><br>
-                <label for="message">Message :</label>
-                <textarea id="message" name="message"></textarea><br><br>
-                <button>Envoyer</button>
-            </form>
-        </div>
+    <section class="presentation">
+        <h1>Notre histoire</h1>
+        <p>Nous sommes un petit groupe d'amis qui partageaient une passion pour la cuisine. Nous avons décidé de nous lancer dans ce projet pour partager notre amour de la gastronomie avec vous.</p>
     </section>
 
-    <section class="footer">
+    <section class="plats-vedettes">
+        <h1>Plats vedettes</h1>
+        <img src="plat1.jpg" alt="Plat 1">
+        <img src="plat2.jpg" alt="Plat 2">
+        <img src="plat3.jpg" alt="Plat 3">
+    </section>
+
+    <section class="temoignages">
+        <h1>Témoignages</h1>
+        <img src="temoignage1.jpg" alt="Témoignage 1">
+        <p>« Le Gourmet est l'endroit idéal pour déguster des plats délicieux et de qualité. » - Marie Dupont</p>
+    </section>
+
+    <section class="contact-form">
+        <h1>Contactez-nous</h1>
+        <input type="text" placeholder="Nom">
+        <input type="email" placeholder="Email">
+        <textarea placeholder="Message"></textarea>
+        <button>Envoyer</button>
+    </section>
+
+    <footer>
         <p>&copy; 2023 Le Gourmet. Tous droits réservés.</p>
-    </section>
-
-    <script src="script.js"></script>
+        <p>Aдрес : 123 Rue de Paris, 75001 Paris</p>
+        <p>Téléphone : 01 42 33 44 55</p>
+        <p>Horaires : Lundi au samedi 12h00 - 22h00</p>
+    </footer>
 </body>
 </html>

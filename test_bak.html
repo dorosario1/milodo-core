@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page de test</title>
+    <style>
+        /* Ajout d'un peu de CSS pour rendre le texte plus readable */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        
+        p {
+            color: #00698f;
+            margin-bottom: 1em;
+        }
+    </style>
+</head>
+<body>
+    <p>OK</p>
+    <script>
+        // Ajout d'un peu de JavaScript pour rendre le texte en gras
+        const text = document.querySelector('p');
+        if (text) {
+            text.style.fontWeight = 'bold';
+        } else {
+            console.error('Erreur : le texte n\'est pas trouvé');
+        }
+    </script>
+</body>
+</html>

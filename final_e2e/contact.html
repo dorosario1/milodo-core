@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr" itemscope itemtype="http://schema.org/LocalBusiness">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Gourmet Signature</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body itemscope itemtype="http://schema.org/LocalBusiness">
+  <!-- Header -->
+  <header id="header">
+    <nav>
+      <ul>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#reservations">Réservations</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section id="hero">
+    <h1>Le Gourmet Signature</h1>
+    <p>Un restaurant à la mode de Paris</p>
+    <button>Reservez votre table</button>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <h2>Ce qui nous inspire</h2>
+    <ul>
+      <li><i class="fas fa-cuisine"></i> Cuisine traditionnelle française</li>
+      <li><i class="fas fa-globe-americas"></i> Inpirations internationales</li>
+      <li><i class="fas fa-wine-glass"></i> Vins de qualité</li>
+    </ul>
+  </section>
+
+  <!-- Menu -->
+  <section id="menu">
+    <h2>Carte du chef</h2>
+    <div class="menu-items">
+      <div class="menu-item">
+        <h3>Entrecôte</h3>
+        <p>300g de filet mignon</p>
+        <p>30€</p>
+      </div>
+      <!-- Autres items du menu -->
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <h2>Nous contacter</h2>
+    <form>
+      <label for="name">Nom:</label>
+      <input type="text" id="name" name="name"><br><br>
+      <label for="email">Courriel:</label>
+      <input type="email" id="email" name="email"><br><br>
+      <label for="message">Message:</label>
+      <textarea id="message" name="message"></textarea><br><br>
+      <button>Envoyer</button>
+    </form>
+    <address>
+      Le Gourmet Signature<br>
+      12 Rue de la République, 75001 Paris<br>
+      contact@le-gourmet-signature.fr
+    </address>
+    <p>Horaires : <span id="horaires"></span></p>
+    <img src="image.jpg" alt="Carte">
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; Le Gourmet Signature</p>
+  </footer>
+
+  <script src="https://kit.fontawesome.com/c9b5edc46a.js"></script>
+  <script src="contact.js"></script>
+</body>
+</html>

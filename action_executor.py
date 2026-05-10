@@ -1,7 +1,9 @@
 from importlib import import_module
 from pathlib import Path
 
+from coding_agent import auto_fix_loop
 from logger import log_info, log_error, log_warn, log_debug
+from validate_file import quality_score
 
 
 SKILL_NAMES = {
@@ -76,15 +78,31 @@ def execute_actions(actions, output_dir):
     # Sauvegarder dans state_recall
     try:
         from state_recall import remember_last_project
+        from datetime import datetime
 
-        remember_last_project({
+        project_info = {
             "name": output_dir.name if output_dir else "projet",
             "output_dir": str(output_dir),
             "actions_count": completed,
-            "date": __import__('datetime').datetime.now().isoformat()
-        })
+            "actions": [
+                r.get("action", "unknown")
+                for r in results
+            ],
+            "date": datetime.now().isoformat(),
+            "files_created": len([
+                r for r in results
+                if isinstance(r.get("result"), dict) and r.get("result", {}).get("path")
+            ])
+        }
 
-        log_info("Projet mémorisé dans state_recall")
+        remember_last_project(project_info)
+
+        log_info(
+            f"Projet mémorisé : "
+            f"{project_info['name']} "
+            f"({completed} actions, "
+            f"{project_info['files_created']} fichiers)"
+        )
 
     except Exception as e:
         log_warn(f"Impossible de mémoriser le projet : {e}")
@@ -190,9 +208,33 @@ EXIGENCES :
 """
 
     file_tools.write_file(path, str(html))
+    fix_result = None
+    score_result = {}
+
+    try:
+
+        fix_result = auto_fix_loop(path)
+
+        score_result = quality_score(path)
+
+        log_info(
+            f"Qualité fichier : "
+            f"{score_result['score']}/100 "
+            f"({score_result['category']})"
+        )
+
+    except Exception as e:
+
+        log_warn(
+            f"Auto-fix impossible pour {path}: {e}"
+        )
+
     return {
         "success": True,
         "path": str(path),
+        "quality_score": score_result.get("score"),
+        "quality_category": score_result.get("category"),
+        "auto_fix": fix_result,
     }
 
 
@@ -209,9 +251,34 @@ def _create_file(params, output_dir):
 
     file_tools = _load_module("file_tools")
     file_tools.write_file(file_path, str(params.get("content", "")))
+    fix_result = None
+    score_result = {}
+
+    if file_path.suffix.lower() in {".html", ".css", ".js"}:
+        try:
+
+            fix_result = auto_fix_loop(file_path)
+
+            score_result = quality_score(file_path)
+
+            log_info(
+                f"Qualité fichier : "
+                f"{score_result['score']}/100 "
+                f"({score_result['category']})"
+            )
+
+        except Exception as e:
+
+            log_warn(
+                f"Auto-fix impossible pour {file_path}: {e}"
+            )
+
     return {
         "success": True,
         "path": str(file_path),
+        "quality_score": score_result.get("score"),
+        "quality_category": score_result.get("category"),
+        "auto_fix": fix_result,
     }
 
 
