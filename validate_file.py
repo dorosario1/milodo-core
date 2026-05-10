@@ -288,6 +288,206 @@ def quality_score(path):
         }
 
 
+def fitness_score(path):
+    """
+    Score multi-critères
+    0-100 combinant :
+    - validation
+    - richesse contenu
+    - responsive
+    - navigation
+    - accessibilité
+    """
+
+    import re
+    from pathlib import Path
+
+    technical_result = quality_score(path)
+
+    technical_score = technical_result.get(
+        "score",
+        0
+    )
+
+    file_path = Path(path)
+
+    if not file_path.exists():
+
+        return {
+            "fitness": 0,
+            "technical": 0,
+            "content": 0,
+            "sections": 0,
+            "responsive": 0,
+            "navigation": 0,
+            "accessibility": 0,
+            "errors": ["Fichier introuvable"]
+        }
+
+    content = file_path.read_text(
+        encoding="utf-8",
+        errors="ignore"
+    )
+
+    lower = content.lower()
+
+    text_only = re.sub(
+        r"<[^>]+>",
+        " ",
+        content
+    )
+
+    words = re.findall(
+        r"\b\w+\b",
+        text_only
+    )
+
+    word_count = len(words)
+
+    content_score = 0
+
+    if word_count >= 1000:
+        content_score = 20
+
+    elif word_count >= 500:
+        content_score = 15
+
+    elif word_count >= 200:
+        content_score = 10
+
+    elif word_count >= 50:
+        content_score = 5
+
+    sections_found = 0
+
+    section_keywords = [
+        "hero",
+        "features",
+        "pricing",
+        "testimonial",
+        "cta",
+        "footer"
+    ]
+
+    for keyword in section_keywords:
+
+        if keyword in lower:
+            sections_found += 1
+
+    sections_score = min(
+        15,
+        sections_found * 2.5
+    )
+
+    responsive_score = 0
+
+    if "@media" in lower:
+        responsive_score += 8
+
+    if "viewport" in lower:
+        responsive_score += 4
+
+    if (
+        "display:flex" in lower
+        or "display: flex" in lower
+        or "display:grid" in lower
+        or "display: grid" in lower
+    ):
+        responsive_score += 3
+
+    responsive_score = min(
+        15,
+        responsive_score
+    )
+
+    navigation_score = 0
+
+    nav_links = re.findall(
+        r"<a\s+[^>]*href=",
+        lower
+    )
+
+    if len(nav_links) > 2:
+        navigation_score += 5
+
+    if "<footer" in lower:
+        navigation_score += 3
+
+    internal_links = [
+        link for link in nav_links
+        if (
+            ".html"
+            in link
+            or "#"
+            in link
+        )
+    ]
+
+    if internal_links:
+        navigation_score += 2
+
+    navigation_score = min(
+        10,
+        navigation_score
+    )
+
+    accessibility_score = 0
+
+    images = re.findall(
+        r"<img[^>]*>",
+        lower
+    )
+
+    if images:
+
+        with_alt = [
+            img for img in images
+            if "alt=" in img
+        ]
+
+        if len(with_alt) == len(images):
+            accessibility_score += 4
+
+    if "aria-" in lower:
+        accessibility_score += 3
+
+    if "lang=" in lower:
+        accessibility_score += 3
+
+    accessibility_score = min(
+        10,
+        accessibility_score
+    )
+
+    fitness = (
+        (technical_score * 0.30)
+        + content_score
+        + sections_score
+        + responsive_score
+        + navigation_score
+        + accessibility_score
+    )
+
+    fitness = round(
+        min(100, fitness),
+        2
+    )
+
+    return {
+        "fitness": fitness,
+        "technical": technical_score,
+        "content": content_score,
+        "sections": sections_score,
+        "responsive": responsive_score,
+        "navigation": navigation_score,
+        "accessibility": accessibility_score,
+        "errors": technical_result.get(
+            "errors",
+            []
+        )
+    }
+
+
 def _find_unclosed_html_tags(content):
     errors = []
     stack = []

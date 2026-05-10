@@ -1,6 +1,76 @@
 [
   {
     "template": "landing",
+    "project": "CrossTest",
+    "score": 61.5,
+    "path": "crossover_test\\gen_2",
+    "date": "2026-05-10T19:22:41.629279"
+  },
+  {
+    "template": "landing",
+    "project": "CrossTest",
+    "score": 62.5,
+    "path": "crossover_test\\gen_1",
+    "date": "2026-05-10T19:20:24.823115"
+  },
+  {
+    "template": "landing",
+    "project": "FitTest",
+    "score": 60.5,
+    "path": "evolution_test\\gen_2",
+    "date": "2026-05-10T19:10:24.512019"
+  },
+  {
+    "template": "landing",
+    "project": "FitTest",
+    "score": 61.5,
+    "path": "evolution_test\\gen_1",
+    "date": "2026-05-10T19:08:30.587759"
+  },
+  {
+    "template": "landing",
+    "project": "FitTest",
+    "score": 0,
+    "path": "evolution_test\\gen_2",
+    "date": "2026-05-10T19:05:51.086964"
+  },
+  {
+    "template": "landing",
+    "project": "FitTest",
+    "score": 0,
+    "path": "evolution_test\\gen_1",
+    "date": "2026-05-10T19:03:53.567489"
+  },
+  {
+    "template": "landing",
+    "project": "FitTest",
+    "score": 0,
+    "path": "evolution_test\\gen_2",
+    "date": "2026-05-10T19:01:26.371196"
+  },
+  {
+    "template": "landing",
+    "project": "FitTest",
+    "score": 0,
+    "path": "evolution_test\\gen_1",
+    "date": "2026-05-10T18:58:35.144861"
+  },
+  {
+    "template": "landing",
+    "project": "MutTest",
+    "score": 100.0,
+    "path": "evolution_test\\gen_2",
+    "date": "2026-05-10T18:40:40.703926"
+  },
+  {
+    "template": "landing",
+    "project": "MutTest",
+    "score": 100.0,
+    "path": "evolution_test\\gen_1",
+    "date": "2026-05-10T18:38:10.819696"
+  },
+  {
+    "template": "landing",
     "project": "EvoTest",
     "score": 100.0,
     "path": "evolution_test\\gen_2",

@@ -1,39 +1,30 @@
 <!DOCTYPE html>
-<html lang="fr" itemscope itemtype="http://schema.org/WebPage">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EvoTest</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body itemscope itemtype="http://schema.org/WebPage">
+<body>
     <!-- Hero Section -->
-    <section class="hero">
+    <header class="hero">
+        <img src="image.jpg" alt="Image de fond">
         <div class="container">
-            <h1>Évoluteur de Tests</h1>
-            <p>Améliorez votre score avec notre évoluteur de tests innovant.</p>
-            <button class="btn">Découvrez Entraînez-vous</button>
+            <h1>Titre du produit</h1>
+            <p>Paragraphe de présentation</p>
+            <button>Cliquez ici</button>
         </div>
-    </section>
+    </header>
 
     <!-- Features Section -->
     <section class="features">
         <div class="container">
-            <h2>Avantages</h2>
+            <h2>Fonctionnalités</h2>
             <ul>
-                <li>
-                    <i class="fas fa-check-circle" aria-hidden="true"></i>
-                    <p>Évaluation rapide et précise de vos compétences.</p>
-                </li>
-                <li>
-                    <i class="fas fa-check-circle" aria-hidden="true"></i>
-                    <p>Amélioration continue de votre score avec les dernières tendances du marché.</p>
-                </li>
-                <li>
-                    <i class="fas fa-check-circle" aria-hidden="true"></i>
-                    <p>Conseils personnalisés pour vous aider à atteindre vos objectifs.</p>
-                </li>
+                <li><i class="fas fa-check"></i> Fonctionnalité 1</li>
+                <li><i class="fas fa-check"></i> Fonctionnalité 2</li>
+                <li><i class="fas fa-check"></i> Fonctionnalité 3</li>
             </ul>
         </div>
     </section>
@@ -43,21 +34,25 @@
         <div class="container">
             <h2>Pricing</h2>
             <table>
-                <tr>
-                    <th>Plan</th>
-                    <th>Prix</th>
-                    <th>Avantages</th>
-                </tr>
-                <tr>
-                    <td>Évoluteur Fondamental</td>
-                    <td>$20/mois</td>
-                    <td>Évaluation rapide et précise de vos compétences, amélioration continue de votre score.</td>
-                </tr>
-                <tr>
-                    <td>Évoluteur Avancé</td>
-                    <td>$50/mois</td>
-                    <td>Plusieurs avantages supplémentaires : conseils personnalisés, accès à nos ressources éditoriales.</td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Plan</th>
+                        <th>Prix</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Plan A</td>
+                        <td>$9.99/mois</td>
+                        <td>Description de plan A</td>
+                    </tr>
+                    <tr>
+                        <td>Plan B</td>
+                        <td>$19.99/mois</td>
+                        <td>Description de plan B</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </section>
@@ -65,13 +60,16 @@
     <!-- CTA Section -->
     <section class="cta">
         <div class="container">
-            <h2>Découvrez Entraînez-vous</h2>
-            <button class="btn">Démarrer le programme</button>
+            <h2>Cliquez pour commencer</h2>
+            <button>Commencez dès maintenant</button>
         </div>
     </section>
 
-    <footer>
-        <p>Copyright 2023 EvoTest. Tous droits réservés.</p>
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023. Tous droits réservés.</p>
+        </div>
     </footer>
 </body>
 </html>

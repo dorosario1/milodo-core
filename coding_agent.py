@@ -51,6 +51,97 @@ TEMPLATES = {
 }
 
 
+MUTATIONS = {
+    "layout": [
+        "hero classique centré",
+        "hero fullscreen avec image background",
+        "hero split gauche-texte droite-image",
+        "pas de hero, cards directement"
+    ],
+
+    "style": [
+        "design sombre #1a1a2e",
+        "design clair minimaliste",
+        "glassmorphism avec backdrop-filter",
+        "neumorphism soft"
+    ],
+
+    "structure": [
+        "navigation classique en haut",
+        "navigation latérale fixe",
+        "menu hamburger mobile-first",
+        "footer expansif avec 4 colonnes"
+    ]
+}
+
+
+def mutate_prompt(
+    base_prompt,
+    generation
+):
+    """
+    Ajoute des variations
+    structurelles au prompt.
+    """
+
+    import random
+
+    random.seed(generation)
+
+    layout = MUTATIONS[
+        "layout"
+    ][
+        generation
+        % len(
+            MUTATIONS["layout"]
+        )
+    ]
+
+    style = MUTATIONS[
+        "style"
+    ][
+        generation
+        % len(
+            MUTATIONS["style"]
+        )
+    ]
+
+    structure = MUTATIONS[
+        "structure"
+    ][
+        generation
+        % len(
+            MUTATIONS["structure"]
+        )
+    ]
+
+    return f"""
+{base_prompt}
+
+VARIATION UNIQUE
+(génération {generation}) :
+
+- Layout : {layout}
+
+- Style : {style}
+
+- Structure : {structure}
+
+IMPORTANT :
+Cette génération doit être
+VISIBLEMENT DIFFÉRENTE
+des autres générations.
+
+EXIGENCES :
+- HTML5 valide
+- responsive
+- CSS moderne
+- structure originale
+- sections bien séparées
+- UI cohérente
+"""
+
+
 def save_score(
     template_type,
     project_name,
@@ -771,7 +862,7 @@ def evolve_template(template_type, project_name, generations=3, output_base="evo
     Évolution auto : génère N variantes, garde la meilleure, itère.
     """
 
-    from validate_file import quality_score
+    from validate_file import fitness_score
 
     best_generation = None
     best_score = 0
@@ -782,12 +873,15 @@ def evolve_template(template_type, project_name, generations=3, output_base="evo
         try:
             output_dir = Path(output_base) / f"gen_{generation}"
             past_scores = get_best_scores(template_type, limit=1)
-            evolved_project_name = project_name
+            evolved_project_name = mutate_prompt(
+                project_name,
+                generation
+            )
 
             if past_scores:
                 best_past_score = past_scores[0].get("score", 0)
-                evolved_project_name = (
-                    f"{project_name}\n\n"
+                evolved_project_name += (
+                    "\n\n"
                     f"Objectif : score > {best_past_score}. "
                     "Code HTML5 riche, CSS responsive, contenu > 500 caractères."
                 )
@@ -810,10 +904,10 @@ def evolve_template(template_type, project_name, generations=3, output_base="evo
 
             for file_path in result.get("files_created", []):
                 try:
-                    score_result = quality_score(file_path)
-                    scores.append(score_result.get("score", 0))
+                    score_result = fitness_score(file_path)
+                    scores.append(score_result.get("fitness", 0))
                 except Exception as score_error:
-                    log_warn(f"Score impossible : {file_path} : {score_error}")
+                    log_warn(f"Fitness impossible : {file_path} : {score_error}")
 
             average_score = (
                 sum(scores) / len(scores)
@@ -834,7 +928,7 @@ def evolve_template(template_type, project_name, generations=3, output_base="evo
 
             log_info(
                 f"Évolution template {template_type} "
-                f"gen {generation}: {average_score}/100"
+                f"gen {generation}: fitness {average_score}/100"
             )
 
             if best_generation is None or average_score > best_score:
@@ -862,6 +956,229 @@ def evolve_template(template_type, project_name, generations=3, output_base="evo
         "evolution": evolution,
         "improvement": best_score - initial_score
     }
+
+
+def crossover_evolve(
+    template_type,
+    project_name,
+    generations=3,
+    output_base="crossover_test"
+):
+    """
+    Évolution avec crossover :
+    fusionne les meilleurs éléments
+    de chaque génération.
+    """
+
+    try:
+
+        from pathlib import Path
+        from validate_file import fitness_score
+        import re
+
+        evolution_result = evolve_template(
+            template_type,
+            project_name,
+            generations=generations,
+            output_base=output_base
+        )
+
+        evolution = evolution_result.get(
+            "evolution",
+            []
+        )
+
+        if not evolution:
+            return {
+                "success": False,
+                "error": "Aucune génération"
+            }
+
+        generation_dirs = []
+
+        for item in evolution:
+
+            gen_number = item.get("gen")
+
+            gen_dir = (
+                Path(output_base)
+                / f"gen_{gen_number}"
+            )
+
+            generation_dirs.append({
+                "gen": gen_number,
+                "dir": gen_dir,
+                "score": item.get("score", 0)
+            })
+
+        sections = {
+            "hero": None,
+            "features": None,
+            "pricing": None,
+            "testimonials": None,
+            "contact": None,
+            "footer": None,
+            "navigation": None
+        }
+
+        def section_richness(content):
+
+            text = re.sub(
+                r"<[^>]+>",
+                " ",
+                content
+            )
+
+            words = len(text.split())
+
+            tags = len(
+                re.findall(
+                    r"<[a-zA-Z]",
+                    content
+                )
+            )
+
+            return words + tags
+
+        for generation in generation_dirs:
+
+            gen_dir = generation["dir"]
+
+            if not gen_dir.exists():
+                continue
+
+            html_files = list(
+                gen_dir.rglob("*.html")
+            )
+
+            for html_file in html_files:
+
+                try:
+
+                    content = html_file.read_text(
+                        encoding="utf-8"
+                    )
+
+                    lower = content.lower()
+
+                    for section in sections.keys():
+
+                        if section in lower:
+
+                            richness = section_richness(
+                                content
+                            )
+
+                            current = sections[section]
+
+                            if (
+                                current is None
+                                or richness > current["richness"]
+                            ):
+
+                                sections[section] = {
+                                    "gen": generation["gen"],
+                                    "richness": richness,
+                                    "file": str(html_file)
+                                }
+
+                except Exception:
+                    continue
+
+        fusion_description = []
+
+        for section, data in sections.items():
+
+            if data:
+
+                fusion_description.append(
+                    f"{section} de gen_{data['gen']}"
+                )
+
+        crossover_prompt = f"""
+Créer une landing page hybride.
+
+Fusionner les meilleurs éléments :
+
+{', '.join(fusion_description)}
+
+IMPORTANT :
+- HTML5 valide
+- responsive
+- contenu riche
+- navigation moderne
+- footer complet
+- sections cohérentes
+- design premium
+"""
+
+        crossover_dir = (
+            Path(output_base)
+            / "crossover"
+        )
+
+        crossover_dir.mkdir(
+            parents=True,
+            exist_ok=True
+        )
+
+        crossover_file = (
+            crossover_dir
+            / "index.html"
+        )
+
+        retry_result = generate_with_retry(
+            crossover_prompt,
+            str(crossover_file),
+            max_retries=2,
+            min_score=70
+        )
+
+        crossover_fitness = fitness_score(
+            str(crossover_file)
+        )
+
+        best_classic = max(
+            evolution,
+            key=lambda x: x.get("score", 0)
+        )
+
+        crossover_score = crossover_fitness.get(
+            "fitness",
+            0
+        )
+
+        improvement = (
+            crossover_score
+            - best_classic.get("score", 0)
+        )
+
+        log_info(
+            f"Crossover fitness : "
+            f"{crossover_score}/100"
+        )
+
+        return {
+            "success": True,
+            "best_classic": {
+                "gen": best_classic.get("gen"),
+                "score": best_classic.get("score")
+            },
+            "best_crossover": {
+                "score": crossover_score
+            },
+            "improvement": improvement,
+            "crossover_file": str(crossover_file),
+            "sections": sections,
+            "retry_result": retry_result
+        }
+
+    except Exception as e:
+
+        return {
+            "success": False,
+            "error": str(e)
+        }
 
 
 def auto_fix_loop(path, max_attempts=3):
