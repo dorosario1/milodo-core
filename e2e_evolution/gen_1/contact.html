@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Vitrine Restaurant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Hero Fullscreen avec image de fond -->
+    <header class="hero">
+        <img src="image-de-fond.jpg" alt="Image de fond">
+        <h1>Bienvenue chez nous !</h1>
+        <p>Le meilleur restaurant de la ville</p>
+    </header>
+
+    <!-- Navigation latérale fixe -->
+    <nav class="nav-latie">
+        <ul>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#reservations">Reservations</a></li>
+        </ul>
+    </nav>
+
+    <!-- Section Contact -->
+    <section id="contact">
+        <h2>Contact</h2>
+        <form>
+            <label for="nom">Nom :</label>
+            <input type="text" id="nom" name="nom"><br><br>
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email"><br><br>
+            <label for="message">Message :</label>
+            <textarea id="message" name="message"></textarea><br><br>
+            <button>Télésender</button>
+        </form>
+        <p>Adresse : 123 Rue des Artistes, 75001 Paris</p>
+        <p>Horaires : Lundi au vendredi de 12h à 22h, Samedi et dimanche de 13h à 21h</p>
+    </section>
+
+    <!-- Section Carte -->
+    <section id="carte">
+        <h2>Carte</h2>
+        <img src="carte.jpg" alt="Carte du restaurant">
+        <p>Bienvenue chez nous ! Vous êtes au cœur de la vie gastronomique de Paris.</p>
+    </section>
+
+    <!-- Section Footer -->
+    <footer class="footer">
+        <p>&copy; 2023 Restaurant de la Ville</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

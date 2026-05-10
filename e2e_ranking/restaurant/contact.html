@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr" itemscope itemtype="http://schema.org/WebPage">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Le Gourmet</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body itemscope itemtype="http://schema.org/Organization">
+    <header>
+        <h1>Le Gourmet</h1>
+    </header>
+    <section id="contact" itemscope itemtype="http://schema.org/ContactPoint">
+        <h2>Contactez-nous</h2>
+        <p>Désirez-vous recevoir des informations sur nos menu, réervations ou événements ?</p>
+        <form>
+            <label for="nom">Nom :</label>
+            <input type="text" id="nom" name="nom"><br><br>
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email"><br><br>
+            <label for="telephone">Téléphone :</label>
+            <input type="tel" id="telephone" name="telephone"><br><br>
+            <button type="submit">Envoyer</button>
+        </form>
+    </section>
+    <section itemscope itemtype="http://schema.org/PhysicalAddress">
+        <h2>Adresse</h2>
+        <p> Rue de la Gastronomie, 75001 Paris <br> France <br> +33 1 42 66 78 90 <br> [info@galoem.com](mailto:info@galoem.com) </p>
+    </section>
+    <section itemscope itemtype="http://schema.org/OpeningHours">
+        <h2>Horaires d'ouverture</h2>
+        <p>Lundi : 12h00 - 14h00, 19h00 - 22h30
+                Mardi : 12h00 - 14h00, 19h00 - 22h30
+                Mercredi : 12h00 - 14h00, 19h00 - 22h30
+                Jeudi : 12h00 - 14h00, 19h00 - 22h30
+                Vendredi : 12h00 - 14h00, 19h00 - 22h30
+                Samedi : 10h00 - 15h00
+                Dimanche : fermé</p>
+    </section>
+    <section itemscope itemtype="http://schema.org/GeoCoordinates">
+        <h2>Carte</h2>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3524.142456476111!2-0.1214549844397227!3d48.8566!4d2.291455321115236" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+    </section>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu du Restaurant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Section 1 : Header -->
+    <header class="header">
+        <nav>
+            <ul>
+                <li><a href="#home">Accueil</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Section 2 : Hero -->
+    <section class="hero" style="display: none;">
+        <div class="container">
+            <h1> Bienvenue chez nous !</h1>
+            <p>Nos spécialités</p>
+        </div>
+    </section>
+
+    <!-- Section 3 : Menu -->
+    <section id="menu" class="content-section">
+        <h2>Menu</h2>
+        <ul class="card-list">
+            <li class="card">
+                <img src=" img1.jpg" alt="Image1">
+                <h4>Plat 1</h4>
+                <p>Description de Plat 1</p>
+            </li>
+            <li class="card">
+                <img src="img2.jpg" alt="Image2">
+                <h4>Plat 2</h4>
+                <p>Description de Plat 2</p>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Section 4 : Contact -->
+    <section id="contact" class="content-section">
+        <h2>Contact</h2>
+        <form>
+            <label for="nom">Nom:</label>
+            <input type="text" id="nom" name="nom"><br><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email"><br><br>
+            <label for="phone">Téléphone:</label>
+            <input type="tel" id="phone" name="phone"><br><br>
+            <button>Envoyer</button>
+        </form>
+
+        <div class="address">
+            <h4>Adresse:</h4>
+            <p>Rue de la République, 12345 Paris</p>
+        </div>
+
+        <div class="hours">
+            <h4>Heures d'ouverture:</h4>
+            <p>Lun - Ven : 12:00 - 22:00, Sam et dim : 13:00 - 21:00</p>
+        </div>
+    </section>
+
+    <!-- Section 5 : Footer -->
+    <footer class="footer">
+        <div class="container">
+            <h4>Informations:</h4>
+            <ul>
+                <li><a href="#">Nous contacter</a></li>
+                <li><a href="#">Conditions de service</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- Structure de la page -->
+    <script src="https://kit.fontawesome.com/your-font-awesome-id.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr" itemscope="itemscope" itemtype="http://schema.org/WebPage">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="container" itemscope="itemscope" itemtype="http://schema.org/WebPage">
+    <header class="header" itemscope="itemscope" itemtype="http://schema.org/WebPageHeader">
+        <div class="logo">
+            <a href="#" class="link" itemscope="itemscope" itemtype="http://schema.org/Thing">
+                <img src="logo.png" alt="Logo du restaurant" class="image">
+            </a>
+        </div>
+        <nav class="menu" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationMenu">
+            <button class="hamburger" itemscope="itemscope" itemtype="http://schema.org/Thing">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="menu-items">
+                <li><a href="#" class="link" itemscope="itemscope" itemtype="http://schema.org/URL">Accueil</a></li>
+                <li><a href="#" class="link" itemscope="itemscope" itemtype="http://schema.org/URL">Menu</a></li>
+                <li><a href="#" class="link" itemscope="itemscope" itemtype="http://schema.org/URL">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section class="hero" style="background-image: url('image.jpg')">
+        <div class="content">
+            <h1>Bienvenue au restaurant !</h1>
+            <p>Nous sommes ravis de vous accueillir dans notre établissement.</p>
+        </div>
+    </section>
+    <section class="contact" itemscope="itemscope" itemtype="http://schema.org/WebPage">
+        <h2>Contactez-nous</h2>
+        <form>
+            <label for="name">Nom : <input type="text" id="name" name="name"></label>
+            <label for="email">Email : <input type="email" id="email" name="email"></label>
+            <label for="phone">Téléphone : <input type="tel" id="phone" name="phone"></label>
+            <button>Envoyer</button>
+        </form>
+        <p><strong>Adresse :</strong> 12 rue du restaurant, 75001 Paris, France</p>
+        <p><strong>Horaires :</strong> Lundi au vendredi de 12h à 23h, samedi et dimanche de 14h à 22h</p>
+        <iframe src="https://www.google.com/maps/embed?..."></iframe>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

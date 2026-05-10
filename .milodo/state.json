@@ -2,15 +2,13 @@
   "last_project": {
     "name": "business_outputs",
     "output_dir": "C:\\Users\\user\\milodo-core\\business_outputs",
-    "actions_count": 4,
+    "actions_count": 2,
     "actions": [
       "create_landing",
-      "create_site",
-      "create_page",
-      "create_page"
+      "create_site"
     ],
-    "date": "2026-05-09T21:59:41.993258",
-    "files_created": 2
+    "date": "2026-05-10T21:15:32.211613",
+    "files_created": 0
   },
-  "updated_at": "2026-05-09T21:59:41.993507+00:00"
+  "updated_at": "2026-05-10T21:15:32.212165+00:00"
 }
