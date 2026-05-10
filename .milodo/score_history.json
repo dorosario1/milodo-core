@@ -1,0 +1,23 @@
+[
+  {
+    "template": "landing",
+    "project": "EvoTest",
+    "score": 100.0,
+    "path": "evolution_test\\gen_2",
+    "date": "2026-05-10T18:16:06.956739"
+  },
+  {
+    "template": "landing",
+    "project": "EvoTest",
+    "score": 100.0,
+    "path": "evolution_test\\gen_1",
+    "date": "2026-05-10T18:13:56.690798"
+  },
+  {
+    "template": "landing",
+    "project": "test",
+    "score": 95,
+    "path": "test.html",
+    "date": "2026-05-10T17:57:34.695332"
+  }
+]

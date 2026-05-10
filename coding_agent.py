@@ -7,6 +7,12 @@ from logger import log_info, log_error, log_warn, log_debug
 from state_recall import get_last_project
 
 
+SCORE_HISTORY_FILE = (
+    Path(".milodo")
+    / "score_history.json"
+)
+
+
 TEMPLATES = {
     "restaurant": {
         "description": "Site vitrine pour restaurant",
@@ -43,6 +49,162 @@ TEMPLATES = {
         ]
     }
 }
+
+
+def save_score(
+    template_type,
+    project_name,
+    score,
+    path
+):
+    """
+    Sauvegarde un score
+    dans l'historique.
+    """
+
+    import json
+    from datetime import datetime
+
+    try:
+        Path(".milodo").mkdir(
+            exist_ok=True
+        )
+
+        history = []
+
+        if SCORE_HISTORY_FILE.exists():
+            try:
+                history = json.loads(
+                    SCORE_HISTORY_FILE.read_text(
+                        encoding="utf-8"
+                    )
+                )
+            except Exception:
+                history = []
+
+        if not isinstance(history, list):
+            history = []
+
+        entry = {
+            "template": template_type,
+            "project": project_name,
+            "score": score,
+            "path": path,
+            "date": datetime.now().isoformat()
+        }
+
+        history.insert(0, entry)
+
+        history = history[:100]
+
+        SCORE_HISTORY_FILE.write_text(
+            json.dumps(
+                history,
+                indent=2,
+                ensure_ascii=False
+            ) + "\n",
+            encoding="utf-8"
+        )
+
+        log_info(
+            f"Score sauvegardé : "
+            f"{template_type} "
+            f"{score}/100"
+        )
+
+        return True
+
+    except Exception as e:
+        log_warn(
+            f"Historique score impossible : {e}"
+        )
+
+        return False
+
+
+def get_best_scores(
+    template_type=None,
+    limit=5
+):
+    """
+    Retourne les meilleurs scores.
+    """
+
+    import json
+
+    try:
+        if not SCORE_HISTORY_FILE.exists():
+            return []
+
+        history = json.loads(
+            SCORE_HISTORY_FILE.read_text(
+                encoding="utf-8"
+            )
+        )
+
+        if not isinstance(history, list):
+            return []
+
+        if template_type:
+            history = [
+                item for item in history
+                if item.get("template") == template_type
+            ]
+
+        history.sort(
+            key=lambda x: x.get(
+                "score",
+                0
+            ),
+            reverse=True
+        )
+
+        return history[:limit]
+
+    except Exception:
+        return []
+
+
+def get_average_score(
+    template_type=None
+):
+    """
+    Retourne le score moyen.
+    """
+
+    import json
+
+    try:
+        if not SCORE_HISTORY_FILE.exists():
+            return 0
+
+        history = json.loads(
+            SCORE_HISTORY_FILE.read_text(
+                encoding="utf-8"
+            )
+        )
+
+        if not isinstance(history, list):
+            return 0
+
+        if template_type:
+            history = [
+                item for item in history
+                if item.get("template") == template_type
+            ]
+
+        scores = [
+            item.get("score", 0)
+            for item in history
+        ]
+
+        if not scores:
+            return 0
+
+        return sum(scores) / len(scores)
+
+    except Exception:
+        return 0
 
 
 def generate_code(prompt):
@@ -401,6 +563,307 @@ Le contenu doit être réaliste, détaillé et en français.
     return result
 
 
+def generate_with_retry(
+    prompt,
+    path,
+    max_retries=2,
+    min_score=70
+):
+    """
+    Génère du code avec retry automatique
+    si qualité insuffisante.
+    """
+
+    from validate_file import quality_score
+
+    current_prompt = prompt
+    score = 0
+
+    for attempt in range(max_retries + 1):
+        log_info(
+            f"Retry generation attempt "
+            f"{attempt + 1}/"
+            f"{max_retries + 1}"
+        )
+
+        generated = generate_code(current_prompt)
+
+        if not generated:
+
+            log_warn(
+                f"Génération vide : {path}"
+            )
+
+            continue
+
+        generated = clean_llm_output(generated)
+
+        write_file(path, generated)
+
+        fix_result = auto_fix_loop(path)
+
+        score_result = quality_score(path)
+
+        score = score_result.get("score", 0)
+
+        log_info(
+            f"Score génération : "
+            f"{score}/100"
+        )
+
+        if score >= min_score:
+            return {
+                "success": True,
+                "score": score,
+                "retries": attempt,
+                "path": path,
+                "fix_result": fix_result
+            }
+
+        current_prompt = (
+            current_prompt
+            + "\n\n"
+            + "AMÉLIORATIONS DEMANDÉES : "
+            + "code HTML5 valide, "
+            + "design responsive, "
+            + "contenu riche >500 caractères, "
+            + "CSS inclus, "
+            + "navigation complète"
+        )
+
+        log_warn(
+            f"Retry nécessaire : "
+            f"score {score} < {min_score}"
+        )
+
+    return {
+        "success": False,
+        "score": score,
+        "retries": max_retries,
+        "path": path
+    }
+
+
+def rank_templates(
+    project_name,
+    template_types=None,
+    output_base="rank_test"
+):
+    """
+    Compare plusieurs templates
+    et retourne le meilleur.
+    """
+
+    if template_types is None:
+        template_types = [
+            "restaurant",
+            "portfolio",
+            "landing",
+            "shop"
+        ]
+
+    from pathlib import Path
+    from validate_file import quality_score
+
+    rankings = []
+
+    for template_type in template_types:
+        try:
+            output_dir = (
+                Path(output_base)
+                / template_type
+            )
+
+            result = generate_from_template(
+                template_type,
+                project_name,
+                str(output_dir)
+            )
+
+            if not result.get("success"):
+
+                log_warn(
+                    f"Template échoué : "
+                    f"{template_type}"
+                )
+
+                continue
+
+            scores = []
+
+            for file_path in result.get(
+                "files_created",
+                []
+            ):
+                try:
+
+                    score_result = quality_score(
+                        file_path
+                    )
+
+                    scores.append(
+                        score_result.get(
+                            "score",
+                            0
+                        )
+                    )
+
+                except Exception as score_error:
+
+                    log_warn(
+                        f"Score impossible : "
+                        f"{file_path} : "
+                        f"{score_error}"
+                    )
+
+            average_score = (
+                sum(scores) / len(scores)
+                if scores else 0
+            )
+
+            log_info(
+                f"Template "
+                f"{template_type} : "
+                f"{average_score}/100"
+            )
+
+            rankings.append({
+                "type": template_type,
+                "score": average_score,
+                "files": result.get(
+                    "files_created",
+                    []
+                )
+            })
+
+        except Exception as template_error:
+
+            log_warn(
+                f"Erreur template "
+                f"{template_type} : "
+                f"{template_error}"
+            )
+
+    rankings.sort(
+        key=lambda x: x["score"],
+        reverse=True
+    )
+
+    if not rankings:
+
+        return {
+            "rankings": [],
+            "best": None,
+            "best_score": 0
+        }
+
+    best = rankings[0]
+
+    return {
+        "rankings": rankings,
+        "best": best["type"],
+        "best_score": best["score"]
+    }
+
+
+def evolve_template(template_type, project_name, generations=3, output_base="evolution_test"):
+    """
+    Évolution auto : génère N variantes, garde la meilleure, itère.
+    """
+
+    from validate_file import quality_score
+
+    best_generation = None
+    best_score = 0
+    best_dir = ""
+    evolution = []
+
+    for generation in range(1, generations + 1):
+        try:
+            output_dir = Path(output_base) / f"gen_{generation}"
+            past_scores = get_best_scores(template_type, limit=1)
+            evolved_project_name = project_name
+
+            if past_scores:
+                best_past_score = past_scores[0].get("score", 0)
+                evolved_project_name = (
+                    f"{project_name}\n\n"
+                    f"Objectif : score > {best_past_score}. "
+                    "Code HTML5 riche, CSS responsive, contenu > 500 caractères."
+                )
+
+            result = generate_from_template(
+                template_type,
+                evolved_project_name,
+                str(output_dir)
+            )
+
+            if not result.get("success"):
+                log_warn(f"Génération échouée : {template_type} gen {generation}")
+                evolution.append({
+                    "gen": generation,
+                    "score": 0
+                })
+                continue
+
+            scores = []
+
+            for file_path in result.get("files_created", []):
+                try:
+                    score_result = quality_score(file_path)
+                    scores.append(score_result.get("score", 0))
+                except Exception as score_error:
+                    log_warn(f"Score impossible : {file_path} : {score_error}")
+
+            average_score = (
+                sum(scores) / len(scores)
+                if scores else 0
+            )
+
+            save_score(
+                template_type,
+                project_name,
+                average_score,
+                str(output_dir)
+            )
+
+            evolution.append({
+                "gen": generation,
+                "score": average_score
+            })
+
+            log_info(
+                f"Évolution template {template_type} "
+                f"gen {generation}: {average_score}/100"
+            )
+
+            if best_generation is None or average_score > best_score:
+                best_generation = generation
+                best_score = average_score
+                best_dir = str(output_dir)
+
+        except Exception as generation_error:
+            log_warn(
+                f"Erreur évolution template "
+                f"{template_type} gen {generation}: "
+                f"{generation_error}"
+            )
+            evolution.append({
+                "gen": generation,
+                "score": 0
+            })
+
+    initial_score = evolution[0]["score"] if evolution else 0
+
+    return {
+        "best_generation": best_generation,
+        "best_score": best_score,
+        "best_dir": best_dir,
+        "evolution": evolution,
+        "improvement": best_score - initial_score
+    }
+
+
 def auto_fix_loop(path, max_attempts=3):
     """
     Boucle auto-corrective : valide → corrige → revalide.
@@ -414,6 +877,7 @@ def auto_fix_loop(path, max_attempts=3):
     backup_path = None
     diff = []
     stop_reason = None
+    rolled_back = False
 
     try:
         from validate_file import validate_file
@@ -431,7 +895,8 @@ def auto_fix_loop(path, max_attempts=3):
                 "backup_path": backup_path,
                 "diff": diff,
                 "diff_lines": len(diff),
-                "stop_reason": stop_reason
+                "stop_reason": stop_reason,
+                "rolled_back": rolled_back
             }
 
         current = initial
@@ -497,19 +962,45 @@ def auto_fix_loop(path, max_attempts=3):
                     "backup_path": backup_path,
                     "diff": diff,
                     "diff_lines": len(diff),
-                    "stop_reason": stop_reason
+                    "stop_reason": stop_reason,
+                    "rolled_back": rolled_back
                 }
 
             # ====================================
-            # ARRÊT ANTICIPÉ — SCORE DÉGRADÉ
+            # ROLLBACK SI SCORE DÉGRADÉ
             # ====================================
 
             if after_score["score"] < before_score["score"]:
-                stop_reason = "score dégradé"
 
                 log_warn(
-                    f"Arrêt anticipé : score dégradé ({path})"
+                    f"Dégradation qualité : "
+                    f"{before_score['score']} → "
+                    f"{after_score['score']}"
                 )
+
+                try:
+
+                    backup_content = read_file(backup_path)
+
+                    if backup_content:
+
+                        write_file(path, backup_content)
+
+                        rolled_back = True
+
+                        log_info(
+                            f"Rollback effectué depuis "
+                            f"{backup_path}"
+                        )
+
+                except Exception as rollback_error:
+
+                    log_error(
+                        f"Rollback impossible : "
+                        f"{rollback_error}"
+                    )
+
+                stop_reason = "rollback"
 
                 return {
                     "success": False,
@@ -519,7 +1010,10 @@ def auto_fix_loop(path, max_attempts=3):
                     "backup_path": backup_path,
                     "diff": diff,
                     "diff_lines": len(diff),
-                    "stop_reason": stop_reason
+                    "stop_reason": stop_reason,
+                    "rolled_back": rolled_back,
+                    "score_before": before_score["score"],
+                    "score_after": after_score["score"]
                 }
 
             # ====================================
@@ -541,7 +1035,8 @@ def auto_fix_loop(path, max_attempts=3):
                     "backup_path": backup_path,
                     "diff": diff,
                     "diff_lines": len(diff),
-                    "stop_reason": stop_reason
+                    "stop_reason": stop_reason,
+                    "rolled_back": rolled_back
                 }
 
             before_score = after_score
@@ -557,7 +1052,8 @@ def auto_fix_loop(path, max_attempts=3):
                     "backup_path": backup_path,
                     "diff": diff,
                     "diff_lines": len(diff),
-                    "stop_reason": stop_reason
+                    "stop_reason": stop_reason,
+                    "rolled_back": rolled_back
                 }
 
         final = validate_file(path)
@@ -570,7 +1066,8 @@ def auto_fix_loop(path, max_attempts=3):
             "backup_path": backup_path,
             "diff": diff,
             "diff_lines": len(diff),
-            "stop_reason": stop_reason
+            "stop_reason": stop_reason,
+            "rolled_back": rolled_back
         }
 
     except Exception as e:
@@ -582,7 +1079,8 @@ def auto_fix_loop(path, max_attempts=3):
             "backup_path": backup_path,
             "diff": diff,
             "diff_lines": len(diff),
-            "stop_reason": stop_reason
+            "stop_reason": stop_reason,
+            "rolled_back": rolled_back
         }
 
 

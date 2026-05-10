@@ -1,0 +1,13 @@
+# Importer les bibliothèques nécessaires
+from flask import Flask, render_template
+
+# Créer l'application Flask
+app = Flask(__name__)
+
+# Définir la route pour la page de contact du restaurant
+@app.route('/contact-restaurant')
+def contact_restaurant():
+    return render_template('contact_restaurant.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
