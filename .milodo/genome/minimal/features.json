@@ -1,0 +1,9 @@
+[
+  {
+    "html": "<section class=\"features\">\n        <div class=\"container\">\n            <h2>Features</h2>\n            <ul>\n                <li>Feature 1</li>\n                <li>Feature 2</li>\n                <li>Feature 3</li>\n            </ul>\n        </div>",
+    "score": 10,
+    "date": "2026-05-10T22:39:29.804878",
+    "project": "BattleTest",
+    "template": "minimal"
+  }
+]

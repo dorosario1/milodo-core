@@ -1,0 +1,21 @@
+{
+  "restaurant": {
+    "dark": {
+      "wins": 2,
+      "avg_score": 80.25,
+      "scores": [
+        78.5,
+        82.0
+      ],
+      "last_used": "2026-05-10T22:47:12.893085"
+    },
+    "glass": {
+      "wins": 1,
+      "avg_score": 65.0,
+      "scores": [
+        65.0
+      ],
+      "last_used": "2026-05-10T22:47:12.884284"
+    }
+  }
+}

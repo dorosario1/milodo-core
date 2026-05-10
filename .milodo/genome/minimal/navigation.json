@@ -1,0 +1,9 @@
+[
+  {
+    "html": "<nav class=\"nav-laterale\">\n        <ul>\n            <li><a href=\"#\">Features</a></li>\n            <li><a href=\"#\">Pricing</a></li>\n            <li><a href=\"#\">CTA</a></li>\n        </ul>\n    </nav>",
+    "score": 5,
+    "date": "2026-05-10T22:39:29.801645",
+    "project": "BattleTest",
+    "template": "minimal"
+  }
+]

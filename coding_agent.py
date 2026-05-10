@@ -12,6 +12,9 @@ SCORE_HISTORY_FILE = (
     / "score_history.json"
 )
 
+GENOME_DIR = ".milodo/genome"
+NICHE_MEMORY_FILE = ".milodo/niche_memory.json"
+
 
 TEMPLATES = {
     "restaurant": {
@@ -72,6 +75,30 @@ MUTATIONS = {
         "menu hamburger mobile-first",
         "footer expansif avec 4 colonnes"
     ]
+}
+
+
+DESIGN_SPECIES = {
+    "dark": {
+        "style": "design sombre luxueux #1a1a2e, or et violet",
+        "genome_dir": ".milodo/genome/dark",
+        "description": "Dark premium - restaurants gastronomiques, tech, luxe"
+    },
+    "glass": {
+        "style": "glassmorphism moderne, backdrop-filter, transparence, flou",
+        "genome_dir": ".milodo/genome/glass",
+        "description": "Glass modern - SaaS, startups, design avant-garde"
+    },
+    "minimal": {
+        "style": "minimaliste épuré, blanc, espace, typographie, peu d'éléments",
+        "genome_dir": ".milodo/genome/minimal",
+        "description": "Minimal clean - portfolios, architectes, juridique"
+    },
+    "brutalist": {
+        "style": "brutaliste, bold, couleurs vives, typographie massive, raw",
+        "genome_dir": ".milodo/genome/brutalist",
+        "description": "Brutalist bold - artistes, créatifs, mode"
+    }
 }
 
 
@@ -140,6 +167,228 @@ EXIGENCES :
 - sections bien séparées
 - UI cohérente
 """
+
+
+def save_to_genome(
+    section_type,
+    html_section,
+    score,
+    metadata=None
+):
+    """
+    Sauvegarde une section performante
+    dans la bibliothèque génétique.
+    """
+
+    import json
+    from pathlib import Path
+    from datetime import datetime
+
+    metadata = metadata or {}
+
+    genome_dir = Path(GENOME_DIR)
+    genome_dir.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    genome_file = genome_dir / f"{section_type}.json"
+
+    entries = []
+
+    try:
+
+        if genome_file.exists():
+
+            entries = json.loads(
+                genome_file.read_text(
+                    encoding="utf-8"
+                )
+            )
+
+            if not isinstance(entries, list):
+                entries = []
+
+    except Exception:
+        entries = []
+
+    entry = {
+        "html": html_section,
+        "score": score,
+        "date": datetime.now().isoformat(),
+        "project": metadata.get("project"),
+        "template": metadata.get("template"),
+    }
+
+    entries.append(entry)
+
+    entries = sorted(
+        entries,
+        key=lambda x: x.get("score", 0),
+        reverse=True
+    )[:20]
+
+    genome_file.write_text(
+        json.dumps(
+            entries,
+            indent=2,
+            ensure_ascii=False
+        ),
+        encoding="utf-8"
+    )
+
+    log_info(
+        f"Genome saved : "
+        f"{section_type} "
+        f"({score}/20)"
+    )
+
+    return {
+        "success": True,
+        "file": str(genome_file),
+        "entries": len(entries)
+    }
+
+
+def get_best_from_genome(
+    section_type,
+    limit=3
+):
+    """
+    Retourne les meilleures sections
+    d'un type donné.
+    """
+
+    import json
+    from pathlib import Path
+
+    genome_file = (
+        Path(GENOME_DIR)
+        / f"{section_type}.json"
+    )
+
+    if not genome_file.exists():
+        return []
+
+    try:
+
+        data = json.loads(
+            genome_file.read_text(
+                encoding="utf-8"
+            )
+        )
+
+        if not isinstance(data, list):
+            return []
+
+        return sorted(
+            data,
+            key=lambda x: x.get("score", 0),
+            reverse=True
+        )[:limit]
+
+    except Exception:
+        return []
+
+
+def list_genome():
+    """
+    Liste les types disponibles
+    dans le génome.
+    """
+
+    from pathlib import Path
+    import json
+
+    genome_dir = Path(GENOME_DIR)
+
+    if not genome_dir.exists():
+        return {}
+
+    output = {}
+
+    for file in genome_dir.glob("*.json"):
+
+        try:
+
+            data = json.loads(
+                file.read_text(
+                    encoding="utf-8"
+                )
+            )
+
+            if not isinstance(data, list):
+                continue
+
+            output[file.stem] = len(data)
+
+        except Exception:
+            continue
+
+    return output
+
+
+def inject_genome_section(
+    section_type,
+    target_html
+):
+    """
+    Remplace une section HTML
+    par la meilleure du génome.
+    """
+
+    import re
+
+    best = get_best_from_genome(
+        section_type,
+        limit=1
+    )
+
+    if not best:
+        return target_html
+
+    replacement = best[0].get(
+        "html",
+        ""
+    )
+
+    patterns = {
+        "hero":
+            r'<(?:section|div|header)[^>]*(?:class|id)=["\'][^"\']*hero[^"\']*["\'][^>]*>.*?</(?:section|div|header)>',
+
+        "navigation":
+            r'<nav[^>]*>.*?</nav>',
+
+        "features":
+            r'<(?:section|div)[^>]*(?:class|id)=["\'][^"\']*features?[^"\']*["\'][^>]*>.*?</(?:section|div)>',
+
+        "footer":
+            r'<footer[^>]*>.*?</footer>',
+
+        "main":
+            r'<main[^>]*>.*?</main>'
+    }
+
+    pattern = patterns.get(
+        section_type
+    )
+
+    if not pattern:
+        return target_html
+
+    updated = re.sub(
+        pattern,
+        replacement,
+        target_html,
+        flags=re.DOTALL | re.IGNORECASE
+    )
+
+    log_info(
+        f"Genome inject : "
+        f"{section_type}"
+    )
+
+    return updated
 
 
 def save_score(
@@ -1179,6 +1428,1479 @@ IMPORTANT :
             "success": False,
             "error": str(e)
         }
+
+
+def extract_sections(html_content):
+    """
+    Extrait les sections HTML identifiables d'un fichier.
+    Retourne {"hero": "...", "nav": "...", "features": "...", "footer": "...", ...}
+    """
+    import re
+
+    sections = {}
+
+    # Navigation
+    nav_match = re.search(
+        r'<nav[^>]*>.*?</nav>',
+        html_content,
+        re.DOTALL | re.IGNORECASE
+    )
+
+    if nav_match:
+        sections["navigation"] = nav_match.group(0)
+
+    # Header
+    header_match = re.search(
+        r'<header[^>]*>.*?</header>',
+        html_content,
+        re.DOTALL | re.IGNORECASE
+    )
+
+    if header_match:
+        sections["header"] = header_match.group(0)
+
+    # Hero
+    hero_match = re.search(
+        r'<(?:section|div)[^>]*class="[^"]*hero[^"]*"[^>]*>.*?</(?:section|div)>',
+        html_content,
+        re.DOTALL | re.IGNORECASE
+    )
+
+    if hero_match:
+        sections["hero"] = hero_match.group(0)
+
+    # Features
+    features_match = re.search(
+        r'<(?:section|div)[^>]*class="[^"]*features[^"]*"[^>]*>.*?</(?:section|div)>',
+        html_content,
+        re.DOTALL | re.IGNORECASE
+    )
+
+    if features_match:
+        sections["features"] = features_match.group(0)
+
+    # Footer
+    footer_match = re.search(
+        r'<footer[^>]*>.*?</footer>',
+        html_content,
+        re.DOTALL | re.IGNORECASE
+    )
+
+    if footer_match:
+        sections["footer"] = footer_match.group(0)
+
+    # Main
+    main_match = re.search(
+        r'<main[^>]*>.*?</main>',
+        html_content,
+        re.DOTALL | re.IGNORECASE
+    )
+
+    if main_match:
+        sections["main"] = main_match.group(0)
+
+    return sections
+
+
+def structural_crossover(
+    template_type,
+    project_name,
+    generations=3,
+    output_base="structural_test"
+):
+    """
+    Crossover structurel :
+    extrait les meilleures sections HTML
+    puis les assemble.
+    """
+
+    from pathlib import Path
+
+    try:
+
+        evolution_result = evolve_template(
+            template_type,
+            project_name,
+            generations=generations,
+            output_base=output_base
+        )
+
+        evolution_data = evolution_result.get(
+            "evolution",
+            []
+        )
+
+        section_pool = {}
+
+        best_classic_score = evolution_result.get(
+            "best_score",
+            0
+        )
+
+        for generation_data in evolution_data:
+
+            generation_number = generation_data.get(
+                "gen"
+            )
+
+            generation_score = generation_data.get(
+                "score",
+                0
+            )
+
+            generation_dir = Path(
+                output_base
+            ) / f"gen_{generation_number}"
+
+            if not generation_dir.exists():
+                continue
+
+            html_files = list(
+                generation_dir.rglob("*.html")
+            )
+
+            for html_file in html_files:
+
+                try:
+
+                    content = read_file(
+                        str(html_file)
+                    )
+
+                    if not content:
+                        continue
+
+                    extracted = extract_sections(
+                        content
+                    )
+
+                    for section_name, section_html in extracted.items():
+
+                        existing = section_pool.get(
+                            section_name
+                        )
+
+                        if (
+                            not existing
+                            or generation_score > existing["score"]
+                        ):
+                            section_pool[section_name] = {
+                                "html": section_html,
+                                "score": generation_score,
+                                "generation": generation_number
+                            }
+
+                except Exception as e:
+
+                    log_warn(
+                        f"Extraction sections impossible : {e}"
+                    )
+
+        assembled_sections = []
+
+        sections_used = {}
+
+        section_order = [
+            "navigation",
+            "header",
+            "hero",
+            "features",
+            "main",
+            "footer"
+        ]
+
+        for section_name in section_order:
+
+            best_section = section_pool.get(
+                section_name
+            )
+
+            if not best_section:
+                continue
+
+            assembled_sections.append(
+                best_section["html"]
+            )
+
+            sections_used[section_name] = {
+                "generation": best_section["generation"],
+                "score": best_section["score"]
+            }
+
+        hybrid_html = f"""<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{project_name}</title>
+
+<style>
+body {{
+    margin: 0;
+    font-family: Arial, sans-serif;
+}}
+
+section {{
+    padding: 40px;
+}}
+</style>
+
+</head>
+
+<body>
+
+{chr(10).join(assembled_sections)}
+
+</body>
+</html>
+"""
+
+        crossover_dir = Path(
+            output_base
+        ) / "structural"
+
+        crossover_dir.mkdir(
+            parents=True,
+            exist_ok=True
+        )
+
+        crossover_file = crossover_dir / "index.html"
+
+        write_file(
+            str(crossover_file),
+            hybrid_html
+        )
+
+        auto_fix_loop(
+            str(crossover_file)
+        )
+
+        from validate_file import fitness_score
+
+        structural_score = fitness_score(
+            str(crossover_file)
+        )
+
+        improvement = (
+            structural_score.get("fitness", 0)
+            - best_classic_score
+        )
+
+        log_info(
+            f"Structural crossover fitness : "
+            f"{structural_score.get('fitness', 0)}/100"
+        )
+
+        return {
+            "best_classic": {
+                "score": best_classic_score
+            },
+
+            "best_structural": {
+                "fitness": structural_score.get(
+                    "fitness",
+                    0
+                ),
+                "sections_used": sections_used
+            },
+
+            "improvement": improvement,
+
+            "crossover_file": str(
+                crossover_file
+            )
+        }
+
+    except Exception as e:
+
+        return {
+            "best_classic": {},
+            "best_structural": {},
+            "improvement": 0,
+            "error": str(e)
+        }
+
+
+def genome_aware_generate(
+    template_type,
+    project_name,
+    output_dir
+):
+    """
+    Génère un projet en utilisant
+    les meilleurs composants
+    du génome.
+    """
+
+    genome_sections = {}
+
+    section_types = [
+        "hero",
+        "navigation",
+        "features",
+        "footer",
+        "main"
+    ]
+
+    prompt_parts = [
+        f"Projet : {project_name}",
+        "",
+        "Génère une page HTML5 complète.",
+        "Responsive.",
+        "Design moderne.",
+        "Contenu riche.",
+    ]
+
+    for section_type in section_types:
+
+        best = get_best_from_genome(
+            section_type,
+            limit=1
+        )
+
+        if not best:
+            continue
+
+        best_entry = best[0]
+
+        genome_sections[section_type] = {
+            "score": best_entry.get(
+                "score",
+                0
+            )
+        }
+
+        prompt_parts.append(
+            f"""
+SECTION GÉNOME :
+- Type : {section_type}
+- Score : {best_entry.get('score', 0)}
+
+HTML :
+{best_entry.get('html', '')}
+
+IMPORTANT :
+Inspire-toi fortement
+de cette structure,
+mais améliore-la.
+Ne copie pas exactement.
+"""
+        )
+
+    enriched_prompt = "\n".join(
+        prompt_parts
+    )
+
+    log_info(
+        f"Genome-aware generation : "
+        f"{template_type}"
+    )
+
+    result = generate_from_template(
+        template_type,
+        enriched_prompt,
+        output_dir
+    )
+
+    result["genome_used"] = genome_sections
+
+    return result
+
+
+def genome_aware_evolve(
+    template_type,
+    project_name,
+    generations=3,
+    output_base="genome_evo"
+):
+    """
+    Évolution avec injection
+    automatique du génome.
+    """
+
+    from pathlib import Path
+
+    evolution = []
+
+    best_score = 0
+    best_generation = None
+    best_dir = None
+
+    for generation in range(
+        1,
+        generations + 1
+    ):
+
+        try:
+
+            generation_dir = (
+                Path(output_base)
+                / f"gen_{generation}"
+            )
+
+            generation_dir.mkdir(
+                parents=True,
+                exist_ok=True
+            )
+
+            generation_prompt = mutate_prompt(
+                project_name,
+                generation
+            )
+
+            result = genome_aware_generate(
+                template_type,
+                generation_prompt,
+                str(generation_dir)
+            )
+
+            html_files = list(
+                generation_dir.rglob(
+                    "*.html"
+                )
+            )
+
+            generation_scores = []
+
+            for html_file in html_files:
+
+                try:
+
+                    auto_fix_loop(
+                        str(html_file)
+                    )
+
+                    from validate_file import (
+                        fitness_score,
+                        section_fitness
+                    )
+
+                    fitness = fitness_score(
+                        str(html_file)
+                    )
+
+                    generation_scores.append(
+                        fitness.get(
+                            "fitness",
+                            0
+                        )
+                    )
+
+                    content = read_file(
+                        str(html_file)
+                    )
+
+                    sections = extract_sections(
+                        content
+                    )
+
+                    section_scores = section_fitness(
+                        content
+                    )
+
+                    section_data = (
+                        section_scores.get(
+                            "sections",
+                            {}
+                        )
+                    )
+
+                    mapping = {
+                        "hero": "hero",
+                        "navigation": "navigation",
+                        "features": "features",
+                        "footer": "footer",
+                        "main": "main"
+                    }
+
+                    for (
+                        section_name,
+                        html_section
+                    ) in sections.items():
+
+                        if section_name not in mapping:
+                            continue
+
+                        local_score = (
+                            section_data
+                            .get(
+                                section_name,
+                                {}
+                            )
+                            .get(
+                                "score",
+                                0
+                            )
+                        )
+
+                        if local_score <= 0:
+                            continue
+
+                        save_to_genome(
+                            section_name,
+                            html_section,
+                            local_score,
+                            metadata={
+                                "project":
+                                    project_name,
+
+                                "template":
+                                    template_type
+                            }
+                        )
+
+                except Exception as e:
+
+                    log_warn(
+                        f"Genome evolve file error : {e}"
+                    )
+
+            average_score = 0
+
+            if generation_scores:
+
+                average_score = (
+                    sum(generation_scores)
+                    / len(generation_scores)
+                )
+
+            evolution.append({
+                "gen": generation,
+                "score": average_score,
+                "dir": str(generation_dir)
+            })
+
+            log_info(
+                f"Genome evolution gen "
+                f"{generation} : "
+                f"{average_score}/100"
+            )
+
+            if average_score > best_score:
+
+                best_score = average_score
+                best_generation = generation
+                best_dir = str(generation_dir)
+
+        except Exception as e:
+
+            log_warn(
+                f"Genome generation failed : {e}"
+            )
+
+            continue
+
+    return {
+        "best_generation": best_generation,
+        "best_score": best_score,
+        "best_dir": best_dir,
+        "evolution": evolution,
+        "genome_state": list_genome()
+    }
+
+
+def identify_weakest_section(
+    html_path
+):
+    """
+    Identifie la section
+    la plus faible d'un HTML.
+    """
+
+    from validate_file import (
+        section_fitness
+    )
+
+    from pathlib import Path
+
+    content = Path(
+        html_path
+    ).read_text(
+        encoding="utf-8"
+    )
+
+    sf = section_fitness(
+        content
+    )
+
+    sections = sf.get(
+        "sections",
+        {}
+    )
+
+    weakest = None
+
+    lowest_ratio = 1.0
+
+    max_scores = {
+        "hero": 20,
+        "navigation": 15,
+        "features": 15,
+        "footer": 10,
+        "main": 20
+    }
+
+    for (
+        name,
+        data
+    ) in sections.items():
+
+        if not data.get(
+            "found"
+        ):
+            continue
+
+        max_score = max_scores.get(
+            name,
+            10
+        )
+
+        if max_score <= 0:
+            continue
+
+        score = data.get(
+            "score",
+            0
+        )
+
+        ratio = score / max_score
+
+        if ratio < lowest_ratio:
+
+            lowest_ratio = ratio
+
+            weakest = {
+                "section": name,
+                "score": score,
+                "max_score": max_score,
+                "ratio": round(
+                    ratio,
+                    2
+                )
+            }
+
+    return weakest
+
+
+def targeted_mutation(
+    html_path,
+    target_section,
+    output_path=None
+):
+    """
+    Mute uniquement
+    une section spécifique.
+    """
+
+    from pathlib import Path
+
+    from validate_file import (
+        section_fitness
+    )
+
+    path = Path(
+        html_path
+    )
+
+    output_path = (
+        output_path
+        or str(path)
+    )
+
+    original_html = path.read_text(
+        encoding="utf-8"
+    )
+
+    sections = extract_sections(
+        original_html
+    )
+
+    current_section = sections.get(
+        target_section
+    )
+
+    if not current_section:
+
+        return {
+            "success": False,
+            "error":
+                f"Section introuvable : "
+                f"{target_section}"
+        }
+
+    before_fitness = section_fitness(
+        original_html
+    )
+
+    before_score = (
+        before_fitness
+        .get(
+            "sections",
+            {}
+        )
+        .get(
+            target_section,
+            {}
+        )
+        .get(
+            "score",
+            0
+        )
+    )
+
+    prompt = f"""
+Améliore cette section HTML.
+
+SECTION :
+{target_section}
+
+HTML ACTUEL :
+{current_section}
+
+OBJECTIFS :
+- design moderne
+- responsive
+- plus riche
+- plus de contenu
+- CTA améliorés
+- meilleure structure
+- HTML5 valide
+
+IMPORTANT :
+Garde le style global
+du reste de la page.
+Retourne UNIQUEMENT
+la nouvelle section HTML.
+"""
+
+    generated = generate_code(
+        prompt
+    )
+
+    if not generated:
+
+        return {
+            "success": False,
+            "error":
+                "Mutation vide"
+        }
+
+    generated = clean_llm_output(
+        generated
+    )
+
+    updated_html = original_html.replace(
+        current_section,
+        generated,
+        1
+    )
+
+    write_file(
+        output_path,
+        updated_html
+    )
+
+    auto_fix_loop(
+        output_path
+    )
+
+    final_html = read_file(
+        output_path
+    )
+
+    after_fitness = section_fitness(
+        final_html
+    )
+
+    after_score = (
+        after_fitness
+        .get(
+            "sections",
+            {}
+        )
+        .get(
+            target_section,
+            {}
+        )
+        .get(
+            "score",
+            0
+        )
+    )
+
+    improved = (
+        after_score
+        > before_score
+    )
+
+    return {
+        "success": True,
+        "section":
+            target_section,
+        "before_score":
+            before_score,
+        "after_score":
+            after_score,
+        "improvement":
+            after_score
+            - before_score,
+        "improved":
+            improved,
+        "output_path":
+            output_path
+    }
+
+
+def targeted_evolve(
+    template_type,
+    project_name,
+    generations=3,
+    output_base="targeted_test"
+):
+    """
+    Évolution avec
+    mutations ciblées.
+    """
+
+    from pathlib import Path
+
+    from validate_file import (
+        fitness_score
+    )
+
+    evolution = evolve_template(
+        template_type,
+        project_name,
+        generations=generations,
+        output_base=output_base
+    )
+
+    best_dir = evolution.get(
+        "best_dir"
+    )
+
+    if not best_dir:
+
+        return {
+            "success": False,
+            "error":
+                "Aucune génération valide"
+        }
+
+    best_path = None
+
+    html_files = list(
+        Path(best_dir).rglob(
+            "*.html"
+        )
+    )
+
+    if html_files:
+        best_path = str(
+            html_files[0]
+        )
+
+    if not best_path:
+
+        return {
+            "success": False,
+            "error":
+                "Aucun HTML trouvé"
+        }
+
+    improvements = []
+
+    current_fitness = fitness_score(
+        best_path
+    ).get(
+        "fitness",
+        0
+    )
+
+    for _ in range(3):
+
+        weakest = identify_weakest_section(
+            best_path
+        )
+
+        if not weakest:
+            break
+
+        section_name = weakest.get(
+            "section"
+        )
+
+        mutation = targeted_mutation(
+            best_path,
+            section_name
+        )
+
+        new_fitness = fitness_score(
+            best_path
+        ).get(
+            "fitness",
+            0
+        )
+
+        improved = (
+            new_fitness
+            > current_fitness
+        )
+
+        if improved:
+
+            current_fitness = new_fitness
+
+            improvements.append({
+                "section":
+                    section_name,
+                "fitness":
+                    new_fitness,
+                "improvement":
+                    mutation.get(
+                        "improvement",
+                        0
+                    )
+            })
+
+            log_info(
+                f"Targeted mutation "
+                f"success : "
+                f"{section_name}"
+            )
+
+        else:
+
+            rollback = (
+                best_path
+                + ".bak"
+            )
+
+            backup = read_file(
+                rollback
+            )
+
+            if backup:
+
+                write_file(
+                    best_path,
+                    backup
+                )
+
+                log_warn(
+                    f"Rollback targeted "
+                    f"mutation : "
+                    f"{section_name}"
+                )
+
+            break
+
+    return {
+        "success": True,
+        "best_path": best_path,
+        "final_fitness":
+            current_fitness,
+        "improvements":
+            improvements,
+        "evolution":
+            evolution
+    }
+
+
+def evolve_species(species_name, project_name, generations=2, output_base="species_test"):
+    """
+    Fait évoluer UNE espèce de design spécifique.
+    Utilise le style et le génome propres à l'espèce.
+    """
+
+    from pathlib import Path
+    from validate_file import section_fitness
+
+    species = DESIGN_SPECIES.get(species_name)
+
+    if not species:
+        return {
+            "success": False,
+            "error": f"Espèce inconnue : {species_name}"
+        }
+
+    species_prompt = (
+        f"{project_name}\n\n"
+        f"ESPÈCE DESIGN : {species_name}\n"
+        f"Style : {species.get('style')}\n"
+        f"Description : {species.get('description')}\n"
+        "Respecte fortement cette identité visuelle."
+    )
+
+    result = evolve_template(
+        "landing",
+        species_prompt,
+        generations=generations,
+        output_base=str(Path(output_base))
+    )
+
+    try:
+        genome_dir = Path(species.get("genome_dir", ""))
+        genome_dir.mkdir(parents=True, exist_ok=True)
+
+        best_dir = result.get("best_dir")
+
+        if best_dir:
+            for html_file in Path(best_dir).rglob("*.html"):
+                try:
+                    content = read_file(str(html_file))
+                    sections = extract_sections(content)
+                    scores = section_fitness(content).get("sections", {})
+
+                    for section_name, html_section in sections.items():
+                        section_score = (
+                            scores
+                            .get(section_name, {})
+                            .get("score", 0)
+                        )
+
+                        if section_score <= 0:
+                            continue
+
+                        original_genome_dir = globals().get("GENOME_DIR")
+                        globals()["GENOME_DIR"] = str(genome_dir)
+                        try:
+                            save_to_genome(
+                                section_name,
+                                html_section,
+                                section_score,
+                                metadata={
+                                    "project": project_name,
+                                    "template": species_name,
+                                }
+                            )
+                        finally:
+                            globals()["GENOME_DIR"] = original_genome_dir
+                except Exception as file_error:
+                    log_warn(f"Genome espèce impossible : {file_error}")
+    except Exception as genome_error:
+        log_warn(f"Génome espèce impossible : {genome_error}")
+
+    result["success"] = True
+    result["species"] = species_name
+    result["species_style"] = species.get("style")
+    result["genome_dir"] = species.get("genome_dir")
+    return result
+
+
+def battle_species(project_name, species_list=None, generations=2, output_base="species_battle"):
+    """
+    Compétition entre espèces : fait évoluer chaque espèce et retourne la gagnante.
+    """
+
+    from pathlib import Path
+
+    if species_list is None:
+        species_list = list(DESIGN_SPECIES.keys())
+
+    rankings = []
+    all_results = {}
+
+    for species_name in species_list:
+        try:
+            species_output = Path(output_base) / species_name
+            result = evolve_species(
+                species_name,
+                project_name,
+                generations=generations,
+                output_base=str(species_output)
+            )
+
+            all_results[species_name] = result
+
+            if not result.get("success"):
+                log_warn(f"Espèce échouée : {species_name}")
+                continue
+
+            score = result.get("best_score", 0)
+
+            rankings.append({
+                "species": species_name,
+                "score": score,
+                "best_generation": result.get("best_generation"),
+                "best_dir": result.get("best_dir"),
+            })
+
+            log_info(
+                f"Species battle : "
+                f"{species_name} "
+                f"{score}/100"
+            )
+
+        except Exception as species_error:
+            log_warn(
+                f"Erreur espèce "
+                f"{species_name} : "
+                f"{species_error}"
+            )
+
+    rankings.sort(
+        key=lambda item: item.get("score", 0),
+        reverse=True
+    )
+
+    if not rankings:
+        return {
+            "winner": None,
+            "winner_score": 0,
+            "rankings": [],
+            "all_results": all_results
+        }
+
+    winner = rankings[0]
+
+    return {
+        "winner": winner.get("species"),
+        "winner_score": winner.get("score"),
+        "rankings": rankings,
+        "all_results": all_results
+    }
+
+
+def record_niche_result(
+    niche,
+    species,
+    score
+):
+    """
+    Enregistre le résultat
+    d'une battle de niche.
+    """
+
+    import json
+    from pathlib import Path
+    from datetime import datetime
+
+    memory_path = Path(
+        NICHE_MEMORY_FILE
+    )
+
+    memory_path.parent.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    data = {}
+
+    try:
+
+        if memory_path.exists():
+
+            data = json.loads(
+                memory_path.read_text(
+                    encoding="utf-8"
+                )
+            )
+
+            if not isinstance(data, dict):
+                data = {}
+
+    except Exception:
+        data = {}
+
+    niche_data = data.setdefault(
+        niche,
+        {}
+    )
+
+    species_data = niche_data.setdefault(
+        species,
+        {
+            "wins": 0,
+            "avg_score": 0,
+            "scores": [],
+            "last_used": None
+        }
+    )
+
+    species_data["scores"].append(
+        score
+    )
+
+    species_data["wins"] += 1
+
+    species_data["avg_score"] = round(
+        sum(
+            species_data["scores"]
+        ) / len(
+            species_data["scores"]
+        ),
+        2
+    )
+
+    species_data["last_used"] = (
+        datetime.now()
+        .isoformat()
+    )
+
+    memory_path.write_text(
+        json.dumps(
+            data,
+            indent=2,
+            ensure_ascii=False
+        ),
+        encoding="utf-8"
+    )
+
+    log_info(
+        f"Niche memory : "
+        f"{niche} → "
+        f"{species} "
+        f"({score})"
+    )
+
+    return {
+        "success": True,
+        "niche": niche,
+        "species": species,
+        "avg_score":
+            species_data["avg_score"]
+    }
+
+
+def predict_best_species(
+    niche
+):
+    """
+    Prédit la meilleure espèce
+    pour une niche.
+    """
+
+    import json
+    from pathlib import Path
+
+    memory_path = Path(
+        NICHE_MEMORY_FILE
+    )
+
+    if not memory_path.exists():
+        return None
+
+    try:
+
+        data = json.loads(
+            memory_path.read_text(
+                encoding="utf-8"
+            )
+        )
+
+    except Exception:
+        return None
+
+    niche_data = data.get(
+        niche,
+        {}
+    )
+
+    if not niche_data:
+        return None
+
+    total_battles = 0
+
+    for species_data in niche_data.values():
+
+        total_battles += species_data.get(
+            "wins",
+            0
+        )
+
+    if total_battles <= 0:
+        return None
+
+    best_species = None
+
+    best_confidence = 0
+
+    for (
+        species,
+        species_data
+    ) in niche_data.items():
+
+        wins = species_data.get(
+            "wins",
+            0
+        )
+
+        confidence = (
+            wins / total_battles
+        )
+
+        avg_score = species_data.get(
+            "avg_score",
+            0
+        )
+
+        weighted = (
+            confidence * 0.7
+            + (avg_score / 100) * 0.3
+        )
+
+        if weighted > best_confidence:
+
+            best_confidence = weighted
+
+            best_species = {
+                "species": species,
+                "confidence": round(
+                    confidence,
+                    2
+                ),
+                "wins": wins,
+                "avg_score": avg_score,
+                "total_battles":
+                    total_battles
+            }
+
+    return best_species
+
+
+def smart_generate(
+    niche,
+    project_name,
+    output_dir
+):
+    """
+    Génération intelligente
+    orientée niche.
+    """
+
+    prediction = predict_best_species(
+        niche
+    )
+
+    selected_species = None
+
+    method = None
+
+    if (
+        prediction
+        and prediction.get(
+            "confidence",
+            0
+        ) > 0.6
+    ):
+
+        selected_species = prediction.get(
+            "species"
+        )
+
+        method = "predict"
+
+        log_info(
+            f"Smart predict : "
+            f"{niche} → "
+            f"{selected_species}"
+        )
+
+    else:
+
+        battle = battle_species(
+            project_name,
+            generations=1
+        )
+
+        selected_species = battle.get(
+            "winner"
+        )
+
+        winner_score = battle.get(
+            "winner_score",
+            0
+        )
+
+        if selected_species:
+
+            record_niche_result(
+                niche,
+                selected_species,
+                winner_score
+            )
+
+        method = "battle"
+
+        log_info(
+            f"Smart battle : "
+            f"{niche} → "
+            f"{selected_species}"
+        )
+
+    if not selected_species:
+
+        return {
+            "success": False,
+            "error":
+                "Aucune espèce valide"
+        }
+
+    species_data = DESIGN_SPECIES.get(
+        selected_species,
+        {}
+    )
+
+    enriched_prompt = (
+        f"{project_name}\n\n"
+        f"NICHE : {niche}\n"
+        f"STYLE DOMINANT : "
+        f"{species_data.get('style', '')}\n"
+        f"DESCRIPTION : "
+        f"{species_data.get('description', '')}\n"
+    )
+
+    result = generate_from_template(
+        "landing",
+        enriched_prompt,
+        output_dir
+    )
+
+    result["species"] = (
+        selected_species
+    )
+
+    result["method"] = method
+
+    result["niche"] = niche
+
+    result["prediction"] = prediction
+
+    return result
+
+
+def get_niche_stats():
+    """
+    Retourne les statistiques
+    complètes niche → espèces.
+    """
+
+    import json
+    from pathlib import Path
+
+    memory_path = Path(
+        NICHE_MEMORY_FILE
+    )
+
+    if not memory_path.exists():
+        return {}
+
+    try:
+
+        data = json.loads(
+            memory_path.read_text(
+                encoding="utf-8"
+            )
+        )
+
+        if not isinstance(data, dict):
+            return {}
+
+        return data
+
+    except Exception:
+        return {}
 
 
 def auto_fix_loop(path, max_attempts=3):

@@ -488,6 +488,236 @@ def fitness_score(path):
     }
 
 
+def section_fitness(html_content):
+    """
+    Évalue chaque section HTML individuellement.
+    """
+    html = str(html_content or "")
+    lower = html.lower()
+
+    def strip_tags(content):
+        return re.sub(r"<[^>]+>", " ", content)
+
+    def word_count(content):
+        return len(re.findall(r"\b\w+\b", strip_tags(content)))
+
+    def find_block(pattern):
+        match = re.search(pattern, html, re.DOTALL | re.IGNORECASE)
+        return match.group(0) if match else ""
+
+    sections = {
+        "hero": {
+            "found": False,
+            "score": 0,
+            "words": 0,
+            "has_cta": False,
+        },
+        "navigation": {
+            "found": False,
+            "score": 0,
+            "links": 0,
+            "responsive": False,
+        },
+        "features": {
+            "found": False,
+            "score": 0,
+            "count": 0,
+        },
+        "footer": {
+            "found": False,
+            "score": 0,
+            "columns": 0,
+            "has_links": False,
+        },
+        "main": {
+            "found": False,
+            "score": 0,
+            "words": 0,
+            "sections_count": 0,
+        },
+    }
+
+    hero_html = find_block(
+        r'<(?:section|div|header)[^>]*(?:class|id)=["\'][^"\']*hero[^"\']*["\'][^>]*>.*?</(?:section|div|header)>'
+    )
+
+    if hero_html:
+        hero_words = word_count(hero_html)
+        has_cta = bool(re.search(r"<(?:a|button)\b", hero_html, re.IGNORECASE))
+        score = 5
+
+        if hero_words > 20:
+            score += 5
+        if hero_words > 50:
+            score += 5
+        if has_cta:
+            score += 3
+        if re.search(r"<(?:img|svg|i)\b", hero_html, re.IGNORECASE):
+            score += 2
+
+        sections["hero"] = {
+            "found": True,
+            "score": min(20, score),
+            "words": hero_words,
+            "has_cta": has_cta,
+        }
+
+    nav_html = find_block(r"<nav[^>]*>.*?</nav>")
+
+    if nav_html:
+        links = re.findall(r"<a\s+[^>]*href=", nav_html, re.IGNORECASE)
+        responsive = any(
+            keyword in nav_html.lower()
+            for keyword in ("burger", "hamburger", "mobile", "menu-toggle", "navbar-toggler")
+        )
+        score = 5
+
+        if len(links) > 3:
+            score += 5
+        if responsive:
+            score += 5
+
+        sections["navigation"] = {
+            "found": True,
+            "score": min(15, score),
+            "links": len(links),
+            "responsive": responsive,
+        }
+
+    features_html = find_block(
+        r'<(?:section|div)[^>]*(?:class|id)=["\'][^"\']*features?[^"\']*["\'][^>]*>.*?</(?:section|div)>'
+    )
+
+    if features_html:
+        feature_items = re.findall(
+            r'<(?:article|div|li)[^>]*(?:class|id)=["\'][^"\']*(?:feature|card|item)[^"\']*["\'][^>]*>.*?</(?:article|div|li)>',
+            features_html,
+            re.DOTALL | re.IGNORECASE,
+        )
+        count = len(feature_items) or len(re.findall(r"<li\b", features_html, re.IGNORECASE))
+        score = 5
+
+        if count > 2:
+            score += 5
+
+        if feature_items and all(word_count(item) > 10 for item in feature_items):
+            score += 5
+
+        sections["features"] = {
+            "found": True,
+            "score": min(15, score),
+            "count": count,
+        }
+
+    footer_html = find_block(r"<footer[^>]*>.*?</footer>")
+
+    if footer_html:
+        columns = len(
+            re.findall(
+                r'<(?:div|section|ul)[^>]*(?:class|id)=["\'][^"\']*(?:col|column|footer-section)[^"\']*["\']',
+                footer_html,
+                re.IGNORECASE,
+            )
+        )
+        if not columns:
+            columns = len(re.findall(r"<div\b|<section\b|<ul\b", footer_html, re.IGNORECASE))
+
+        has_links = bool(re.search(r"<a\s+[^>]*href=", footer_html, re.IGNORECASE))
+        score = 3
+
+        if columns > 2:
+            score += 4
+        if has_links:
+            score += 3
+
+        sections["footer"] = {
+            "found": True,
+            "score": min(10, score),
+            "columns": columns,
+            "has_links": has_links,
+        }
+
+    main_html = find_block(r"<main[^>]*>.*?</main>")
+
+    if main_html:
+        main_words = word_count(main_html)
+        sections_count = len(re.findall(r"<section\b", main_html, re.IGNORECASE))
+        score = 5
+
+        if main_words > 100:
+            score += 5
+        if main_words > 300:
+            score += 5
+        if sections_count > 2:
+            score += 5
+
+        sections["main"] = {
+            "found": True,
+            "score": min(20, score),
+            "words": main_words,
+            "sections_count": sections_count,
+        }
+
+    total_section_score = sum(
+        item.get("score", 0)
+        for item in sections.values()
+    )
+
+    return {
+        "sections": sections,
+        "total_section_score": total_section_score,
+    }
+
+
+def compare_sections(generations_files):
+    """
+    Compare les sections de plusieurs fichiers et retourne la meilleure de chaque.
+    """
+    best_sections = {}
+    section_names = ("hero", "navigation", "features", "footer", "main")
+
+    for item in generations_files or []:
+        try:
+            file_path = Path(item.get("file", ""))
+
+            if not file_path.exists():
+                continue
+
+            content = file_path.read_text(encoding="utf-8", errors="ignore")
+            result = section_fitness(content)
+
+            for section_name in section_names:
+                section = result.get("sections", {}).get(section_name, {})
+
+                if not section.get("found"):
+                    continue
+
+                current = best_sections.get(section_name)
+                score = section.get("score", 0)
+
+                if current is None or score > current.get("score", 0):
+                    best_sections[section_name] = {
+                        "gen": item.get("gen"),
+                        "score": score,
+                        "file": str(file_path),
+                        "fitness": item.get("fitness", 0),
+                    }
+        except Exception:
+            continue
+
+    output = {}
+
+    for section_name, data in best_sections.items():
+        output[f"best_{section_name}"] = data
+
+    output["hybrid_score_estimate"] = sum(
+        data.get("score", 0)
+        for data in best_sections.values()
+    )
+
+    return output
+
+
 def _find_unclosed_html_tags(content):
     errors = []
     stack = []

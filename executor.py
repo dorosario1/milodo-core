@@ -2,6 +2,10 @@ import shlex
 import subprocess
 from pathlib import Path
 
+from executor_profiles import (
+    is_allowed,
+    DEFAULT_PROFILE
+)
 from logger import log_info, log_warn, log_error
 
 
@@ -17,7 +21,7 @@ ALLOWED_COMMANDS = {
 }
 
 
-def run_command(command, cwd=None, timeout=60):
+def run_command(command, cwd=None, timeout=60, profile=DEFAULT_PROFILE):
     try:
         args = _to_args(command)
         log_info(f"Commande demandee: {args}")
@@ -32,6 +36,34 @@ def run_command(command, cwd=None, timeout=60):
             return _result(False, "", "Commande non autorisée", 1)
 
         working_dir = Path(cwd) if cwd else None
+
+        allowed, needs_confirmation = (
+            is_allowed(
+                command,
+                profile
+            )
+        )
+
+        if not allowed:
+
+            return {
+                "success": False,
+                "error":
+                    f"Commande "
+                    f"'{command}' "
+                    f"non autorisée "
+                    f"(profil: {profile})",
+                "stdout": "",
+                "stderr": ""
+            }
+
+        if needs_confirmation:
+
+            log_warn(
+                f"Commande sensible "
+                f"(profil={profile}) : "
+                f"{command}"
+            )
 
         completed = subprocess.run(
             args,

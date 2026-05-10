@@ -1,5 +1,19 @@
 [
   {
+    "template": "landing",
+    "project": "BattleTest\n\nESPÈCE DESIGN : minimal\nStyle : minimaliste épuré, blanc, espace, typographie, peu d'éléments\nDescription : Minimal clean - portfolios, architectes, juridique\nRespecte fortement cette identité visuelle.",
+    "score": 52.0,
+    "path": "species_battle\\minimal\\gen_1",
+    "date": "2026-05-10T22:39:29.799430"
+  },
+  {
+    "template": "landing",
+    "project": "BattleTest\n\nESPÈCE DESIGN : dark\nStyle : design sombre luxueux #1a1a2e, or et violet\nDescription : Dark premium - restaurants gastronomiques, tech, luxe\nRespecte fortement cette identité visuelle.",
+    "score": 61.5,
+    "path": "species_battle\\dark\\gen_1",
+    "date": "2026-05-10T22:37:48.803340"
+  },
+  {
     "template": "restaurant",
     "project": "E2E Crossover",
     "score": 56.5,
