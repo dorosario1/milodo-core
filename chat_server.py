@@ -50,6 +50,26 @@ class ChatRequestHandler(BaseHTTPRequestHandler):
         host = self.client_address[0]
         log_info(f"Connexion de {host}")
         log_debug(f"Requête HTTP : {self.path}")
+
+        if self.path == "/":
+            try:
+                with open("chat.html", "r", encoding="utf-8") as file:
+                    body = file.read().encode("utf-8")
+
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+            except Exception as error:
+                log_error(f"Erreur lecture chat.html : {error}")
+                self._send_json(500, {
+                    "success": False,
+                    "message": str(error),
+                })
+                return
+
         log_warn(f"Endpoint inconnu : {self.path}")
         self._send_json(404, {
             "success": False,
@@ -157,7 +177,29 @@ def handle_chat(message):
 
 
 def _skill_name_from_description(description):
-    text = str(description).lower()
+    raw_text = str(description)
+
+    explicit_match = re.search(r"\b([A-Za-z0-9_-]+)\.py\b", raw_text)
+
+    if explicit_match:
+        text = explicit_match.group(1)
+    else:
+        skill_match = re.search(r"\bskill\s+([A-Za-z0-9_ -]+)", raw_text, re.IGNORECASE)
+
+        if skill_match:
+            text = skill_match.group(1)
+            text = re.split(r"\s+(?:dans|pour|avec|qui|que|sur)\b", text, maxsplit=1, flags=re.IGNORECASE)[0]
+        else:
+            stop_words = {
+                "a", "à", "de", "des", "du", "le", "la", "les", "un", "une",
+                "dans", "pour", "avec", "qui", "que", "sur", "créer", "creer",
+                "faire", "skill"
+            }
+            words = re.findall(r"[A-Za-zÀ-ÿ0-9_]+", raw_text.lower())
+            meaningful = [word for word in words if word not in stop_words]
+            text = "_".join(meaningful[:4])
+
+    text = text.lower()
     text = text.replace("à", "a").replace("â", "a").replace("ä", "a")
     text = text.replace("é", "e").replace("è", "e").replace("ê", "e").replace("ë", "e")
     text = text.replace("î", "i").replace("ï", "i")
@@ -166,6 +208,7 @@ def _skill_name_from_description(description):
     text = text.replace("ç", "c")
     text = re.sub(r"[^a-z0-9]+", "_", text)
     text = re.sub(r"_+", "_", text).strip("_")
+    text = text[:40].strip("_")
 
     if not text:
         return "auto_skill"

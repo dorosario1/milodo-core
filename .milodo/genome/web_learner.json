@@ -1,0 +1,32 @@
+{
+  "dribbble": {
+    "success": true,
+    "source": "dribbble",
+    "count": 0,
+    "items": []
+  },
+  "github": {
+    "success": true,
+    "source": "github_trending",
+    "count": 0,
+    "items": []
+  },
+  "hacker_news": {
+    "success": true,
+    "source": "hacker_news",
+    "count": 0,
+    "items": []
+  },
+  "arxiv_ai": {
+    "success": true,
+    "source": "arxiv_ai",
+    "count": 0,
+    "items": []
+  },
+  "css": {
+    "success": true,
+    "source": "css_techniques",
+    "count": 0,
+    "items": []
+  }
+}
