@@ -9,3 +9,30 @@ node_modules/
 tmp*/
 .DS_Store
 Thumbs.db
+
+# Runtime MILODO
+.milodo/*.log
+.milodo/*.pid
+.milodo/*.tmp
+.milodo/heartbeat.json
+.milodo/learning_state.json
+.milodo/scheduler.pid
+.milodo/genome/*.json
+
+# Générations
+genome_evo/
+evolution_test/
+crossover_test/
+species_test/
+targeted_test/
+structural_test/
+e2e_*/
+multi_test/
+template_test/
+test_output/
+test_final/
+rank_test/
+
+# Backups
+*.bak
+*.tmp
