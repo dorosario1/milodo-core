@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Cycle</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="hero">
+        <h1>Bienvenue sur Auto Cycle</h1>
+        <img src="image-hero.jpg" alt="Image de la page d'accueil">
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2>Les avantages de l'utilisation de Auto Cycle</h2>
+            <ul>
+                <li>
+                    <i class="fas fa-lock"></i> Sécurité renforcée pour un voyage en toute sécurité
+                </li>
+                <li>
+                    <i class="fas fa-map-marker-alt"></i> Cartographie des parcours pour une navigation fluide
+                </li>
+                <li>
+                    <i class="fas fa-calendar-day"></i> Gestion de la maintenance pour minimiser les coûts
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="pricing">
+        <h2>Prix et tarifs</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Plan</th>
+                    <th>Coût mensuel</th>
+                    <th>Coût annuel</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Standard</td>
+                    <td>50€</td>
+                    <td>600€</td>
+                </tr>
+                <tr>
+                    <td>Premium</td>
+                    <td>100€</td>
+                    <td>1 200€</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="cta">
+        <h2>Rejoignez nous dès aujourd'hui !</h2>
+        <button>Inscrivez-vous</button>
+        <p>Reservez votre spot dès aujourd'hui et découvrez les avantages de l'utilisation de Auto Cycle.</p>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 Auto Cycle. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="https://kit.fontawesome.com/your_font_awesome_id.js"></script>

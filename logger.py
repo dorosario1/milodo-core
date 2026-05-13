@@ -34,7 +34,7 @@ def setup_logger(name="milodo", log_dir=".milodo"):
 
     file_handler = RotatingFileHandler(
         log_path / "milodo.log",
-        maxBytes=1048576,
+        maxBytes=5 * 1024 * 1024,  # 5 Mo
         backupCount=3,
         encoding="utf-8",
     )
