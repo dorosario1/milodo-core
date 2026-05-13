@@ -71,9 +71,13 @@ class Watchdog:
         log_info("Watchdog démarré (intervalle: {}s)".format(check_interval_seconds))
         while True:
             try:
-                if not self._is_scheduler_alive() or not self._is_heartbeat_fresh():
-                    log_warn("Scheduler muet ou mort → relance")
+                if not self._is_scheduler_alive():
+                    # Relance UNIQUEMENT si PID mort
+                    log_warn("Scheduler mort → relance")
                     self._launch_scheduler()
+                elif not self._is_heartbeat_fresh():
+                    # PID vivant mais heartbeat stale → avertir sans relancer
+                    log_warn("Scheduler vivant mais heartbeat stale (cycle long ?)")
             except Exception as e:
                 log_error("Watchdog error: {}".format(e))
             time.sleep(check_interval_seconds)
