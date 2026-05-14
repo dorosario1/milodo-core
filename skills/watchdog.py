@@ -15,6 +15,7 @@ class Watchdog:
     def __init__(self):
         self.heartbeat_file = Path(".milodo/heartbeat.json")
         self.pid_file = Path(".milodo/scheduler.pid")
+        self.lock_file = Path(".milodo/watchdog.lock")
         self.pid_file.parent.mkdir(parents=True, exist_ok=True)
         self.heartbeat_file.parent.mkdir(parents=True, exist_ok=True)
         self.max_silence_minutes = 5
@@ -69,18 +70,38 @@ class Watchdog:
 
     def watch(self, check_interval_seconds=60):
         log_info("Watchdog démarré (intervalle: {}s)".format(check_interval_seconds))
-        while True:
+
+        # Lock file anti-double instance
+        if self.lock_file.exists():
             try:
-                if not self._is_scheduler_alive():
-                    # Relance UNIQUEMENT si PID mort
-                    log_warn("Scheduler mort → relance")
-                    self._launch_scheduler()
-                elif not self._is_heartbeat_fresh():
-                    # PID vivant mais heartbeat stale → avertir sans relancer
-                    log_warn("Scheduler vivant mais heartbeat stale (cycle long ?)")
-            except Exception as e:
-                log_error("Watchdog error: {}".format(e))
-            time.sleep(check_interval_seconds)
+                old_pid = int(self.lock_file.read_text().strip())
+                os.kill(old_pid, 0)
+                log_error(f"Watchdog déjà actif (PID {old_pid}). Abandon.")
+                return
+            except:
+                self.lock_file.unlink(missing_ok=True)
+
+        self.lock_file.write_text(str(os.getpid()))
+
+        try:
+            while True:
+                try:
+                    if not self._is_scheduler_alive():
+                        # Relance UNIQUEMENT si PID mort
+                        log_warn("Scheduler mort → relance")
+                        self._launch_scheduler()
+                    elif not self._is_heartbeat_fresh():
+                        # PID vivant mais heartbeat stale → avertir sans relancer
+                        log_warn("Scheduler vivant mais heartbeat stale (cycle long ?)")
+                except Exception as e:
+                    log_error("Watchdog error: {}".format(e))
+                time.sleep(check_interval_seconds)
+        finally:
+            if self.lock_file.exists():
+                try:
+                    self.lock_file.unlink()
+                except:
+                    pass
 
 
 def run(action="watch", **kwargs):
