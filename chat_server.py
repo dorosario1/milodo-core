@@ -11,6 +11,10 @@ from logger import log_info, log_error, log_warn, log_debug
 _server = None
 _server_thread = None
 
+PROJECT_PATHS = {
+    "dofitpro": "C:/PROJECTS/DOFITPRO/theme"
+}
+
 
 class ChatRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -136,12 +140,25 @@ def stop_server():
 def handle_chat(message):
     preview = str(message)[:50].replace("\n", " ")
     log_info(f"Message reçu : {preview}...")
+    chat_response = None
+    auto_prompt = None
+    intent = None
+
+    # Intent detection
+    try:
+        from skills.intent_detector import detect_intent
+        intent = detect_intent(message)
+        if intent and intent.get("confidence", 0) > 0.3:
+            log_info(f"Intent détectée : {intent['intent']} (confiance: {intent['confidence']})")
+            auto_prompt = intent["prompt"]
+    except Exception as e:
+        log_warn(f"Intent detection error: {e}")
 
     learn_match = re.match(r"^\s*(Apprends à|Apprends-moi à)\s+(.+?)\s*$", str(message), re.IGNORECASE)
 
     if learn_match:
         log_info("[AUTO-SKILL] Demande détectée")
-        description = learn_match.group(2).strip()
+        description = auto_prompt if auto_prompt else learn_match.group(2)
         name = _skill_name_from_description(description)
 
         log_debug("[AUTO-SKILL] Génération code")
@@ -169,10 +186,51 @@ def handle_chat(message):
             "response": f"❌ Erreur création skill : {result.get('error')}",
         }
 
+    # Auto-exécution si intent détectée
+    skill_result = None
+    if auto_prompt and intent:
+        try:
+            skill_name = intent.get("skill")
+            action = intent.get("default_action", "generate_report")
+            if skill_name:
+                log_info(f"Exécution skill : {skill_name} -> {action}")
+                import importlib
+                skill_module = importlib.import_module(f"skills.{skill_name}")
+                if hasattr(skill_module, 'run'):
+                    project = intent.get("project", "")
+                    theme_path = PROJECT_PATHS.get(project)
+                    skill_result = skill_module.run(
+                        action=action,
+                        theme_path=theme_path
+                    )
+                    log_info(f"Skill result : {skill_result}")
+        except Exception as e:
+            log_error(f"Erreur exécution skill : {e}")
+
+    # Si skill_result contient un rapport, préparer la réponse
+    if skill_result and isinstance(skill_result, dict):
+        issues = skill_result.get("issues", [])
+        summary = skill_result.get("summary", {})
+
+        if issues:
+            report_lines = []
+            report_lines.append(f"Audit termine - {summary.get('total', 0)} problemes detectes")
+            report_lines.append(f"[CRITICAL] {summary.get('critical', 0)} [MEDIUM] {summary.get('medium', 0)} [LOW] {summary.get('low', 0)}")
+            report_lines.append("")
+            report_lines.append("Top problemes :")
+
+            for issue in issues[:5]:
+                report_lines.append(f"- [{issue['severity']}] {issue['description'][:80]} ({issue['file']})")
+
+            report_lines.append(f"Fichiers scannes : {skill_result.get('files_scanned', 0)}")
+            chat_response = "\n".join(report_lines)
+
+    fallback_response = "MILODO chat server running"
+
     return {
         "success": True,
         "message": message,
-        "response": "MILODO chat server running",
+        "response": chat_response if chat_response else fallback_response,
     }
 
 
