@@ -90,12 +90,17 @@ class LearningLoop:
 
     def run_scheduled(self, interval_hours=6):
         log_info(f"Learning Loop scheduler démarré ({interval_hours}h)")
-        while True:
-            try:
-                self.run_once()
-            except Exception as e:
-                log_error(f"Scheduler error : {e}")
-            time.sleep(interval_hours * 3600)
+        try:
+            while True:
+                try:
+                    self.run_once()
+                except Exception as e:
+                    log_error(f"Scheduler error : {e}")
+                time.sleep(interval_hours * 3600)
+        except KeyboardInterrupt:
+            log_info("Scheduler arrêt demandé, cleanup...")
+            self._save_state()
+            log_info("Scheduler arrêté proprement")
 
     def status(self):
         return {"success": True, "state": self.state}

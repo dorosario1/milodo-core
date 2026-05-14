@@ -5,6 +5,7 @@ SKILL_VERSION = "1.0.0"
 import json
 import time
 import os
+import signal
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -68,6 +69,11 @@ class Watchdog:
         )
         self.pid_file.write_text(str(proc.pid))
 
+    def _handle_shutdown(self, signum, frame):
+        log_info("Watchdog arrêt demandé, cleanup...")
+        if self.lock_file.exists():
+            self.lock_file.unlink(missing_ok=True)
+
     def watch(self, check_interval_seconds=60):
         log_info("Watchdog démarré (intervalle: {}s)".format(check_interval_seconds))
 
@@ -96,12 +102,16 @@ class Watchdog:
                 except Exception as e:
                     log_error("Watchdog error: {}".format(e))
                 time.sleep(check_interval_seconds)
+        except KeyboardInterrupt:
+            self._handle_shutdown(None, None)
         finally:
+            # Cleanup lock
             if self.lock_file.exists():
                 try:
-                    self.lock_file.unlink()
+                    self.lock_file.unlink(missing_ok=True)
                 except:
                     pass
+            log_info("Watchdog arrêté proprement")
 
 
 def run(action="watch", **kwargs):
