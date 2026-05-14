@@ -20,5 +20,60 @@
     "backup_path": "C:\\PROJECTS\\DOFITPRO\\theme\\sections\\header.liquid.bak",
     "timestamp": "2026-05-14T17:02:29.216891",
     "patch_version": "v2"
+  },
+  {
+    "issue_id": "overflow_search-header",
+    "file": "sections\\search-header.liquid",
+    "type": "overflow_risk",
+    "confidence": 0.9,
+    "success": true,
+    "rolled_back": false,
+    "backup_path": "C:\\PROJECTS\\DOFITPRO\\theme\\sections\\search-header.liquid.bak",
+    "timestamp": "2026-05-14T18:19:03.555789",
+    "patch_version": "v2"
+  },
+  {
+    "issue_id": "overflow_header-actions",
+    "file": "snippets\\header-actions.liquid",
+    "type": "overflow_risk",
+    "confidence": 0.9,
+    "success": true,
+    "rolled_back": false,
+    "backup_path": "C:\\PROJECTS\\DOFITPRO\\theme\\snippets\\header-actions.liquid.bak",
+    "timestamp": "2026-05-14T18:19:04.467150",
+    "patch_version": "v2"
+  },
+  {
+    "issue_id": "overflow_header-row",
+    "file": "snippets\\header-row.liquid",
+    "type": "overflow_risk",
+    "confidence": 0.9,
+    "success": true,
+    "rolled_back": false,
+    "backup_path": "C:\\PROJECTS\\DOFITPRO\\theme\\snippets\\header-row.liquid.bak",
+    "timestamp": "2026-05-14T18:19:05.363334",
+    "patch_version": "v2"
+  },
+  {
+    "issue_id": "container__header-menu",
+    "file": "blocks\\_header-menu.liquid",
+    "type": "constrained_container",
+    "confidence": 0.85,
+    "success": true,
+    "rolled_back": false,
+    "backup_path": "C:\\PROJECTS\\DOFITPRO\\theme\\blocks\\_header-menu.liquid.bak",
+    "timestamp": "2026-05-14T20:34:54.963910",
+    "patch_version": "v2"
+  },
+  {
+    "issue_id": "container__header-menu",
+    "file": "blocks\\_header-menu.liquid",
+    "type": "constrained_container",
+    "confidence": 0.85,
+    "success": true,
+    "rolled_back": false,
+    "backup_path": "C:\\PROJECTS\\DOFITPRO\\theme\\blocks\\_header-menu.liquid.bak",
+    "timestamp": "2026-05-14T20:42:44.327003",
+    "patch_version": "v2"
   }
 ]

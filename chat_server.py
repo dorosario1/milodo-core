@@ -200,9 +200,11 @@ def handle_chat(message):
                 if hasattr(skill_module, 'run'):
                     project = intent.get("project", "")
                     theme_path = PROJECT_PATHS.get(project)
+                    scope = intent.get("ui_scope", []) if intent else None
                     skill_result = skill_module.run(
                         action=action,
-                        theme_path=theme_path
+                        theme_path=theme_path,
+                        scope=scope
                     )
                     log_info(f"Skill result : {skill_result}")
         except Exception as e:
@@ -229,6 +231,56 @@ def handle_chat(message):
 
             report_lines.append("Pour appliquer, tape : applique les corrections")
             chat_response = "\n".join(report_lines)
+
+            try:
+                from skills.shopify_audit import ShopifyAuditor
+                from pathlib import Path
+                auditor = ShopifyAuditor(Path("C:/PROJECTS/DOFITPRO/theme"))
+                pending = auditor.save_pending_approval("dofitpro", previews, "C:/PROJECTS/DOFITPRO/theme")
+                chat_response += f"\n\n[Preview ID: {pending['preview_id']}]"
+            except Exception:
+                pass
+
+    if skill_result and action == "apply_approved":
+        try:
+            from skills.shopify_audit import ShopifyAuditor, run as audit_run
+            from pathlib import Path
+            from datetime import datetime, timedelta
+
+            auditor = ShopifyAuditor(Path("C:/PROJECTS/DOFITPRO/theme"))
+            pending = auditor.get_pending_approval()
+
+            if not pending or pending["status"] != "pending":
+                chat_response = "Aucune approbation en attente. Tape 'previsualise dofitpro' d'abord."
+            else:
+                created = datetime.fromisoformat(pending["created_at"])
+                if datetime.now() - created > timedelta(minutes=30):
+                    pending["status"] = "expired"
+                    import json
+                    from pathlib import Path as P
+                    pf = P(".milodo/pending_approval.json")
+                    pf.write_text(json.dumps(pending, indent=2, ensure_ascii=False), encoding="utf-8")
+                    chat_response = "Preview expire. Relance une previsualisation."
+                else:
+                    issue_ids = [i["issue_id"] for i in pending["issues"]]
+                    results = []
+                    for iid in issue_ids:
+                        r = audit_run(action="apply_fix", theme_path=pending["theme_path"], issue_id=iid)
+                        results.append(r)
+
+                    pending["status"] = "applied"
+                    import json
+                    from pathlib import Path as P
+                    pf = P(".milodo/pending_approval.json")
+                    pf.write_text(json.dumps(pending, indent=2, ensure_ascii=False), encoding="utf-8")
+
+                    success = sum(1 for r in results if isinstance(r, dict) and r.get("success"))
+                    report = f"Applique - {success}/{len(results)} corrections reussies"
+                    if success < len(results):
+                        report += f"\n{len(results) - success} echecs/rollbacks"
+                    chat_response = report
+        except Exception as e:
+            chat_response = f"Erreur: {e}"
 
     # Si skill_result contient un rapport, préparer la réponse
     if not chat_response and skill_result and isinstance(skill_result, dict):

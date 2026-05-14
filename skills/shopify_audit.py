@@ -13,6 +13,7 @@ class ShopifyAuditor:
 
     EXECUTION_PROFILE = 'web'
     PATCH_HISTORY_FILE = ".milodo/patch_history.json"
+    PENDING_FILE = ".milodo/pending_approval.json"
 
     def _log_patch(self, entry):
         try:
@@ -42,6 +43,42 @@ class ShopifyAuditor:
             from logger import log_error
             log_error(f"Patch history write failed: {log_error_exc}")
 
+    def save_pending_approval(self, project, previews, theme_path):
+        import json
+        from datetime import datetime
+        from pathlib import Path
+
+        pending = {
+            "preview_id": f"prev_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            "project": project,
+            "theme_path": theme_path,
+            "created_at": datetime.now().isoformat(),
+            "status": "pending",
+            "issues": [{
+                "issue_id": p["issue_id"],
+                "file": p["file"],
+                "type": p.get("type", ""),
+                "severity": p.get("severity", ""),
+                "confidence": p["confidence"],
+                "estimated_risk": p["estimated_risk"]
+            } for p in previews]
+        }
+
+        pending_file = Path(self.PENDING_FILE)
+        pending_file.parent.mkdir(parents=True, exist_ok=True)
+        tmp = pending_file.with_suffix(".tmp")
+        tmp.write_text(json.dumps(pending, indent=2, ensure_ascii=False), encoding="utf-8")
+        tmp.replace(pending_file)
+        return pending
+
+    def get_pending_approval(self):
+        import json
+        from pathlib import Path
+        pending_file = Path(self.PENDING_FILE)
+        if pending_file.exists():
+            return json.loads(pending_file.read_text(encoding="utf-8"))
+        return None
+
     def __init__(self, theme_path):
         self.theme_path = theme_path
         self.issues = []
@@ -56,7 +93,7 @@ class ShopifyAuditor:
                     self.issues.append({"issue": "ouverture masquée", "correctif": "Définir overflow: visible"})
                 # Ajouter plus de règles ici
 
-    def detect_ui_issues(self, theme_path):
+    def detect_ui_issues(self, theme_path, scope=None):
         import re
         from pathlib import Path
 
@@ -65,10 +102,18 @@ class ShopifyAuditor:
 
         # Scanner liquid ET css
         files = list(theme.rglob("*.liquid")) + list(theme.rglob("*.css"))
+        files_to_scan = files
+        if scope:
+            normalized_scope = [s.lower().replace("\\", "/") for s in scope]
+            files_to_scan = []
+            for f in files:
+                normalized_file = str(f).replace("\\", "/").lower()
+                if any(s in normalized_file for s in normalized_scope):
+                    files_to_scan.append(f)
 
         dark_backgrounds = ["#000", "#111", "#1a1a2e", "#0f0f0f", "#121212", "#222", "#333"]
 
-        for file_path in files:
+        for file_path in files_to_scan:
             try:
                 content = file_path.read_text(encoding="utf-8", errors="replace")
                 relative = str(file_path.relative_to(theme))
@@ -122,6 +167,19 @@ class ShopifyAuditor:
                             "fix": "Définir font-size et padding pour améliorer la visibilité du CTA"
                         })
 
+                # 6. Détecter container contraint - cible les JSON de config
+                if ("header" in relative.lower() or relative.startswith("layout/")) and file_path.suffix == ".json":
+                    if '"section_width"' in content and '"page-width"' in content:
+                        issues.append({
+                            "id": f"container_{file_path.stem}",
+                            "severity": "medium",
+                            "confidence": 0.90,
+                            "file": relative,
+                            "type": "constrained_container",
+                            "description": "Configuration section_width page-width : bandes blanches probables",
+                            "fix": "Remplacer page-width par full-width"
+                        })
+
                 if len(file_issues) > 1:
                     for issue in file_issues:
                         issue["confidence"] = min(issue["confidence"] + 0.05, 1.0)
@@ -134,7 +192,7 @@ class ShopifyAuditor:
         return {
             "success": True,
             "theme": str(theme_path),
-            "files_scanned": len(files),
+            "files_scanned": len(files_to_scan),
             "issues": issues,
             "summary": {
                 "critical": len([i for i in issues if i["severity"] == "critical"]),
@@ -161,7 +219,7 @@ class ShopifyAuditor:
         import shutil
         import re
         from pathlib import Path
-        from logger import log_error
+        from logger import log_error, log_info
 
         theme = Path(theme_path)
 
@@ -188,50 +246,55 @@ class ShopifyAuditor:
         backup_path = file_path.with_suffix(file_path.suffix + ".bak")
         shutil.copy2(file_path, backup_path)
 
-        # 4. Appliquer le fix selon le type
+        # 4. Appliquer le fix via le registry
         content = file_path.read_text(encoding="utf-8", errors="replace")
         new_content = content
 
         issue_type = issue.get("type", "")
 
-        if issue_type == "overflow_risk":
-            # Ajouter overflow-x hidden dans le premier container
-            if "overflow-x" not in content:
-                if 'style="' in content:
-                    new_content = content.replace(
-                        'style="',
-                        'style="overflow-x: hidden; max-width: 100vw; ',
-                        1
-                    )
-                else:
-                    new_content = content.replace(
-                        "class=\"",
-                        'style="overflow-x: hidden; max-width: 100vw;" class=\"',
-                        1
-                    )
+        from skills.patchers.registry import get_patcher
 
-        elif issue_type == "contrast":
-            # Remplacer color sombre par clair
-            new_content = re.sub(
-                r'(^|[;{\s])color:\s*(#000000|#000(?![0-9a-fA-F])|black)',
-                r'\1color: #ffffff',
-                content,
-                count=1,
-                flags=re.IGNORECASE | re.MULTILINE
-            )
-
-        elif issue_type == "cta_weak":
-            # Ajouter padding et font-size au premier bouton
-            if "button" in content.lower():
-                new_content = content.replace(
-                    "class=\"button",
-                    'style="font-size: 1rem; padding: 12px 24px;" class="button',
-                    1
-                )
-
+        patcher = get_patcher(issue_type)
+        if patcher:
+            try:
+                new_content = patcher.apply_patch(content, issue)
+                if not patcher.validate(new_content):
+                    raise ValueError(f"Validation patcher échouée pour {issue_type}")
+                log_info(f"Patcher {issue_type} appliqué via registry")
+            except Exception as e:
+                # Restaurer le backup au lieu de le supprimer
+                shutil.copy2(backup_path, file_path)
+                return {
+                    "success": False,
+                    "error": f"Patcher error: {e}",
+                    "issue_id": issue_id,
+                    "rolled_back": True,
+                    "backup_kept": str(backup_path)
+                }
         else:
+            # Fallback : anciennes méthodes manuelles
+            if issue_type == "overflow_risk":
+                if "overflow-x" not in content:
+                    new_content = content.replace('class="', 'style="overflow-x: hidden; max-width: 100vw;" class="', 1)
+            elif issue_type == "contrast":
+                import re
+                new_content = re.sub(r'color:\s*(#000|#000000|black)', 'color: #ffffff', content, count=1, flags=re.IGNORECASE)
+            elif issue_type == "cta_weak":
+                if "button" in content.lower():
+                    new_content = content.replace('class="button', 'style="font-size: 1rem; padding: 12px 24px;" class="button', 1)
+            else:
+                shutil.copy2(backup_path, file_path)
+                return {"success": False, "error": f"Type de fix non supporté : {issue_type}"}
+
+        # 5. No-op detection
+        if new_content == content:
             backup_path.unlink()
-            return {"success": False, "error": f"Type de fix non supporté : {issue_type}"}
+            return {
+                "success": False,
+                "error": "No changes applied - content unchanged",
+                "issue_id": issue_id,
+                "no_op": True
+            }
 
         # 5. Écrire
         file_path.write_text(new_content, encoding="utf-8")
@@ -297,7 +360,8 @@ class ShopifyAuditor:
             "file": issue["file"],
             "type": issue_type,
             "backup": str(backup_path),
-            "confidence": issue["confidence"]
+            "confidence": issue["confidence"],
+            "patch_source": "registry"
         }
 
     def apply_multiple_fixes(self, theme_path, min_confidence=0.8, max_fixes=3, stop_on_failures=2):
@@ -429,7 +493,8 @@ def run(action="generate_report", **kwargs):
     elif action == "scan_theme":
         return auditor.scan_theme(theme_path)
     elif action == "detect_ui_issues":
-        return auditor.detect_ui_issues(theme_path)
+        scope = kwargs.get("scope", None)
+        return auditor.detect_ui_issues(theme_path, scope=scope)
     elif action == "suggest_fixes":
         issues = kwargs.get("issues", [])
         return auditor.suggest_fixes(issues)
@@ -441,6 +506,10 @@ def run(action="generate_report", **kwargs):
         min_confidence = kwargs.get("min_confidence", 0.8)
         max_fixes = kwargs.get("max_fixes", 3)
         return auditor.apply_multiple_fixes(theme_path, min_confidence, max_fixes)
+    elif action == "apply_approved":
+        from pathlib import Path
+        auditor = ShopifyAuditor(Path(theme_path))
+        return auditor.get_pending_approval()
     elif action == "apply_fix":
         issue_id = kwargs.get("issue_id")
         return auditor.apply_fix(theme_path, issue_id)

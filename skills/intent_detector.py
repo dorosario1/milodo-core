@@ -10,13 +10,16 @@ INTENTS = {
         "keywords": ["améliore", "optimise", "audite", "vérifie", "corrige", "fix"],
         "domains": ["shopify", "dofitpro", "boutique", "store", "thème", "theme"],
         "prompt_template": "Analyse le thème Shopify {project}. Détecte les problèmes UI : header, contraste, padding, CTA, mobile. Propose des correctifs.",
-        "skill": "shopify_audit"
+        "skill": "shopify_audit",
+        "ui_scope": []
     },
     "fix_ui": {
         "keywords": ["corrige", "répare", "fix", "header", "bande blanche", "padding", "contraste"],
         "domains": ["shopify", "dofitpro", "site", "page"],
         "prompt_template": "Corrige le problème UI suivant sur {project} : {detail}. Propose un patch Liquid/CSS.",
-        "skill": "shopify_audit"
+        "skill": "shopify_audit",
+        "default_action": "detect_ui_issues",
+        "ui_scope": ["header", "layout", "snippets/header"]
     },
     "mobile_audit": {
         "keywords": ["mobile", "responsive", "téléphone", "smartphone"],
@@ -36,6 +39,13 @@ INTENTS = {
         "prompt_template": "Prévisualise les modifications proposées pour {project}. Mode dry-run : ne modifie rien.",
         "skill": "shopify_audit",
         "default_action": "dry_run"
+    },
+    "apply_approved": {
+        "keywords": ["applique les corrections", "applique", "exécute les corrections"],
+        "domains": ["corrections", "modifications", "changements", "fix", "patch"],
+        "prompt_template": "Applique les corrections approuvées pour {project}.",
+        "skill": "shopify_audit",
+        "default_action": "apply_approved"
     }
 }
 
@@ -78,7 +88,8 @@ def detect_intent(message, context=None):
             "project": project,
             "prompt": prompt,
             "skill": intent_data["skill"],
-            "default_action": intent_data.get("default_action")
+            "default_action": intent_data.get("default_action"),
+            "ui_scope": intent_data.get("ui_scope", [])
         }
 
     return None
