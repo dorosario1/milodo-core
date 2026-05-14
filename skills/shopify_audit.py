@@ -5,6 +5,7 @@ SKILL_VERSION = "1.0.0"
 import pathlib
 import json
 import re
+import hashlib
 
 class ShopifyAuditor:
     SKILL_NAME = "shopify_audit"
@@ -14,6 +15,57 @@ class ShopifyAuditor:
     EXECUTION_PROFILE = 'web'
     PATCH_HISTORY_FILE = ".milodo/patch_history.json"
     PENDING_FILE = ".milodo/pending_approval.json"
+    RESOLVED_FILE = ".milodo/resolved_issues.json"
+
+    def _fingerprint(self, file, issue_type, description):
+        raw = f"{file}:{issue_type}:{description}".encode("utf-8")
+        return hashlib.sha1(raw).hexdigest()[:12]
+
+    def _should_add_issue(self, relative, issue_type, description):
+        fp = self._fingerprint(relative, issue_type, description)
+        if self._is_resolved(fp):
+            return None
+        return fp
+
+    def _is_resolved(self, fingerprint):
+        from pathlib import Path
+        resolved_file = Path(self.RESOLVED_FILE)
+        if not resolved_file.exists():
+            return False
+        try:
+            import json
+            resolved = json.loads(resolved_file.read_text(encoding="utf-8"))
+            return fingerprint in resolved
+        except:
+            return False
+
+    def _mark_resolved(self, fingerprint, issue_id, issue_type, file_path, patch_source):
+        from pathlib import Path
+        from datetime import datetime
+        import json
+
+        resolved_file = Path(self.RESOLVED_FILE)
+        resolved_file.parent.mkdir(parents=True, exist_ok=True)
+
+        resolved = {}
+        if resolved_file.exists():
+            try:
+                resolved = json.loads(resolved_file.read_text(encoding="utf-8"))
+            except:
+                resolved = {}
+
+        resolved[fingerprint] = {
+            "issue_id": issue_id,
+            "type": issue_type,
+            "file": file_path,
+            "resolved_at": datetime.now().isoformat(),
+            "patcher": patch_source,
+            "status": "resolved"
+        }
+
+        tmp = resolved_file.with_suffix(".tmp")
+        tmp.write_text(json.dumps(resolved, indent=2, ensure_ascii=False), encoding="utf-8")
+        tmp.replace(resolved_file)
 
     def _log_patch(self, entry):
         try:
@@ -124,15 +176,20 @@ class ShopifyAuditor:
                     and "overflow-x:hidden" not in content):
                     if "header" in relative.lower() or relative.startswith("layout/"):
                         confidence = 0.90
-                        file_issues.append({
-                            "id": f"overflow_{file_path.stem}",
-                            "severity": "medium",
-                            "confidence": confidence,
-                            "file": relative,
-                            "type": "overflow_risk",
-                            "description": "Risque de bandes blanches : pas de max-width:100% ou overflow-x:hidden sur header/layout",
-                            "fix": "Ajouter overflow-x: hidden; max-width: 100vw; au container principal"
-                        })
+                        issue_type = "overflow_risk"
+                        description = "Risque de bandes blanches : pas de max-width:100% ou overflow-x:hidden sur header/layout"
+                        fp = self._should_add_issue(relative, issue_type, description)
+                        if fp:
+                            file_issues.append({
+                                "id": f"overflow_{file_path.stem}",
+                                "severity": "medium",
+                                "confidence": confidence,
+                                "file": relative,
+                                "type": issue_type,
+                                "description": description,
+                                "fix": "Ajouter overflow-x: hidden; max-width: 100vw; au container principal",
+                                "fingerprint": fp
+                            })
 
                 # 2. Contraste noir sur fond sombre (amélioré)
                 has_dark_text = re.search(r'(^|[;{\s])color:\s*(#000000|#000(?![0-9a-fA-F])|black|rgb\(0,\s*0,\s*0\))', content, re.IGNORECASE | re.MULTILINE)
@@ -143,55 +200,75 @@ class ShopifyAuditor:
                         confidence = 0.50
                     if any(bg in content for bg in ["#000", "#111", "#1a1a2e", "#0f0f0f", "#121212", "#222"]):
                         confidence = 0.80
-                    file_issues.append({
-                        "id": f"contrast_{file_path.stem}",
-                        "severity": "medium",
-                        "confidence": confidence,
-                        "file": relative,
-                        "type": "contrast",
-                        "description": "Texte sombre sur fond sombre détecté : lisibilité potentiellement faible",
-                        "fix": "Utiliser une couleur de texte claire (ex: color: #fff ou var(--color-foreground))"
-                    })
+                    issue_type = "contrast"
+                    description = "Texte sombre sur fond sombre détecté : lisibilité potentiellement faible"
+                    fp = self._should_add_issue(relative, issue_type, description)
+                    if fp:
+                        file_issues.append({
+                            "id": f"contrast_{file_path.stem}",
+                            "severity": "medium",
+                            "confidence": confidence,
+                            "file": relative,
+                            "type": issue_type,
+                            "description": description,
+                            "fix": "Utiliser une couleur de texte claire (ex: color: #fff ou var(--color-foreground))",
+                            "fingerprint": fp
+                        })
 
                 # 3. CTA potentiellement faibles
                 if "button" in relative.lower() or "cta" in relative.lower() or "btn" in relative.lower():
                     if "font-size" not in content.lower() or "padding" not in content.lower():
                         confidence = 0.55 if "button" in relative.lower() and "font-size" not in content.lower() else 0.35
-                        file_issues.append({
-                            "id": f"cta_{file_path.stem}",
-                            "severity": "low",
-                            "confidence": confidence,
-                            "file": relative,
-                            "type": "cta_weak",
-                            "description": "Composant bouton/CTA sans taille ou padding explicite",
-                            "fix": "Définir font-size et padding pour améliorer la visibilité du CTA"
-                        })
+                        issue_type = "cta_weak"
+                        description = "Composant bouton/CTA sans taille ou padding explicite"
+                        fp = self._should_add_issue(relative, issue_type, description)
+                        if fp:
+                            file_issues.append({
+                                "id": f"cta_{file_path.stem}",
+                                "severity": "low",
+                                "confidence": confidence,
+                                "file": relative,
+                                "type": issue_type,
+                                "description": description,
+                                "fix": "Définir font-size et padding pour améliorer la visibilité du CTA",
+                                "fingerprint": fp
+                            })
 
                 # 6. Détecter container contraint - cible les JSON de config
                 if ("header" in relative.lower() or relative.startswith("layout/")) and file_path.suffix == ".json":
                     if '"section_width"' in content and '"page-width"' in content:
-                        issues.append({
-                            "id": f"container_{file_path.stem}",
-                            "severity": "medium",
-                            "confidence": 0.90,
-                            "file": relative,
-                            "type": "constrained_container",
-                            "description": "Configuration section_width page-width : bandes blanches probables",
-                            "fix": "Remplacer page-width par full-width"
-                        })
+                        issue_type = "constrained_container"
+                        description = "Configuration section_width page-width : bandes blanches probables"
+                        fp = self._should_add_issue(relative, issue_type, description)
+                        if fp:
+                            issues.append({
+                                "id": f"container_{file_path.stem}",
+                                "severity": "medium",
+                                "confidence": 0.90,
+                                "file": relative,
+                                "type": issue_type,
+                                "description": description,
+                                "fix": "Remplacer page-width par full-width",
+                                "fingerprint": fp
+                            })
 
                 # 7. Détecter spacing insuffisant sur localisation
                 if "localization" in relative.lower():
                     if "margin-right" not in content and "padding-inline" not in content:
-                        issues.append({
-                            "id": f"spacing_{file_path.stem}",
-                            "severity": "low",
-                            "confidence": 0.75,
-                            "file": relative,
-                            "type": "localization_spacing",
-                            "description": "Selecteur de localisation sans spacing suffisant",
-                            "fix": "Ajouter margin-right et padding-inline"
-                        })
+                        issue_type = "localization_spacing"
+                        description = "Selecteur de localisation sans spacing suffisant"
+                        fp = self._should_add_issue(relative, issue_type, description)
+                        if fp:
+                            issues.append({
+                                "id": f"spacing_{file_path.stem}",
+                                "severity": "low",
+                                "confidence": 0.75,
+                                "file": relative,
+                                "type": issue_type,
+                                "description": description,
+                                "fix": "Ajouter margin-right et padding-inline",
+                                "fingerprint": fp
+                            })
 
                 if len(file_issues) > 1:
                     for issue in file_issues:
@@ -264,6 +341,7 @@ class ShopifyAuditor:
         new_content = content
 
         issue_type = issue.get("type", "")
+        patch_source = "registry"
 
         from skills.patchers.registry import get_patcher
 
@@ -286,6 +364,7 @@ class ShopifyAuditor:
                 }
         else:
             # Fallback : anciennes méthodes manuelles
+            patch_source = "fallback"
             if issue_type == "overflow_risk":
                 if "overflow-x" not in content:
                     new_content = content.replace('class="', 'style="overflow-x: hidden; max-width: 100vw;" class="', 1)
@@ -367,6 +446,17 @@ class ShopifyAuditor:
         except Exception:
             pass
 
+        try:
+            self._mark_resolved(
+                self._fingerprint(issue["file"], issue_type, issue["description"]),
+                issue_id,
+                issue_type,
+                issue["file"],
+                patch_source
+            )
+        except:
+            pass
+
         return {
             "success": True,
             "issue_id": issue_id,
@@ -374,7 +464,7 @@ class ShopifyAuditor:
             "type": issue_type,
             "backup": str(backup_path),
             "confidence": issue["confidence"],
-            "patch_source": "registry"
+            "patch_source": patch_source
         }
 
     def apply_multiple_fixes(self, theme_path, min_confidence=0.8, max_fixes=3, stop_on_failures=2):
