@@ -12,6 +12,35 @@ class ShopifyAuditor:
     SKILL_VERSION = "1.0"
 
     EXECUTION_PROFILE = 'web'
+    PATCH_HISTORY_FILE = ".milodo/patch_history.json"
+
+    def _log_patch(self, entry):
+        try:
+            from pathlib import Path
+            import json
+            from datetime import datetime
+
+            history_file = Path(self.PATCH_HISTORY_FILE)
+            history_file.parent.mkdir(parents=True, exist_ok=True)
+
+            history = []
+            if history_file.exists():
+                try:
+                    history = json.loads(history_file.read_text(encoding="utf-8"))
+                except:
+                    history = []
+
+            entry["timestamp"] = datetime.now().isoformat()
+            entry["patch_version"] = "v2"
+            history.append(entry)
+            history = history[-200:]
+
+            tmp = history_file.with_suffix(".tmp")
+            tmp.write_text(json.dumps(history, indent=2, ensure_ascii=False), encoding="utf-8")
+            tmp.replace(history_file)
+        except Exception as log_error_exc:
+            from logger import log_error
+            log_error(f"Patch history write failed: {log_error_exc}")
 
     def __init__(self, theme_path):
         self.theme_path = theme_path
@@ -228,6 +257,19 @@ class ShopifyAuditor:
             # Log + rollback (garder le .bak pour inspection)
             log_error(f"Validation failed after patch: {e}")
             shutil.copy2(backup_path, file_path)
+            try:
+                self._log_patch({
+                    "issue_id": issue_id,
+                    "file": issue["file"],
+                    "type": issue_type,
+                    "confidence": issue["confidence"],
+                    "success": False,
+                    "rolled_back": True,
+                    "error": str(e),
+                    "backup_path": str(backup_path)
+                })
+            except Exception:
+                pass
             return {
                 "success": False,
                 "error": f"Validation failed, rollback : {e}",
@@ -236,6 +278,19 @@ class ShopifyAuditor:
                 "backup_kept": str(backup_path)
             }
 
+        try:
+            self._log_patch({
+                "issue_id": issue_id,
+                "file": issue["file"],
+                "type": issue_type,
+                "confidence": issue["confidence"],
+                "success": True,
+                "rolled_back": False,
+                "backup_path": str(backup_path)
+            })
+        except Exception:
+            pass
+
         return {
             "success": True,
             "issue_id": issue_id,
@@ -243,6 +298,60 @@ class ShopifyAuditor:
             "type": issue_type,
             "backup": str(backup_path),
             "confidence": issue["confidence"]
+        }
+
+    def apply_multiple_fixes(self, theme_path, min_confidence=0.8, max_fixes=3, stop_on_failures=2):
+        import time
+
+        report = self.detect_ui_issues(theme_path)
+        candidates = [i for i in report["issues"] if i.get("confidence", 0) >= min_confidence]
+        candidates.sort(key=lambda x: x.get("confidence", 0), reverse=True)
+
+        results = []
+        success_count = 0
+        failure_count = 0
+        rollback_count = 0
+        seen_files = set()
+
+        for issue in candidates:
+            if issue["file"] in seen_files:
+                continue
+            seen_files.add(issue["file"])
+
+            if len(results) >= max_fixes:
+                break
+
+            start_time = time.time()
+            result = self.apply_fix(theme_path, issue["id"])
+            duration_ms = int((time.time() - start_time) * 1000)
+
+            if not isinstance(result, dict):
+                result = {"success": False, "error": "Invalid apply_fix result"}
+
+            result["duration_ms"] = duration_ms
+
+            if result.get("success"):
+                success_count += 1
+            elif result.get("rolled_back"):
+                rollback_count += 1
+                failure_count += 1
+            else:
+                failure_count += 1
+
+            results.append(result)
+
+            if failure_count >= stop_on_failures:
+                break
+
+        return {
+            "success": failure_count == 0,
+            "total_candidates": len(candidates),
+            "applied": len(results),
+            "success_count": success_count,
+            "failure_count": failure_count,
+            "rollback_count": rollback_count,
+            "stopped_early": failure_count >= stop_on_failures,
+            "results": results
         }
 
     def generate_report(self, theme_path):
@@ -266,6 +375,10 @@ def run(action="generate_report", **kwargs):
     elif action == "suggest_fixes":
         issues = kwargs.get("issues", [])
         return auditor.suggest_fixes(issues)
+    elif action == "apply_multiple_fixes":
+        min_confidence = kwargs.get("min_confidence", 0.8)
+        max_fixes = kwargs.get("max_fixes", 3)
+        return auditor.apply_multiple_fixes(theme_path, min_confidence, max_fixes)
     elif action == "apply_fix":
         issue_id = kwargs.get("issue_id")
         return auditor.apply_fix(theme_path, issue_id)
