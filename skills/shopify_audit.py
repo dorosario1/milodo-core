@@ -354,6 +354,64 @@ class ShopifyAuditor:
             "results": results
         }
 
+    def dry_run(self, theme_path, min_confidence=0.7, max_preview=5):
+        from pathlib import Path
+
+        report = self.detect_ui_issues(theme_path)
+        candidates = [i for i in report["issues"] if i.get("confidence", 0) >= min_confidence]
+        candidates.sort(key=lambda x: x.get("confidence", 0), reverse=True)
+
+        previews = []
+        seen_files = set()
+
+        for issue in candidates:
+            # Éviter les doublons de fichier
+            if issue["file"] in seen_files:
+                continue
+            seen_files.add(issue["file"])
+
+            if len(previews) >= max_preview:
+                break
+
+            file_path = Path(theme_path) / issue["file"]
+
+            # Calculer le risque estimé
+            conf = issue["confidence"]
+            if conf >= 0.9:
+                estimated_risk = "low"
+            elif conf >= 0.75:
+                estimated_risk = "medium"
+            else:
+                estimated_risk = "high"
+
+            preview = {
+                "issue_id": issue["id"],
+                "file": issue["file"],
+                "confidence": conf,
+                "severity": issue["severity"],
+                "type": issue["type"],
+                "description": issue["description"],
+                "fix_suggestion": issue.get("fix", ""),
+                "file_exists": file_path.exists(),
+                "estimated_risk": estimated_risk,
+                "would_patch": True
+            }
+            previews.append(preview)
+
+        return {
+            "success": True,
+            "mode": "dry-run",
+            "theme": str(theme_path),
+            "total_issues": len(report["issues"]),
+            "candidates": len(candidates),
+            "previews": previews,
+            "summary": {
+                "high_confidence": len([p for p in previews if p["confidence"] >= 0.85]),
+                "medium_confidence": len([p for p in previews if 0.7 <= p["confidence"] < 0.85]),
+                "files_affected": len(set(p["file"] for p in previews))
+            }
+        }
+
     def generate_report(self, theme_path):
         report = {"thème": theme_path.name}
         for issue in self.issues:
@@ -375,6 +433,10 @@ def run(action="generate_report", **kwargs):
     elif action == "suggest_fixes":
         issues = kwargs.get("issues", [])
         return auditor.suggest_fixes(issues)
+    elif action == "dry_run":
+        min_confidence = kwargs.get("min_confidence", 0.7)
+        max_preview = kwargs.get("max_preview", 5)
+        return auditor.dry_run(theme_path, min_confidence, max_preview)
     elif action == "apply_multiple_fixes":
         min_confidence = kwargs.get("min_confidence", 0.8)
         max_fixes = kwargs.get("max_fixes", 3)
