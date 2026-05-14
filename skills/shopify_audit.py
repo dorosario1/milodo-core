@@ -180,6 +180,19 @@ class ShopifyAuditor:
                             "fix": "Remplacer page-width par full-width"
                         })
 
+                # 7. Détecter spacing insuffisant sur localisation
+                if "localization" in relative.lower():
+                    if "margin-right" not in content and "padding-inline" not in content:
+                        issues.append({
+                            "id": f"spacing_{file_path.stem}",
+                            "severity": "low",
+                            "confidence": 0.75,
+                            "file": relative,
+                            "type": "localization_spacing",
+                            "description": "Selecteur de localisation sans spacing suffisant",
+                            "fix": "Ajouter margin-right et padding-inline"
+                        })
+
                 if len(file_issues) > 1:
                     for issue in file_issues:
                         issue["confidence"] = min(issue["confidence"] + 0.05, 1.0)

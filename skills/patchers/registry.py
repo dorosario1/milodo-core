@@ -6,6 +6,7 @@ PATCHERS = {
     "overflow_risk": "skills.patchers.overflow_fix",
     "contrast": "skills.patchers.contrast_fix",
     "cta_weak": "skills.patchers.cta_fix",
+    "localization_spacing": "skills.patchers.localization_spacing",
 }
 
 
