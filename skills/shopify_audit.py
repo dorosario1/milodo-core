@@ -61,8 +61,8 @@ class ShopifyAuditor:
                         })
 
                 # 2. Contraste noir sur fond sombre (amélioré)
-                has_dark_text = re.search(r'color:\s*(#000|#000000|black|rgb\(0,\s*0,\s*0\))', content, re.IGNORECASE)
-                has_dark_bg = any(bg in content for bg in dark_backgrounds)
+                has_dark_text = re.search(r'(^|[;{\s])color:\s*(#000000|#000(?![0-9a-fA-F])|black|rgb\(0,\s*0,\s*0\))', content, re.IGNORECASE | re.MULTILINE)
+                has_dark_bg = any(re.search(r'(^|[;{\s])background(?:-color)?:\s*' + re.escape(bg) + r'(?![0-9a-fA-F])', content, re.IGNORECASE | re.MULTILINE) for bg in dark_backgrounds)
                 if has_dark_text and has_dark_bg:
                     confidence = 0.60
                     if "#333" in content:
@@ -130,7 +130,9 @@ class ShopifyAuditor:
         Uniquement pour les issues confidence >= 0.7
         """
         import shutil
+        import re
         from pathlib import Path
+        from logger import log_error
 
         theme = Path(theme_path)
 
@@ -166,21 +168,27 @@ class ShopifyAuditor:
         if issue_type == "overflow_risk":
             # Ajouter overflow-x hidden dans le premier container
             if "overflow-x" not in content:
-                new_content = content.replace(
-                    "class=\"",
-                    'style="overflow-x: hidden; max-width: 100vw;" class=\"',
-                    1
-                )
+                if 'style="' in content:
+                    new_content = content.replace(
+                        'style="',
+                        'style="overflow-x: hidden; max-width: 100vw; ',
+                        1
+                    )
+                else:
+                    new_content = content.replace(
+                        "class=\"",
+                        'style="overflow-x: hidden; max-width: 100vw;" class=\"',
+                        1
+                    )
 
         elif issue_type == "contrast":
             # Remplacer color sombre par clair
-            import re
             new_content = re.sub(
-                r'color:\s*(#000|#000000|black)',
-                'color: #ffffff',
+                r'(^|[;{\s])color:\s*(#000000|#000(?![0-9a-fA-F])|black)',
+                r'\1color: #ffffff',
                 content,
                 count=1,
-                flags=re.IGNORECASE
+                flags=re.IGNORECASE | re.MULTILINE
             )
 
         elif issue_type == "cta_weak":
@@ -198,6 +206,35 @@ class ShopifyAuditor:
 
         # 5. Écrire
         file_path.write_text(new_content, encoding="utf-8")
+
+        # 6. Validation post-patch
+        try:
+            new_content_check = file_path.read_text(encoding="utf-8", errors="replace")
+
+            if len(new_content_check) == 0:
+                raise ValueError("Fichier vide après patch")
+
+            if len(new_content_check) < len(content) * 0.5:
+                raise ValueError(f"Fichier tronqué : {len(new_content_check)} < {len(content) * 0.5}")
+
+            # Vérifier balises HTML uniquement pour .liquid et .html
+            if file_path.suffix in (".liquid", ".html") and issue_type in ("overflow_risk", "contrast"):
+                if "<" not in new_content_check or ">" not in new_content_check:
+                    raise ValueError("HTML corrompu : balises manquantes")
+                if re.search(r'<[^>]*\sstyle="[^"]*"[^>]*\sstyle="', new_content_check, re.IGNORECASE):
+                    raise ValueError("HTML corrompu : attribut style dupliqué")
+
+        except Exception as e:
+            # Log + rollback (garder le .bak pour inspection)
+            log_error(f"Validation failed after patch: {e}")
+            shutil.copy2(backup_path, file_path)
+            return {
+                "success": False,
+                "error": f"Validation failed, rollback : {e}",
+                "issue_id": issue_id,
+                "rolled_back": True,
+                "backup_kept": str(backup_path)
+            }
 
         return {
             "success": True,
