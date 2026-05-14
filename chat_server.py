@@ -143,6 +143,7 @@ def handle_chat(message):
     chat_response = None
     auto_prompt = None
     intent = None
+    action = None
 
     # Intent detection
     try:
@@ -207,8 +208,30 @@ def handle_chat(message):
         except Exception as e:
             log_error(f"Erreur exécution skill : {e}")
 
+    # Report dry-run (avant le report générique)
+    if skill_result and action == "dry_run":
+        previews = skill_result.get("previews", [])
+        summary = skill_result.get("summary", {})
+
+        if previews:
+            report_lines = []
+            report_lines.append(f"Mode: DRY-RUN (aucune modification)")
+            report_lines.append(f"Apercu - {len(previews)} modifications proposees")
+            report_lines.append(f"[HIGH confidence] {summary.get('high_confidence', 0)} [MEDIUM] {summary.get('medium_confidence', 0)}")
+            report_lines.append(f"Fichiers concernes : {summary.get('files_affected', 0)}")
+            report_lines.append("")
+
+            for p in previews[:5]:
+                report_lines.append(f"- [{p['estimated_risk']}] {p['description'][:70]}")
+                report_lines.append(f"  File: {p['file']} | Confidence: {p['confidence']:.0%}")
+                report_lines.append(f"  Fix: {p['fix_suggestion'][:80]}")
+                report_lines.append("")
+
+            report_lines.append("Pour appliquer, tape : applique les corrections")
+            chat_response = "\n".join(report_lines)
+
     # Si skill_result contient un rapport, préparer la réponse
-    if skill_result and isinstance(skill_result, dict):
+    if not chat_response and skill_result and isinstance(skill_result, dict):
         issues = skill_result.get("issues", [])
         summary = skill_result.get("summary", {})
 

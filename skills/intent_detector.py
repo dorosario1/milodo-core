@@ -29,6 +29,13 @@ INTENTS = {
         "domains": ["shopify", "dofitpro", "boutique", "store"],
         "prompt_template": "Analyse les pages produits de {project}. Optimise : titre, description, CTA, preuve sociale, images.",
         "skill": "shopify_audit"
+    },
+    "preview_changes": {
+        "keywords": ["prévisualise", "preview", "avant", "simule", "que proposes-tu", "que vas-tu changer"],
+        "domains": ["shopify", "dofitpro", "boutique", "store", "thème", "theme"],
+        "prompt_template": "Prévisualise les modifications proposées pour {project}. Mode dry-run : ne modifie rien.",
+        "skill": "shopify_audit",
+        "default_action": "dry_run"
     }
 }
 
@@ -70,7 +77,8 @@ def detect_intent(message, context=None):
             "confidence": min(best_score / 5, 1.0),
             "project": project,
             "prompt": prompt,
-            "skill": intent_data["skill"]
+            "skill": intent_data["skill"],
+            "default_action": intent_data.get("default_action")
         }
 
     return None
