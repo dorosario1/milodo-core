@@ -4,6 +4,7 @@ SKILL_VERSION = "1.0.0"
 
 import urllib.request
 import re
+from skills.html_extractors import extract_buttons, extract_forms, extract_whatsapp, extract_trust_elements, extract_urgency, quick_stats
 
 
 class HTMLAuditor:
@@ -22,9 +23,7 @@ class HTMLAuditor:
         issues = []
 
         # 1. CTA faibles
-        buttons = re.findall(r'<a[^>]*class="[^"]*(btn|button|cta)[^"]*"[^>]*>([^<]+)</a>', html, re.IGNORECASE)
-        if not buttons:
-            buttons = re.findall(r'<a[^>]*>[^<]*(réserver|contact|devis|réservation|découvrir|voir|commander)[^<]*</a>', html, re.IGNORECASE)
+        buttons = extract_buttons(html)
 
         if len(buttons) < 3:
             issues.append({
@@ -37,7 +36,8 @@ class HTMLAuditor:
             })
 
         # 2. WhatsApp manquant
-        if "wa.me" not in html and "whatsapp" not in html.lower():
+        wa_links = extract_whatsapp(html)
+        if not wa_links:
             issues.append({
                 "id": "no_whatsapp",
                 "type": "missing_contact",
@@ -59,7 +59,9 @@ class HTMLAuditor:
             })
 
         # 4. Pas d'urgence
-        if "place" not in html.lower() and "limité" not in html.lower() and "urgence" not in html.lower():
+        urgency = extract_urgency(html)
+        trust = extract_trust_elements(html)
+        if not urgency:
             issues.append({
                 "id": "no_urgency",
                 "type": "conversion_weak",
@@ -78,6 +80,7 @@ class HTMLAuditor:
             "url": url,
             "title": title,
             "issues": issues,
+            "quick_stats": quick_stats(html),
             "summary": {
                 "critical": len([i for i in issues if i["severity"] == "critical"]),
                 "medium": len([i for i in issues if i["severity"] == "medium"]),
