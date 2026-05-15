@@ -1,3 +1,5 @@
+import re
+
 from skills.html_extractors import extract_buttons, extract_forms, extract_whatsapp, extract_trust_elements, extract_urgency
 
 
@@ -65,6 +67,55 @@ def analyze(html, url=""):
             "zone": "general",
             "file": url,
             "description": "Aucun element d'urgence."
+        })
+
+    # 6. SEO - Title
+    title_match = re.search(r'<title>([^<]+)</title>', html, re.IGNORECASE)
+    if not title_match:
+        issues.append({
+            "id": "no_title", "type": "seo_missing", "severity": "high",
+            "confidence": 0.95, "zone": "head", "file": url,
+            "description": "Balise title absente. Critique pour le SEO."
+        })
+    elif len(title_match.group(1).strip()) < 10:
+        issues.append({
+            "id": "short_title", "type": "seo_weak", "severity": "medium",
+            "confidence": 0.80, "zone": "head", "file": url,
+            "description": f"Title trop court ({len(title_match.group(1))} chars). Visez 50-60 caracteres."
+        })
+
+    # 7. SEO - Meta description
+    meta_desc = re.search(r'<meta[^>]*name="description"[^>]*content="([^"]*)"', html, re.IGNORECASE)
+    if not meta_desc:
+        issues.append({
+            "id": "no_meta_desc", "type": "seo_missing", "severity": "medium",
+            "confidence": 0.85, "zone": "head", "file": url,
+            "description": "Meta description absente. Important pour le CTR dans Google."
+        })
+
+    # 8. Hero - H1
+    h1_count = len(re.findall(r'<h1[^>]*>', html, re.IGNORECASE))
+    if h1_count == 0:
+        issues.append({
+            "id": "no_h1", "type": "hero_weak", "severity": "high",
+            "confidence": 0.85, "zone": "hero", "file": url,
+            "description": "Aucune balise H1. Importance SEO et clarte du message."
+        })
+    elif h1_count > 1:
+        issues.append({
+            "id": "multiple_h1", "type": "seo_weak", "severity": "low",
+            "confidence": 0.70, "zone": "hero", "file": url,
+            "description": f"Plusieurs H1 ({h1_count}). Un seul H1 recommande."
+        })
+
+    # 9. Images - alt
+    images = re.findall(r'<img[^>]*>', html, re.IGNORECASE)
+    images_without_alt = [img for img in images if 'alt=' not in img]
+    if len(images) > 0 and len(images_without_alt) / len(images) > 0.5:
+        issues.append({
+            "id": "missing_alt", "type": "accessibility", "severity": "low",
+            "confidence": 0.75, "zone": "general", "file": url,
+            "description": f"{len(images_without_alt)}/{len(images)} images sans attribut alt."
         })
 
     return {
