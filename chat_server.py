@@ -156,6 +156,34 @@ def handle_chat(message):
     except Exception as e:
         log_warn(f"Intent detection error: {e}")
 
+    # Si le message contient une URL, utiliser audit_router
+    if message.startswith("http://") or message.startswith("https://"):
+        try:
+            from skills.audit_router import run as router_run
+            skill_result = router_run(action="audit_url", url=message.strip())
+            action = "audit_url"
+        except Exception as e:
+            log_error(f"Audit router error: {e}")
+
+    if action == "audit_url" and skill_result:
+        stack = skill_result.get("stack", "inconnu")
+        issues = skill_result.get("issues", [])
+        summary = skill_result.get("summary", {})
+
+        from skills.issue_grouper import group_issues, cluster_summary
+        clusters = group_issues(issues) if issues else []
+
+        report = f"Audit termine - Stack: {stack}\n"
+        report += f"Problemes: {summary.get('total', 0)}\n"
+        if clusters:
+            report += "\n" + cluster_summary(clusters)
+
+        return {
+            "success": True,
+            "message": message,
+            "response": report
+        }
+
     learn_match = re.match(r"^\s*(Apprends à|Apprends-moi à)\s+(.+?)\s*$", str(message), re.IGNORECASE)
 
     if learn_match:
@@ -277,6 +305,22 @@ def handle_chat(message):
                     chat_response = report
         except Exception as e:
             chat_response = f"Erreur: {e}"
+
+    if skill_result and action == "audit_url":
+        stack = skill_result.get("stack", "inconnu")
+        issues = skill_result.get("issues", [])
+        summary = skill_result.get("summary", {})
+
+        report_lines = []
+        report_lines.append(f"Audit termine - Stack: {stack}")
+        report_lines.append(f"Problemes: {summary.get('total', 0)}")
+
+        if issues:
+            from skills.issue_grouper import group_issues, cluster_summary
+            clusters = group_issues(issues)
+            report_lines.append(cluster_summary(clusters))
+
+        chat_response = "\n".join(report_lines)
 
     # Si skill_result contient un rapport, préparer la réponse
     if not chat_response and skill_result and isinstance(skill_result, dict):

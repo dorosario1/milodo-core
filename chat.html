@@ -202,7 +202,15 @@
         }
 
         const data = await response.json();
-        waitingMessage.textContent = data.response || "Réponse vide.";
+        // Supprimer le message d'attente
+        if (waitingMessage) waitingMessage.remove();
+
+        // Ajouter la réponse comme nouveau message
+        const milodoDiv = document.createElement("div");
+        milodoDiv.className = "message milodo";
+        milodoDiv.innerHTML = (data.response || "Réponse vide.").replace(/\n/g, "<br>");
+        messages.appendChild(milodoDiv);
+        messages.scrollTop = messages.scrollHeight;
       } catch (error) {
         waitingMessage.remove();
         addMessage(`Erreur réseau: ${error.message}`, "error");

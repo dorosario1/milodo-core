@@ -12,6 +12,7 @@ def analyze(html, url=""):
             "severity": "medium",
             "confidence": 0.75,
             "zone": "general",
+            "file": url,
             "description": f"Seulement {len(buttons)} CTA detectes."
         })
 
@@ -23,6 +24,7 @@ def analyze(html, url=""):
             "severity": "medium",
             "confidence": 0.85,
             "zone": "contact",
+            "file": url,
             "description": "Aucun lien WhatsApp."
         })
 
@@ -36,6 +38,7 @@ def analyze(html, url=""):
                     "severity": "low",
                     "confidence": 0.60,
                     "zone": "contact",
+                    "file": url,
                     "description": "Formulaire sans delai de reponse."
                 })
                 break
@@ -48,6 +51,7 @@ def analyze(html, url=""):
             "severity": "high",
             "confidence": 0.80,
             "zone": "general",
+            "file": url,
             "description": "Aucun element de confiance."
         })
 
@@ -59,6 +63,7 @@ def analyze(html, url=""):
             "severity": "low",
             "confidence": 0.55,
             "zone": "general",
+            "file": url,
             "description": "Aucun element d'urgence."
         })
 
