@@ -118,6 +118,52 @@ def analyze(html, url=""):
             "description": f"{len(images_without_alt)}/{len(images)} images sans attribut alt."
         })
 
+    # 10. WhatsApp - Bouton flottant
+    has_wa_link = bool(re.search(r'(?:wa\.me|api\.whatsapp\.com|whatsapp://)', html, re.IGNORECASE))
+    has_floating_wa = bool(re.search(r'(?:position:\s*fixed|position:fixed).*(?:whatsapp|wa\.me)', html, re.IGNORECASE | re.DOTALL))
+    whatsapp_above_fold = bool(re.search(r'<(?:header|nav|section)[^>]*>.*?(?:wa\.me|whatsapp).*?</(?:header|nav|section)>', html, re.IGNORECASE | re.DOTALL))
+
+    if not has_wa_link:
+        # Déjà couvert par missing_contact plus haut, on ajoute juste la spécificité WhatsApp
+        pass
+    elif has_wa_link and not has_floating_wa:
+        issues.append({
+            "id": "whatsapp_not_floating",
+            "type": "whatsapp_ux",
+            "severity": "low",
+            "confidence": 0.65,
+            "zone": "contact",
+            "file": url,
+            "description": "WhatsApp present mais pas en bouton flottant. Meilleure conversion avec un bouton fixe mobile."
+        })
+
+    if has_wa_link and not whatsapp_above_fold:
+        issues.append({
+            "id": "whatsapp_below_fold",
+            "type": "whatsapp_ux",
+            "severity": "medium",
+            "confidence": 0.70,
+            "zone": "contact",
+            "file": url,
+            "description": "WhatsApp non visible immediatement (below the fold). Impact conversion mobile."
+        })
+
+    # 11. WhatsApp - Qualité du message
+    wa_messages = re.findall(r'(?:wa\.me|whatsapp.*?)(?:text|message)[^"]*"?([^"]*)"?', html, re.IGNORECASE)
+    if has_wa_link and wa_messages:
+        for msg in wa_messages:
+            if len(msg.strip()) < 10:
+                issues.append({
+                    "id": "whatsapp_weak_message",
+                    "type": "whatsapp_ux",
+                    "severity": "low",
+                    "confidence": 0.60,
+                    "zone": "contact",
+                    "file": url,
+                    "description": "Message WhatsApp pre-rempli trop court. Ajouter un message clair ameliore la conversion."
+                })
+                break
+
     return {
         "success": True,
         "url": url,
