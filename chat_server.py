@@ -6,6 +6,7 @@ from socketserver import TCPServer
 from skill_loader import create_skill
 from coding_agent import generate_code
 from logger import log_info, log_error, log_warn, log_debug
+from skills.issue_grouper import group_issues, cluster_summary
 
 
 _server = None
@@ -201,10 +202,12 @@ def handle_chat(message):
                     project = intent.get("project", "")
                     theme_path = PROJECT_PATHS.get(project)
                     scope = intent.get("ui_scope", []) if intent else None
+                    min_conf = intent.get("min_confidence", 0.7)
                     skill_result = skill_module.run(
                         action=action,
                         theme_path=theme_path,
-                        scope=scope
+                        scope=scope,
+                        min_confidence=min_conf
                     )
                     log_info(f"Skill result : {skill_result}")
         except Exception as e:
@@ -213,22 +216,15 @@ def handle_chat(message):
     # Report dry-run (avant le report générique)
     if skill_result and action == "dry_run":
         previews = skill_result.get("previews", [])
-        summary = skill_result.get("summary", {})
 
         if previews:
+            clusters = group_issues(previews)
             report_lines = []
             report_lines.append(f"Mode: DRY-RUN (aucune modification)")
-            report_lines.append(f"Apercu - {len(previews)} modifications proposees")
-            report_lines.append(f"[HIGH confidence] {summary.get('high_confidence', 0)} [MEDIUM] {summary.get('medium_confidence', 0)}")
-            report_lines.append(f"Fichiers concernes : {summary.get('files_affected', 0)}")
+            report_lines.append(f"Apercu - {len(previews)} issues, {len(clusters)} clusters")
             report_lines.append("")
-
-            for p in previews[:5]:
-                report_lines.append(f"- [{p['estimated_risk']}] {p['description'][:70]}")
-                report_lines.append(f"  File: {p['file']} | Confidence: {p['confidence']:.0%}")
-                report_lines.append(f"  Fix: {p['fix_suggestion'][:80]}")
-                report_lines.append("")
-
+            report_lines.append(cluster_summary(clusters))
+            report_lines.append("")
             report_lines.append("Pour appliquer, tape : applique les corrections")
             chat_response = "\n".join(report_lines)
 
@@ -285,18 +281,14 @@ def handle_chat(message):
     # Si skill_result contient un rapport, préparer la réponse
     if not chat_response and skill_result and isinstance(skill_result, dict):
         issues = skill_result.get("issues", [])
-        summary = skill_result.get("summary", {})
 
         if issues:
+            clusters = group_issues(issues)
             report_lines = []
-            report_lines.append(f"Audit termine - {summary.get('total', 0)} problemes detectes")
-            report_lines.append(f"[CRITICAL] {summary.get('critical', 0)} [MEDIUM] {summary.get('medium', 0)} [LOW] {summary.get('low', 0)}")
+            report_lines.append(f"Audit termine - {len(issues)} problemes detectes, {len(clusters)} clusters")
             report_lines.append("")
-            report_lines.append("Top problemes :")
-
-            for issue in issues[:5]:
-                report_lines.append(f"- [{issue['severity']}] {issue['description'][:80]} ({issue['file']})")
-
+            report_lines.append(cluster_summary(clusters))
+            report_lines.append("")
             report_lines.append(f"Fichiers scannes : {skill_result.get('files_scanned', 0)}")
             chat_response = "\n".join(report_lines)
 

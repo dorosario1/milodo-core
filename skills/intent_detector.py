@@ -11,7 +11,8 @@ INTENTS = {
         "domains": ["shopify", "dofitpro", "boutique", "store", "thème", "theme"],
         "prompt_template": "Analyse le thème Shopify {project}. Détecte les problèmes UI : header, contraste, padding, CTA, mobile. Propose des correctifs.",
         "skill": "shopify_audit",
-        "ui_scope": []
+        "ui_scope": [],
+        "min_confidence": 0.5
     },
     "fix_ui": {
         "keywords": ["corrige", "répare", "fix", "header", "bande blanche", "padding", "contraste"],
@@ -38,7 +39,8 @@ INTENTS = {
         "domains": ["shopify", "dofitpro", "boutique", "store", "thème", "theme"],
         "prompt_template": "Prévisualise les modifications proposées pour {project}. Mode dry-run : ne modifie rien.",
         "skill": "shopify_audit",
-        "default_action": "dry_run"
+        "default_action": "dry_run",
+        "min_confidence": 0.5
     },
     "apply_approved": {
         "keywords": ["applique les corrections", "applique", "exécute les corrections"],
@@ -89,7 +91,8 @@ def detect_intent(message, context=None):
             "prompt": prompt,
             "skill": intent_data["skill"],
             "default_action": intent_data.get("default_action"),
-            "ui_scope": intent_data.get("ui_scope", [])
+            "ui_scope": intent_data.get("ui_scope", []),
+            "min_confidence": intent_data.get("min_confidence", 0.7)
         }
 
     return None
