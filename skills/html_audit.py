@@ -3,8 +3,7 @@ SKILL_DESCRIPTION = "Audite une page web via son URL et détecte les problèmes 
 SKILL_VERSION = "1.0.0"
 
 import urllib.request
-import re
-from skills.html_extractors import extract_buttons, extract_forms, extract_whatsapp, extract_trust_elements, extract_urgency, quick_stats
+from skills.heuristics_engine import analyze
 
 
 class HTMLAuditor:
@@ -20,74 +19,7 @@ class HTMLAuditor:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-        issues = []
-
-        # 1. CTA faibles
-        buttons = extract_buttons(html)
-
-        if len(buttons) < 3:
-            issues.append({
-                "id": "cta_count",
-                "type": "cta_weak",
-                "severity": "medium",
-                "confidence": 0.70,
-                "zone": "general",
-                "description": f"Peu de CTA visibles ({len(buttons)}). Ajouter des boutons d'action."
-            })
-
-        # 2. WhatsApp manquant
-        wa_links = extract_whatsapp(html)
-        if not wa_links:
-            issues.append({
-                "id": "no_whatsapp",
-                "type": "missing_contact",
-                "severity": "medium",
-                "confidence": 0.80,
-                "zone": "contact",
-                "description": "Pas de lien WhatsApp détecté. Crucial pour le tourisme."
-            })
-
-        # 3. Formulaire sans réassurance
-        if "<form" in html.lower() and "réponse" not in html.lower() and "2h" not in html.lower():
-            issues.append({
-                "id": "form_no_trust",
-                "type": "trust_missing",
-                "severity": "low",
-                "confidence": 0.60,
-                "zone": "contact",
-                "description": "Formulaire sans mention de délai de réponse."
-            })
-
-        # 4. Pas d'urgence
-        urgency = extract_urgency(html)
-        trust = extract_trust_elements(html)
-        if not urgency:
-            issues.append({
-                "id": "no_urgency",
-                "type": "conversion_weak",
-                "severity": "low",
-                "confidence": 0.55,
-                "zone": "general",
-                "description": "Aucun élément d'urgence ou de rareté."
-            })
-
-        # 5. Titre
-        title_match = re.search(r'<title>([^<]+)</title>', html, re.IGNORECASE)
-        title = title_match.group(1) if title_match else "N/A"
-
-        return {
-            "success": True,
-            "url": url,
-            "title": title,
-            "issues": issues,
-            "quick_stats": quick_stats(html),
-            "summary": {
-                "critical": len([i for i in issues if i["severity"] == "critical"]),
-                "medium": len([i for i in issues if i["severity"] == "medium"]),
-                "low": len([i for i in issues if i["severity"] == "low"]),
-                "total": len(issues)
-            }
-        }
+        return analyze(html, url)
 
 
 def run(action="audit_url", **kwargs):
