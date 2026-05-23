@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="30">
+  <title>MILODO Causal Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>MILODO Causal Dashboard</h1>
+        <p>Read-only runtime cognition view</p>
+      </div>
+      <span class="status">soak stable: $soak_stable</span>
+    </header>
+
+    <section class="metrics">
+      <article><span>Records</span><strong>$memory_records</strong></article>
+      <article><span>Executions</span><strong>$memory_executions</strong></article>
+      <article><span>Rollback History</span><strong>$rollback_history</strong></article>
+    </section>
+
+    <section class="grid">
+      <article>
+        <h2>Strategy Success Rates</h2>
+        <pre>$strategy_rankings</pre>
+      </article>
+      <article>
+        <h2>Runtime Compatibility</h2>
+        <pre>$runtime_scores</pre>
+      </article>
+      <article>
+        <h2>Transfer Scores</h2>
+        <pre>$transfer_scores</pre>
+      </article>
+      <article>
+        <h2>Runtime Snapshots</h2>
+        <pre>$snapshots</pre>
+      </article>
+      <article>
+        <h2>Ecommerce Knowledge</h2>
+        <pre>$ecommerce_patterns</pre>
+      </article>
+      <article>
+        <h2>Shopify/UI Fixes</h2>
+        <pre>$ui_fixes</pre>
+      </article>
+    </section>
+
+    <section>
+      <h2>Raw Read-Only JSON</h2>
+      <pre>$raw_json</pre>
+    </section>
+  </main>
+</body>
+</html>
+
