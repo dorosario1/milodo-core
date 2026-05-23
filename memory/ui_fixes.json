@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "patterns": [
+    {
+      "id": "mobile_overflow_navigation",
+      "domain": "responsive",
+      "problem": "overflow horizontal critique sur mobile",
+      "signals": ["overflow horizontal", "menu mobile casse", "viewport wider than screen"],
+      "recommended_fix": "containment_wrapper + overflow-x hidden",
+      "source_project": "DofitPro",
+      "success_count": 1,
+      "failure_count": 0,
+      "confidence": 0.91
+    },
+    {
+      "id": "premium_header_spacing",
+      "domain": "premium_ui",
+      "problem": "header spacing impacte perception premium",
+      "signals": ["header cramped", "spacing compact", "premium perception low"],
+      "recommended_fix": "increase header spacing + align navigation rhythm",
+      "source_project": "DofitPro",
+      "success_count": 1,
+      "failure_count": 0,
+      "confidence": 0.86
+    },
+    {
+      "id": "mobile_priority_over_animation",
+      "domain": "responsive",
+      "problem": "animations prioritaires au détriment du mobile",
+      "signals": ["mobile slow", "animation jank", "responsive priority"],
+      "recommended_fix": "priorité responsive mobile > animations",
+      "source_project": "DofitPro",
+      "success_count": 1,
+      "failure_count": 0,
+      "confidence": 0.89
+    }
+  ]
+}
+

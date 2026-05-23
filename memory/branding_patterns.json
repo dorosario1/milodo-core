@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "patterns": [
+    {
+      "id": "fitness_premium_black_orange",
+      "domain": "branding",
+      "problem": "branding fitness premium faible",
+      "signals": ["fitness premium", "brand lacks energy", "weak brand contrast"],
+      "recommended_fix": "black/orange branding fonctionne pour fitness premium",
+      "source_project": "DofitPro",
+      "success_count": 1,
+      "failure_count": 0,
+      "confidence": 0.9
+    },
+    {
+      "id": "ai_hero_credibility_drop",
+      "domain": "branding",
+      "problem": "hero section trop IA",
+      "signals": ["hero trop IA", "ai-looking hero", "credibility drop"],
+      "recommended_fix": "humanisation image fitness améliore crédibilité",
+      "source_project": "DofitPro",
+      "success_count": 1,
+      "failure_count": 0,
+      "confidence": 0.89
+    }
+  ]
+}
+

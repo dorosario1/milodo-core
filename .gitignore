@@ -1,5 +1,7 @@
 __pycache__/
+**pycache**/
 *.pyc
+*.lock
 .venv/
 venv/
 node_modules/
@@ -18,6 +20,10 @@ Thumbs.db
 .milodo/learning_state.json
 .milodo/scheduler.pid
 .milodo/genome/*.json
+.milodo/workspaces/
+.milodo/reaudit_reports/
+reports/soak/*.json
+reports/soak/snapshots/*.json
 
 # Générations
 genome_evo/

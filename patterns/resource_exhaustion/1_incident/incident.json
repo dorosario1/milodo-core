@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0",
+  "name": "resource_exhaustion",
+  "signals": ["memory_pressure", "cpu_pressure", "leak_growth"],
+  "severity": "warning"
+}
+

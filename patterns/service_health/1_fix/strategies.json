@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "strategies": [
+    {
+      "name": "dependency_wait",
+      "actions": [
+        "wait for dependency readiness",
+        "retry failed healthcheck",
+        "mark service stable after consecutive successful checks"
+      ],
+      "rollback_strategy": {
+        "name": "restore_previous_health_policy",
+        "available": true,
+        "actions": [
+          "restore prior readiness thresholds",
+          "re-run service health validation"
+        ]
+      }
+    },
+    {
+      "name": "health_watchdog",
+      "actions": [
+        "monitor dependency reachability",
+        "quarantine unhealthy state transitions",
+        "report degraded service health"
+      ],
+      "rollback_strategy": {
+        "name": "disable_watchdog_policy",
+        "available": true,
+        "actions": [
+          "disable added watchdog policy",
+          "restore previous healthcheck cadence"
+        ]
+      }
+    }
+  ]
+}
+

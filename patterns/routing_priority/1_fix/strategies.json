@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "strategies": [
+    {
+      "name": "priority_explicit",
+      "actions": [
+        "assign explicit route priority",
+        "verify intended route selection",
+        "preserve existing middleware behavior"
+      ],
+      "rollback_strategy": {
+        "name": "restore_implicit_priority",
+        "available": true,
+        "actions": [
+          "restore previous route priority configuration",
+          "re-run routing validation"
+        ]
+      }
+    },
+    {
+      "name": "rule_isolation",
+      "actions": [
+        "isolate generic and specific route rules",
+        "prevent traffic capture by broad matchers",
+        "validate intended route ownership"
+      ],
+      "rollback_strategy": {
+        "name": "restore_previous_rule_scope",
+        "available": true,
+        "actions": [
+          "restore previous rule boundaries",
+          "re-run routing validation"
+        ]
+      }
+    },
+    {
+      "name": "middleware_chain_order",
+      "actions": [
+        "place middleware in intended execution order",
+        "verify chain is reached through selected route",
+        "confirm no bypass remains"
+      ],
+      "rollback_strategy": {
+        "name": "restore_previous_middleware_order",
+        "available": true,
+        "actions": [
+          "restore previous middleware chain order",
+          "re-run routing validation"
+        ]
+      }
+    }
+  ]
+}
+

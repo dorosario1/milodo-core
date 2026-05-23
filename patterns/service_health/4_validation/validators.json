@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "checks": [
+    "dependency readiness observed",
+    "healthcheck passes after wait policy",
+    "service health no longer degraded",
+    "rollback strategy present"
+  ]
+}

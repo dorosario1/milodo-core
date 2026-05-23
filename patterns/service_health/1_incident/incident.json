@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "name": "service_health",
+  "signals": [
+    "dependency_unreachable",
+    "failed_healthcheck",
+    "degraded_service_health"
+  ],
+  "learned_patterns": [
+    "startup_race_condition",
+    "unhealthy_state",
+    "dependency_failure"
+  ],
+  "severity": "warning"
+}
+

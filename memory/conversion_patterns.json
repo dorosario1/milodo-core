@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "patterns": [
+    {
+      "id": "orange_black_cta_contrast",
+      "domain": "conversion",
+      "problem": "CTA manque de contraste",
+      "signals": ["cta low contrast", "button not visible", "conversion friction"],
+      "recommended_fix": "contraste CTA orange/noir performant",
+      "source_project": "DofitPro",
+      "success_count": 1,
+      "failure_count": 0,
+      "confidence": 0.9
+    },
+    {
+      "id": "premium_section_breathing",
+      "domain": "landing_conversion",
+      "problem": "sections trop compactes",
+      "signals": ["sections trop compactes", "premium perception low", "landing cramped"],
+      "recommended_fix": "increase vertical rhythm and product proof spacing",
+      "source_project": "DofitPro",
+      "success_count": 1,
+      "failure_count": 0,
+      "confidence": 0.87
+    }
+  ]
+}
+

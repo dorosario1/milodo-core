@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "strategies": [
+    {
+      "name": "fix_memory_leak",
+      "actions": [
+        "reduce in-memory retention",
+        "release stale runtime references",
+        "confirm post-fix memory stability"
+      ],
+      "rollback_strategy": {
+        "name": "restore_previous_runtime_state",
+        "available": true,
+        "actions": ["restore last known stable configuration", "re-run validation"]
+      }
+    }
+  ]
+}
+

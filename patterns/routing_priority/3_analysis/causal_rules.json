@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "cause": "routing_priority",
+  "confidence": 0.87,
+  "causal_chain": [
+    "generic_route_priority",
+    "traffic_capture",
+    "intended_route_bypassed",
+    "wrong_middleware_chain"
+  ],
+  "learned_patterns": [
+    "route_shadowing",
+    "priority_misconfiguration",
+    "middleware_order_issue"
+  ]
+}
+

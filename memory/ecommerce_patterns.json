@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "patterns": [
+    {
+      "id": "cart_language_route_break",
+      "domain": "shopify_ux",
+      "problem": "route panier/langue cassée",
+      "signals": ["cart route broken", "language switch broken", "shopify navigation error"],
+      "recommended_fix": "verify theme routes + preserve localized cart links",
+      "source_project": "DofitPro",
+      "success_count": 1,
+      "failure_count": 0,
+      "confidence": 0.91
+    },
+    {
+      "id": "mobile_overflow_navigation",
+      "domain": "responsive_shopify",
+      "problem": "menu mobile casse sur Shopify",
+      "signals": ["menu mobile casse", "mobile navigation overflow", "overflow horizontal", "responsive broken"],
+      "recommended_fix": "containment_wrapper + overflow-x hidden",
+      "source_project": "DofitPro",
+      "success_count": 1,
+      "failure_count": 0,
+      "confidence": 0.91
+    },
+    {
+      "id": "sticky_add_to_cart_mobile",
+      "domain": "mobile_conversion",
+      "problem": "CTA produit peu accessible sur mobile",
+      "signals": ["mobile product CTA hidden", "add to cart not visible", "long product page"],
+      "recommended_fix": "sticky add-to-cart utile mobile",
+      "source_project": "DofitPro",
+      "success_count": 1,
+      "failure_count": 0,
+      "confidence": 0.88
+    }
+  ]
+}
+

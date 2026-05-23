@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0",
+  "cause": "resource_exhaustion",
+  "confidence": 0.86,
+  "required_signals": ["memory_pressure"],
+  "supporting_signals": ["leak_growth", "cpu_pressure"]
+}
+
