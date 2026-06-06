@@ -1,5 +1,13 @@
 import argparse
+import json
 import sys
+
+if len(sys.argv) > 1 and sys.argv[1] == "inspect-memory":
+    from core import causal_inspector_cli
+
+    sys.argv = [sys.argv[0], *sys.argv[2:]]
+    sys.exit(causal_inspector_cli.main())
+
 import time
 import webbrowser
 from pathlib import Path
@@ -12,11 +20,14 @@ import project_scanner
 import shopify_manager
 import skill_loader
 import state_recall
+import workspace_manager
+import workspace_sandbox
 from action_executor import execute_actions
 from chat_server import start_server
 from dag_engine import DAGEngine
 from dag_builder import build_dag_from_goal
 from intelligence import ai_plan
+from logger import log_warn
 from planner import build_dag_plan, explain_plan, plan_goal, steps_to_tasks
 from state_store import init_db, save_run, save_task
 
@@ -97,6 +108,9 @@ def main(argv):
         if args.command == "run":
             return command_run(args.goal)
 
+        if args.command == "approve":
+            return command_approve()
+
         if args.command == "remember":
             return command_remember(args.entry_type, args.content)
 
@@ -128,6 +142,8 @@ def build_parser():
 
     run_parser = subparsers.add_parser("run", help="Executer DAG planifie sans commande systeme")
     run_parser.add_argument("goal", help="Objectif utilisateur")
+
+    subparsers.add_parser("approve", help="Approuver le workspace en attente")
 
     remember_parser = subparsers.add_parser("remember", help="Ajouter memoire")
     remember_parser.add_argument("entry_type", help="Type entree memoire")
@@ -204,6 +220,21 @@ def command_run(goal):
     dag_plan = build_dag_plan(goal)
     actions = dag_plan.get("actions", [])
     output_dir = Path(__file__).resolve().parent / "business_outputs"
+    sandbox_context = {"workspace_path": str(output_dir)}
+    try:
+        workspace_result = workspace_manager.prepare_run_context(goal)
+        if workspace_result.get("success") and workspace_result.get("workspace"):
+            sandbox_result = workspace_sandbox.create_workspace(
+                workspace_result["workspace"]
+            )
+            sandbox_context = workspace_sandbox.build_run_context(
+                sandbox_result["workspace_dir"]
+            )
+            sandbox_output_dir = sandbox_context.get("output_dir")
+            if sandbox_output_dir:
+                output_dir = Path(sandbox_output_dir)
+    except Exception as error:
+        log_warn(f"Workspace sandbox indisponible, fallback business_outputs : {error}")
     project_name = str(goal).replace("site vitrine restaurant", "").replace("avec menu et contact", "").strip() or "milodo_project"
 
     for item in actions:
@@ -223,8 +254,27 @@ def command_run(goal):
     for task in tasks:
         engine.add_task(task)
 
+    workspace_before = _snapshot_workspace(sandbox_context["workspace_path"])
     result = engine.run()
     action_result = execute_actions(actions, output_dir)
+    workspace_after = _snapshot_workspace(sandbox_context["workspace_path"])
+    workspace_changes = _diff_workspace_snapshots(workspace_before, workspace_after)
+    run_success = result.get("success", False) and action_result.get("success", False)
+    workspace_report = {
+        "project": project_name,
+        "workspace": sandbox_context["workspace_path"],
+        "actions": [
+            item.get("action")
+            for item in action_result.get("results", [])
+        ],
+        "files_created": action_result.get("files_created", []),
+        "workspace_changes": workspace_changes,
+        "success": run_success,
+    }
+    pending_approval = None
+
+    if run_success:
+        pending_approval = _save_pending_workspace_approval(workspace_report)
 
     print(f"✅ {action_result.get('completed', 0)}/{action_result.get('total', 0)} actions réussies")
     print(f"Projet créé dans : {output_dir}")
@@ -236,13 +286,15 @@ def command_run(goal):
                 print(f" - {item.get('action')}: {item.get('error')}")
 
     print({
-        "success": result.get("success", False) and action_result.get("success", False),
+        "success": run_success,
         "goal": goal,
         "plan": dag_plan,
         "result": result,
         "actions": action_result,
+        "workspace_report": workspace_report,
+        "pending_approval": pending_approval,
     })
-    return 0 if result.get("success", False) and action_result.get("success", False) else 1
+    return 0 if run_success else 1
 
 
 def command_remember(entry_type, content):
@@ -262,6 +314,114 @@ def command_memory(query):
         "results": results,
     })
     return 0
+
+
+def command_approve():
+    approval_path = Path(".milodo") / "pending_workspace_approval.json"
+
+    if not approval_path.exists():
+        print(f"[MILODO] Error: fichier introuvable : {approval_path}")
+        return 1
+
+    with approval_path.open("r", encoding="utf-8") as file:
+        pending = json.load(file)
+
+    if not isinstance(pending, dict):
+        print(f"[MILODO] Error: JSON invalide : {approval_path}")
+        return 1
+
+    fields = ["project", "workspace", "added", "modified", "deleted", "status"]
+
+    print("[MILODO] Approval before:")
+    for field in fields:
+        print(f"{field}: {pending.get(field)}")
+
+    pending["status"] = "approved"
+
+    tmp_path = approval_path.with_suffix(".tmp")
+    tmp_path.write_text(
+        json.dumps(pending, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    tmp_path.replace(approval_path)
+
+    print("[MILODO] Approval after:")
+    for field in fields:
+        print(f"{field}: {pending.get(field)}")
+
+    print("[MILODO] Success: workspace approved")
+    return 0
+
+
+def _snapshot_workspace(workspace_path):
+    root = Path(workspace_path)
+    snapshot = {}
+
+    if not root.exists():
+        return snapshot
+
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+
+        try:
+            stat = path.stat()
+            relative_path = path.relative_to(root).as_posix()
+            snapshot[relative_path] = {
+                "path": relative_path,
+                "size": stat.st_size,
+                "mtime_ns": stat.st_mtime_ns,
+            }
+        except OSError:
+            continue
+
+    return snapshot
+
+
+def _diff_workspace_snapshots(before, after):
+    before_paths = set(before)
+    after_paths = set(after)
+
+    added = sorted(after_paths - before_paths)
+    deleted = sorted(before_paths - after_paths)
+    modified = sorted(
+        path
+        for path in before_paths & after_paths
+        if (
+            before[path].get("size") != after[path].get("size")
+            or before[path].get("mtime_ns") != after[path].get("mtime_ns")
+        )
+    )
+
+    return {
+        "added": added,
+        "modified": modified,
+        "deleted": deleted,
+    }
+
+
+def _save_pending_workspace_approval(workspace_report):
+    workspace_changes = workspace_report.get("workspace_changes", {})
+    pending = {
+        "project": workspace_report.get("project", ""),
+        "workspace": workspace_report.get("workspace", ""),
+        "added": len(workspace_changes.get("added", [])),
+        "modified": len(workspace_changes.get("modified", [])),
+        "deleted": len(workspace_changes.get("deleted", [])),
+        "status": "pending_approval",
+    }
+    approval_path = Path(".milodo") / "pending_workspace_approval.json"
+    approval_path.parent.mkdir(exist_ok=True)
+    tmp_path = approval_path.with_suffix(".tmp")
+    tmp_path.write_text(
+        json.dumps(pending, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    tmp_path.replace(approval_path)
+    return {
+        "path": str(approval_path),
+        "content": pending,
+    }
 
 
 def command_skills():

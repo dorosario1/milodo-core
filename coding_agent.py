@@ -1,4 +1,5 @@
 import difflib
+import time
 from pathlib import Path
 
 import intelligence
@@ -14,6 +15,7 @@ SCORE_HISTORY_FILE = (
 
 GENOME_DIR = ".milodo/genome"
 NICHE_MEMORY_FILE = ".milodo/niche_memory.json"
+runtime_signals = {"fallback_used": False, "timeout_occurred": False, "ia_success": False, "ollama_timeout": False, "fallback_triggered": False, "repair_attempt": False, "repair_success": False}
 
 
 TEMPLATES = {
@@ -556,13 +558,22 @@ def generate_code(prompt):
         prompt,
     )
 
+    ask_intelligence_start_time = time.perf_counter()
     result = _ask_intelligence(full_prompt)
+    log_info(
+        f"IA timing _ask_intelligence: "
+        f"{time.perf_counter() - ask_intelligence_start_time:.2f}s"
+    )
 
     if not result:
+        runtime_signals["fallback_used"] = True
+        runtime_signals["timeout_occurred"] = True
+        runtime_signals["fallback_triggered"] = True
         log_warn("Fallback coding - IA indisponible")
         return ""
 
     code = _clean_code_result(result)
+    runtime_signals["ia_success"] = True
     log_info("Code généré via IA")
     log_debug(f"Code généré : {len(code)} caractères")
     return code
@@ -720,6 +731,9 @@ def modify_file(path, instruction):
     updated_content = _ask_intelligence(prompt)
 
     if not updated_content:
+        runtime_signals["fallback_used"] = True
+        runtime_signals["timeout_occurred"] = True
+        runtime_signals["fallback_triggered"] = True
         log_warn("Fallback coding - IA indisponible")
         return original_content
 
@@ -829,7 +843,12 @@ RÈGLES ABSOLUES :
 - Retourner UNIQUEMENT le code HTML
 """
 
+                generate_code_start_time = time.perf_counter()
                 generated = generate_code(single_prompt)
+                log_info(
+                    f"IA timing generate_code: "
+                    f"{time.perf_counter() - generate_code_start_time:.2f}s"
+                )
 
                 if not generated:
                     errors.append(f"Aucun contenu généré : {filename}")
@@ -892,10 +911,15 @@ Génère un projet complet moderne, responsive et professionnel.
 Le contenu doit être réaliste, détaillé et en français.
 """
 
+    generate_multi_files_start_time = time.perf_counter()
     result = generate_multi_files(
         prompt=prompt,
         output_dir=output_dir,
         files_spec=template["files"]
+    )
+    log_info(
+        f"IA timing generate_multi_files: "
+        f"{time.perf_counter() - generate_multi_files_start_time:.2f}s"
     )
 
     result["output_dir"] = str(output_dir)
@@ -1732,6 +1756,8 @@ def genome_aware_generate(
     du génome.
     """
 
+    import re
+
     genome_sections = {}
 
     section_types = [
@@ -1750,6 +1776,8 @@ def genome_aware_generate(
         "Design moderne.",
         "Contenu riche.",
     ]
+
+    selected_sections = []
 
     for section_type in section_types:
 
@@ -1770,22 +1798,67 @@ def genome_aware_generate(
             )
         }
 
+        selected_sections.append({
+            "type": section_type,
+            "score": best_entry.get("score", 0),
+            "html": best_entry.get("html", "")
+        })
+
+    normalized_sections = {
+        section["type"]: re.sub(
+            r"\s+",
+            "",
+            section["html"]
+        )
+        for section in selected_sections
+    }
+
+    for section in selected_sections:
+        section_type = section["type"]
+        section_html = section["html"]
+        normalized_html = normalized_sections[section_type]
+        contained_in = next(
+            (
+                other["type"]
+                for other in selected_sections
+                if other["type"] != section_type
+                and len(normalized_sections[other["type"]]) > len(normalized_html)
+                and normalized_html
+                and normalized_html in normalized_sections[other["type"]]
+            ),
+            None
+        )
+
+        if contained_in:
+            prompt_parts.append(
+                f"""
+SECTION GÉNOME :
+- Type : {section_type}
+- Score : {section["score"]}
+- HTML : déjà inclus dans {contained_in}
+"""
+            )
+            continue
+
         prompt_parts.append(
             f"""
 SECTION GÉNOME :
 - Type : {section_type}
-- Score : {best_entry.get('score', 0)}
+- Score : {section["score"]}
 
 HTML :
-{best_entry.get('html', '')}
-
-IMPORTANT :
-Inspire-toi fortement
-de cette structure,
-mais améliore-la.
-Ne copie pas exactement.
+{section_html}
 """
         )
+
+    prompt_parts.append(
+        """
+IMPORTANT :
+Inspire-toi fortement de ces structures,
+mais améliore-les.
+Ne copie pas exactement.
+"""
+    )
 
     enriched_prompt = "\n".join(
         prompt_parts
@@ -1796,10 +1869,15 @@ Ne copie pas exactement.
         f"{template_type}"
     )
 
+    generate_from_template_start_time = time.perf_counter()
     result = generate_from_template(
         template_type,
         enriched_prompt,
         output_dir
+    )
+    log_info(
+        f"Genome timing generate_from_template: "
+        f"{time.perf_counter() - generate_from_template_start_time:.2f}s"
     )
 
     result["genome_used"] = genome_sections
@@ -1819,6 +1897,49 @@ def genome_aware_evolve(
     """
 
     from pathlib import Path
+
+    try:
+        from skills.genome_memory import (
+            archive_generation,
+            detect_regression,
+            load_archives,
+        )
+    except Exception as e:
+        archive_generation = None
+        detect_regression = None
+        load_archives = None
+        log_warn(
+            f"Genome memory indisponible : {e}"
+        )
+
+    if load_archives:
+        try:
+            load_archives_start_time = time.perf_counter()
+            archives = load_archives()
+            log_info(
+                f"Genome timing load_archives: "
+                f"{time.perf_counter() - load_archives_start_time:.2f}s"
+            )
+            best_archive = archives[0] if archives else None
+
+            if best_archive:
+                log_info(
+                    f"Genome memory best archive : "
+                    f"found=True, "
+                    f"generation={best_archive.get('generation')}, "
+                    f"score={best_archive.get('score')}, "
+                    f"html_path={best_archive.get('html_path')}, "
+                    f"genes={best_archive.get('genes')}"
+                )
+            else:
+                log_info(
+                    "Genome memory best archive : found=False"
+                )
+        except Exception as memory_error:
+            log_warn(
+                f"Genome memory load archives error : "
+                f"{memory_error}"
+            )
 
     evolution = []
 
@@ -1848,10 +1969,15 @@ def genome_aware_evolve(
                 generation
             )
 
+            genome_aware_generate_start_time = time.perf_counter()
             result = genome_aware_generate(
                 template_type,
                 generation_prompt,
                 str(generation_dir)
+            )
+            log_info(
+                f"Genome timing genome_aware_generate: "
+                f"{time.perf_counter() - genome_aware_generate_start_time:.2f}s"
             )
 
             html_files = list(
@@ -1875,8 +2001,13 @@ def genome_aware_evolve(
                         section_fitness
                     )
 
+                    fitness_score_start_time = time.perf_counter()
                     fitness = fitness_score(
                         str(html_file)
+                    )
+                    log_info(
+                        f"Genome timing fitness_score: "
+                        f"{time.perf_counter() - fitness_score_start_time:.2f}s"
                     )
 
                     generation_scores.append(
@@ -1889,6 +2020,35 @@ def genome_aware_evolve(
                     content = read_file(
                         str(html_file)
                     )
+
+                    if archive_generation:
+                        try:
+                            archive_generation_start_time = time.perf_counter()
+                            archived = archive_generation(
+                                f"{project_name}_gen_{generation}_{html_file.stem}",
+                                fitness.get(
+                                    "fitness",
+                                    0
+                                ),
+                                {},
+                                content or "",
+                                genome_dir=output_base
+                            )
+                            log_info(
+                                f"Genome timing archive_generation: "
+                                f"{time.perf_counter() - archive_generation_start_time:.2f}s"
+                            )
+                            log_info(
+                                f"Genome memory archive : "
+                                f"created={archived}, "
+                                f"score={fitness.get('fitness', 0)}, "
+                                f"file={html_file}"
+                            )
+                        except Exception as memory_error:
+                            log_warn(
+                                f"Genome memory archive error : "
+                                f"{memory_error}"
+                            )
 
                     sections = extract_sections(
                         content
@@ -1963,6 +2123,29 @@ def genome_aware_evolve(
                     sum(generation_scores)
                     / len(generation_scores)
                 )
+
+            if detect_regression:
+                try:
+                    detect_regression_start_time = time.perf_counter()
+                    regression = detect_regression(
+                        average_score
+                    )
+                    log_info(
+                        f"Genome timing detect_regression: "
+                        f"{time.perf_counter() - detect_regression_start_time:.2f}s"
+                    )
+                    log_info(
+                        f"Genome memory regression : "
+                        f"detected={regression.get('regression_detected')}, "
+                        f"current={regression.get('current_score')}, "
+                        f"best={regression.get('best_historical')}, "
+                        f"recommendation={regression.get('recommendation')}"
+                    )
+                except Exception as memory_error:
+                    log_warn(
+                        f"Genome memory regression error : "
+                        f"{memory_error}"
+                    )
 
             evolution.append({
                 "gen": generation,
@@ -2958,6 +3141,7 @@ def auto_fix_loop(path, max_attempts=3):
         before = read_file(path) or ""
 
         for attempt in range(1, max_attempts + 1):
+            runtime_signals["repair_attempt"] = True
             log_info(f"Tentative {attempt}/{max_attempts} : {path} ({len(current['errors'])} erreurs)")
 
             fix_file(path)
@@ -3082,6 +3266,7 @@ def auto_fix_loop(path, max_attempts=3):
             before_errors = after_errors
 
             if current["valid"]:
+                runtime_signals["repair_success"] = True
                 log_info(f"Fichier corrigé en {attempt} tentative(s) : {path}")
                 return {
                     "success": True,
@@ -3138,6 +3323,9 @@ def explain_file(path):
     explanation = _ask_intelligence(prompt)
 
     if not explanation:
+        runtime_signals["fallback_used"] = True
+        runtime_signals["timeout_occurred"] = True
+        runtime_signals["fallback_triggered"] = True
         log_warn("Fallback coding - IA indisponible")
         return "Explication indisponible: IA indisponible."
 

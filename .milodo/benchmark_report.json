@@ -1,0 +1,64 @@
+{
+  "timestamp": "2026-05-18T13:05:47.409982",
+  "summary": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "silent_regressions_detected": 0,
+    "pass_rate": 100.0
+  },
+  "cases": [
+    {
+      "name": "patch_correct",
+      "score_before": 68.75,
+      "score_after": 100.0,
+      "delta": 31.25,
+      "accepted": true,
+      "rollback_required": false,
+      "rolled_back": false,
+      "score_comparison": "improved",
+      "error": null,
+      "silent_regression": false,
+      "passed": true
+    },
+    {
+      "name": "patch_degrade",
+      "score_before": 68.75,
+      "score_after": 12.5,
+      "delta": -56.25,
+      "accepted": false,
+      "rollback_required": true,
+      "rolled_back": true,
+      "score_comparison": "degraded",
+      "error": null,
+      "silent_regression": false,
+      "passed": true
+    },
+    {
+      "name": "patch_cosmetic",
+      "score_before": 68.75,
+      "score_after": 68.75,
+      "delta": 0.0,
+      "accepted": true,
+      "rollback_required": false,
+      "rolled_back": false,
+      "score_comparison": "stable",
+      "error": null,
+      "silent_regression": false,
+      "passed": true
+    },
+    {
+      "name": "patch_partial",
+      "score_before": 68.75,
+      "score_after": 81.25,
+      "delta": 12.5,
+      "accepted": true,
+      "rollback_required": false,
+      "rolled_back": false,
+      "score_comparison": "improved",
+      "error": null,
+      "silent_regression": false,
+      "passed": true
+    }
+  ]
+}

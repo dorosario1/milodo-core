@@ -93,12 +93,16 @@ class HybridIntelligence:
         return bool(os.getenv("OPENAI_API_KEY"))
 
     def ask_ollama(self, prompt: str, model: str = None) -> Optional[str]:
+        log_info("ASK_OLLAMA_TRACE_V2")
+        ollama_start_time = None
         try:
             import requests
 
             model = model or self.config.get("ollama", {}).get("model", "llama3.2")
             url = self.config.get("ollama", {}).get("url", "http://localhost:11434")
             start_time = time.perf_counter()
+            ollama_start_time = time.time()
+            log_info(f"Ollama prompt length: {len(prompt)} chars")
             r = requests.post(
                 f"{url}/api/generate",
                 json={
@@ -108,12 +112,23 @@ class HybridIntelligence:
                 },
                 timeout=300,
             )
+            duration = time.time() - ollama_start_time
+            log_info(f"Ollama duration: {duration:.2f}s")
             ms = int((time.perf_counter() - start_time) * 1000)
             log_debug(f"Réponse en {ms}ms")
             if r.status_code == 200:
                 self.stats["ollama"] += 1
                 return r.json().get("response", "")
         except Exception as error:
+            if "timeout" in error.__class__.__name__.lower() or "timeout" in str(error).lower():
+                if ollama_start_time is not None:
+                    duration = time.time() - ollama_start_time
+                    log_error(f"Ollama failed after {duration:.2f}s")
+                try:
+                    from coding_agent import runtime_signals
+                    runtime_signals["ollama_timeout"] = True
+                except Exception:
+                    pass
             log_error(f"Ollama error: {error}")
             self.stats["errors"].append(str(error))
         return None

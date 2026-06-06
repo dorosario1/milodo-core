@@ -1,0 +1,218 @@
+[
+  {
+    "url": "https://dawn-demo.myshopify.com/",
+    "theme_type": "dawn",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.336286783218384,
+    "timestamp": "2026-05-17T13:09:20.909767"
+  },
+  {
+    "url": "https://refresh-demo.myshopify.com/",
+    "theme_type": "dawn",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.029757499694824,
+    "timestamp": "2026-05-17T13:09:22.939567"
+  },
+  {
+    "url": "https://crave-demo.myshopify.com/",
+    "theme_type": "dawn",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.030032157897949,
+    "timestamp": "2026-05-17T13:09:24.969624"
+  },
+  {
+    "url": "https://studio-demo.myshopify.com/",
+    "theme_type": "dawn",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.034151077270508,
+    "timestamp": "2026-05-17T13:09:27.003797"
+  },
+  {
+    "url": "https://www.gymshark.com/",
+    "theme_type": "premium",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0312447547912598,
+    "timestamp": "2026-05-17T13:09:29.035057"
+  },
+  {
+    "url": "https://www.allbirds.com/",
+    "theme_type": "premium",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0197410583496094,
+    "timestamp": "2026-05-17T13:09:31.054814"
+  },
+  {
+    "url": "https://www.lelabo.com/",
+    "theme_type": "premium",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.010742664337158,
+    "timestamp": "2026-05-17T13:09:33.065575"
+  },
+  {
+    "url": "https://www.manucurist.com/",
+    "theme_type": "premium",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0281178951263428,
+    "timestamp": "2026-05-17T13:09:35.093728"
+  },
+  {
+    "url": "https://www.fashionnova.com/",
+    "theme_type": "app_heavy",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0188820362091064,
+    "timestamp": "2026-05-17T13:09:37.112647"
+  },
+  {
+    "url": "https://www.kyliecosmetics.com/",
+    "theme_type": "app_heavy",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0199172496795654,
+    "timestamp": "2026-05-17T13:09:39.132584"
+  },
+  {
+    "url": "https://www.colourpop.com/",
+    "theme_type": "app_heavy",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0126209259033203,
+    "timestamp": "2026-05-17T13:09:41.145222"
+  },
+  {
+    "url": "https://www.harrys.com/",
+    "theme_type": "app_heavy",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.014509439468384,
+    "timestamp": "2026-05-17T13:09:43.159768"
+  },
+  {
+    "url": "https://www.printful.com/",
+    "theme_type": "dropshipping",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0190093517303467,
+    "timestamp": "2026-05-17T13:09:45.178800"
+  },
+  {
+    "url": "https://www.spocket.co/",
+    "theme_type": "dropshipping",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0258617401123047,
+    "timestamp": "2026-05-17T13:09:47.204679"
+  },
+  {
+    "url": "https://www.zenbubbletea.com/",
+    "theme_type": "dropshipping",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0284526348114014,
+    "timestamp": "2026-05-17T13:09:49.233148"
+  },
+  {
+    "url": "https://www.pawfecthouse.com/",
+    "theme_type": "dropshipping",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0224339962005615,
+    "timestamp": "2026-05-17T13:09:51.255597"
+  },
+  {
+    "url": "https://www.skatepro.com/",
+    "theme_type": "mobile_first",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0335450172424316,
+    "timestamp": "2026-05-17T13:09:53.289166"
+  },
+  {
+    "url": "https://www.boohooman.com/",
+    "theme_type": "mobile_first",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0075759887695312,
+    "timestamp": "2026-05-17T13:09:55.296764"
+  },
+  {
+    "url": "https://www.cider.com/",
+    "theme_type": "mobile_first",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.03623104095459,
+    "timestamp": "2026-05-17T13:09:57.333013"
+  },
+  {
+    "url": "https://www.verishop.com/",
+    "theme_type": "mobile_first",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0280508995056152,
+    "timestamp": "2026-05-17T13:09:59.361084"
+  },
+  {
+    "url": "https://naivas.online/",
+    "theme_type": "weak_sites",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.018862009048462,
+    "timestamp": "2026-05-17T13:10:01.379964"
+  },
+  {
+    "url": "https://kedougoutourisme.com/",
+    "theme_type": "weak_sites",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.0335049629211426,
+    "timestamp": "2026-05-17T13:10:03.413484"
+  },
+  {
+    "url": "https://www.kassoumaye.com/",
+    "theme_type": "weak_sites",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.035691261291504,
+    "timestamp": "2026-05-17T13:10:05.449191"
+  },
+  {
+    "url": "https://bijouterie-en-ligne.shop/",
+    "theme_type": "weak_sites",
+    "issues": [],
+    "false_positives": [],
+    "false_negatives": [],
+    "execution_time": 2.020047187805176,
+    "timestamp": "2026-05-17T13:10:07.469255"
+  }
+]

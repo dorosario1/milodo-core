@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "pattern_id": "service_health",
+  "description": "Dependency health degradation",
+  "strategy": "dependency_wait",
+  "confidence": 0.88,
+  "runtime_compatible": [
+    "docker",
+    "kubernetes"
+  ]
+}

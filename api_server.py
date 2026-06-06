@@ -87,6 +87,7 @@ Limites:
 import json
 import sqlite3
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.parse import urlparse
 
 
 DB_FILE = "milodo.db"
@@ -125,7 +126,7 @@ class Handler(BaseHTTPRequestHandler):
         self._send_headers()
 
     def do_GET(self):
-        if self.path != "/state":
+        if urlparse(self.path).path != "/state":
             self._send_headers(404)
             self.wfile.write(json.dumps({"error": "not found"}).encode("utf-8"))
             return

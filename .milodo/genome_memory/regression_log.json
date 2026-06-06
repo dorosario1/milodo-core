@@ -1,0 +1,104 @@
+[
+  {
+    "date": "2026-05-19T22:14:27.969587",
+    "current_score": 75.0,
+    "best_historical": 75.0,
+    "drop_percent": 0.0
+  },
+  {
+    "date": "2026-06-03T17:20:28.787713",
+    "current_score": 62.5,
+    "best_historical": 75.0,
+    "drop_percent": 0.1667
+  },
+  {
+    "date": "2026-06-03T17:24:52.232373",
+    "current_score": 61.0,
+    "best_historical": 75.0,
+    "drop_percent": 0.1867
+  },
+  {
+    "date": "2026-06-03T17:31:03.201143",
+    "current_score": 62.5,
+    "best_historical": 75.0,
+    "drop_percent": 0.1667
+  },
+  {
+    "date": "2026-06-03T17:34:35.424343",
+    "current_score": 57.0,
+    "best_historical": 75.0,
+    "drop_percent": 0.24
+  },
+  {
+    "date": "2026-06-03T18:04:06.700295",
+    "current_score": 62.5,
+    "best_historical": 75.0,
+    "drop_percent": 0.1667
+  },
+  {
+    "date": "2026-06-03T18:08:35.637024",
+    "current_score": 66.5,
+    "best_historical": 75.0,
+    "drop_percent": 0.1133
+  },
+  {
+    "date": "2026-06-03T18:21:54.420743",
+    "current_score": 62.5,
+    "best_historical": 75.0,
+    "drop_percent": 0.1667
+  },
+  {
+    "date": "2026-06-03T18:29:38.343514",
+    "current_score": 66.5,
+    "best_historical": 75.0,
+    "drop_percent": 0.1133
+  },
+  {
+    "date": "2026-06-04T12:45:15.410680",
+    "current_score": 62.5,
+    "best_historical": 75.0,
+    "drop_percent": 0.1667
+  },
+  {
+    "date": "2026-06-04T12:50:05.152699",
+    "current_score": 62.5,
+    "best_historical": 75.0,
+    "drop_percent": 0.1667
+  },
+  {
+    "date": "2026-06-04T14:10:00.328360",
+    "current_score": 62.5,
+    "best_historical": 75.0,
+    "drop_percent": 0.1667
+  },
+  {
+    "date": "2026-06-04T14:13:36.957791",
+    "current_score": 61.0,
+    "best_historical": 75.0,
+    "drop_percent": 0.1867
+  },
+  {
+    "date": "2026-06-04T14:57:08.359987",
+    "current_score": 62.5,
+    "best_historical": 75.0,
+    "drop_percent": 0.1667
+  },
+  {
+    "date": "2026-06-04T15:02:00.065371",
+    "current_score": 62.5,
+    "best_historical": 75.0,
+    "drop_percent": 0.1667
+  },
+  {
+    "date": "2026-06-04T15:44:31.491934",
+    "current_score": 62.5,
+    "best_historical": 75.0,
+    "drop_percent": 0.1667
+  },
+  {
+    "date": "2026-06-04T15:48:42.756768",
+    "current_score": 62.5,
+    "best_historical": 75.0,
+    "drop_percent": 0.1667
+  }
+]

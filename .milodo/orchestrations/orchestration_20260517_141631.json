@@ -1,0 +1,41 @@
+{
+  "success": true,
+  "initial_issues": [],
+  "execution_plan": {
+    "success": false,
+    "fallback": true,
+    "message": "architect_agent unavailable",
+    "steps": []
+  },
+  "generated_patches": [],
+  "execution_results": [],
+  "reaudit_report": {
+    "success": true,
+    "fixed_issues": [],
+    "remaining_issues": [],
+    "new_issues": [],
+    "quality_score_before": 100,
+    "quality_score_after": 100,
+    "improvement": 0.0,
+    "success_rate": 100.0,
+    "summary": {
+      "fixed_count": 0,
+      "remaining_count": 0,
+      "new_count": 0,
+      "quality_delta": 0,
+      "status": "stable"
+    }
+  },
+  "final_quality_score": 100,
+  "learning_updates": {
+    "calibration": true,
+    "history": true
+  },
+  "timestamp": "2026-05-17T14:16:31.478736",
+  "stats": {
+    "issues_detected": 0,
+    "patches_generated": 0,
+    "patches_executed": 0,
+    "dry_run": true
+  }
+}

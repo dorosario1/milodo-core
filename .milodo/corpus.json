@@ -1,0 +1,111 @@
+{
+  "distribution": {
+    "dawn": 4,
+    "premium": 4,
+    "app_heavy": 4,
+    "dropshipping": 4,
+    "mobile_first": 4,
+    "weak_sites": 4
+  },
+  "sites_par_categorie": {
+    "dawn": [
+      "https://dawn-demo.myshopify.com/",
+      "https://refresh-demo.myshopify.com/",
+      "https://crave-demo.myshopify.com/",
+      "https://studio-demo.myshopify.com/"
+    ],
+    "premium": [
+      "https://www.gymshark.com/",
+      "https://www.allbirds.com/",
+      "https://www.lelabo.com/",
+      "https://www.manucurist.com/"
+    ],
+    "app_heavy": [
+      "https://www.fashionnova.com/",
+      "https://www.kyliecosmetics.com/",
+      "https://www.colourpop.com/",
+      "https://www.harrys.com/"
+    ],
+    "dropshipping": [
+      "https://www.printful.com/",
+      "https://www.spocket.co/",
+      "https://www.zenbubbletea.com/",
+      "https://www.pawfecthouse.com/"
+    ],
+    "mobile_first": [
+      "https://www.skatepro.com/",
+      "https://www.boohooman.com/",
+      "https://www.cider.com/",
+      "https://www.verishop.com/"
+    ],
+    "weak_sites": [
+      "https://naivas.online/",
+      "https://kedougoutourisme.com/",
+      "https://www.kassoumaye.com/",
+      "https://bijouterie-en-ligne.shop/"
+    ]
+  },
+  "issue_types": [
+    "no_h1",
+    "seo_missing",
+    "missing_contact",
+    "no_nav",
+    "form_too_long",
+    "form_no_placeholder",
+    "whatsapp_below_fold",
+    "whatsapp_weak_message",
+    "performance_lazy_missing",
+    "performance_cls_risk",
+    "performance_excessive_scripts",
+    "performance_multiple_fonts",
+    "mobile_video_autoplay"
+  ],
+  "expected_issues": {
+    "https://www.fashionnova.com/": [
+      "performance_excessive_scripts",
+      "performance_multiple_fonts"
+    ],
+    "https://www.printful.com/": [
+      "missing_contact"
+    ],
+    "https://naivas.online/": [
+      "seo_missing",
+      "no_nav",
+      "missing_contact"
+    ],
+    "https://kedougoutourisme.com/": [
+      "no_h1",
+      "whatsapp_below_fold",
+      "whatsapp_weak_message",
+      "form_too_long",
+      "form_no_placeholder",
+      "no_nav"
+    ],
+    "https://bijouterie-en-ligne.shop/": [
+      "missing_contact",
+      "no_nav",
+      "seo_missing"
+    ],
+    "https://www.kyliecosmetics.com/": [
+      "performance_excessive_scripts"
+    ],
+    "https://www.colourpop.com/": [
+      "performance_excessive_scripts",
+      "performance_multiple_fonts"
+    ],
+    "https://www.spocket.co/": [
+      "missing_contact"
+    ],
+    "https://www.zenbubbletea.com/": [
+      "missing_contact",
+      "no_nav"
+    ],
+    "https://www.pawfecthouse.com/": [
+      "missing_contact",
+      "form_too_long"
+    ]
+  },
+  "default_expected": [],
+  "verified": false,
+  "output_path": ".milodo/corpus.json"
+}

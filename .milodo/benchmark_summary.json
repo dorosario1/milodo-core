@@ -1,0 +1,209 @@
+{
+  "global_kpi": {
+    "total_sites": 24,
+    "fetch_success_rate": 100.0,
+    "avg_response_time": 2.037,
+    "avg_issues_per_site": 0.0,
+    "sites_0_issue": 24,
+    "top_failure_types": [],
+    "heuristics_par_categorie": {},
+    "severity_distribution": {}
+  },
+  "top_heuristics": [],
+  "top_slowest_sites": [
+    {
+      "url": "https://dawn-demo.myshopify.com/",
+      "site": "dawn-demo.myshopify.com",
+      "execution_time": 2.336
+    },
+    {
+      "url": "https://www.cider.com/",
+      "site": "www.cider.com",
+      "execution_time": 2.036
+    },
+    {
+      "url": "https://www.kassoumaye.com/",
+      "site": "www.kassoumaye.com",
+      "execution_time": 2.036
+    },
+    {
+      "url": "https://studio-demo.myshopify.com/",
+      "site": "studio-demo.myshopify.com",
+      "execution_time": 2.034
+    },
+    {
+      "url": "https://www.skatepro.com/",
+      "site": "www.skatepro.com",
+      "execution_time": 2.034
+    },
+    {
+      "url": "https://kedougoutourisme.com/",
+      "site": "kedougoutourisme.com",
+      "execution_time": 2.034
+    },
+    {
+      "url": "https://www.gymshark.com/",
+      "site": "www.gymshark.com",
+      "execution_time": 2.031
+    },
+    {
+      "url": "https://refresh-demo.myshopify.com/",
+      "site": "refresh-demo.myshopify.com",
+      "execution_time": 2.03
+    },
+    {
+      "url": "https://crave-demo.myshopify.com/",
+      "site": "crave-demo.myshopify.com",
+      "execution_time": 2.03
+    },
+    {
+      "url": "https://www.manucurist.com/",
+      "site": "www.manucurist.com",
+      "execution_time": 2.028
+    }
+  ],
+  "best_sites": [
+    {
+      "url": "https://bijouterie-en-ligne.shop/",
+      "site": "bijouterie-en-ligne.shop",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.02
+    },
+    {
+      "url": "https://crave-demo.myshopify.com/",
+      "site": "crave-demo.myshopify.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.03
+    },
+    {
+      "url": "https://dawn-demo.myshopify.com/",
+      "site": "dawn-demo.myshopify.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.336
+    },
+    {
+      "url": "https://kedougoutourisme.com/",
+      "site": "kedougoutourisme.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.034
+    },
+    {
+      "url": "https://naivas.online/",
+      "site": "naivas.online",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.019
+    },
+    {
+      "url": "https://refresh-demo.myshopify.com/",
+      "site": "refresh-demo.myshopify.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.03
+    },
+    {
+      "url": "https://studio-demo.myshopify.com/",
+      "site": "studio-demo.myshopify.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.034
+    },
+    {
+      "url": "https://www.allbirds.com/",
+      "site": "www.allbirds.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.02
+    },
+    {
+      "url": "https://www.boohooman.com/",
+      "site": "www.boohooman.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.008
+    },
+    {
+      "url": "https://www.cider.com/",
+      "site": "www.cider.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.036
+    }
+  ],
+  "worst_sites": [
+    {
+      "url": "https://bijouterie-en-ligne.shop/",
+      "site": "bijouterie-en-ligne.shop",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.02
+    },
+    {
+      "url": "https://crave-demo.myshopify.com/",
+      "site": "crave-demo.myshopify.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.03
+    },
+    {
+      "url": "https://dawn-demo.myshopify.com/",
+      "site": "dawn-demo.myshopify.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.336
+    },
+    {
+      "url": "https://kedougoutourisme.com/",
+      "site": "kedougoutourisme.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.034
+    },
+    {
+      "url": "https://naivas.online/",
+      "site": "naivas.online",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.019
+    },
+    {
+      "url": "https://refresh-demo.myshopify.com/",
+      "site": "refresh-demo.myshopify.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.03
+    },
+    {
+      "url": "https://studio-demo.myshopify.com/",
+      "site": "studio-demo.myshopify.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.034
+    },
+    {
+      "url": "https://www.allbirds.com/",
+      "site": "www.allbirds.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.02
+    },
+    {
+      "url": "https://www.boohooman.com/",
+      "site": "www.boohooman.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.008
+    },
+    {
+      "url": "https://www.cider.com/",
+      "site": "www.cider.com",
+      "score": 100,
+      "issues": 0,
+      "execution_time": 2.036
+    }
+  ]
+}

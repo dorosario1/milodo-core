@@ -1,1 +1,160 @@
-[]
+[
+  {
+    "name": "milodo-core",
+    "path": "C:\\Users\\user\\milodo-core",
+    "types": [
+      "NodeJS",
+      "Python",
+      "Docker",
+      "HTML",
+      "Git"
+    ]
+  },
+  {
+    "name": "gastronomique_le_gourmet_premium",
+    "path": "C:\\Users\\user\\milodo-core\\business_outputs\\gastronomique_le_gourmet_premium",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "gastronomique_premium",
+    "path": "C:\\Users\\user\\milodo-core\\business_outputs\\gastronomique_premium",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "site_vitrine_boulangerie_artisanale",
+    "path": "C:\\Users\\user\\milodo-core\\business_outputs\\site_vitrine_boulangerie_artisanale",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "crossover",
+    "path": "C:\\Users\\user\\milodo-core\\crossover_test\\crossover",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "gen_1",
+    "path": "C:\\Users\\user\\milodo-core\\crossover_test\\gen_1",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "gen_2",
+    "path": "C:\\Users\\user\\milodo-core\\crossover_test\\gen_2",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "templates",
+    "path": "C:\\Users\\user\\milodo-core\\dashboard\\templates",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "crossover",
+    "path": "C:\\Users\\user\\milodo-core\\e2e_crossover\\crossover",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "gen_1",
+    "path": "C:\\Users\\user\\milodo-core\\e2e_crossover\\gen_1",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "gen_2",
+    "path": "C:\\Users\\user\\milodo-core\\e2e_crossover\\gen_2",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "landing",
+    "path": "C:\\Users\\user\\milodo-core\\e2e_ranking\\landing",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "restaurant",
+    "path": "C:\\Users\\user\\milodo-core\\e2e_ranking\\restaurant",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "gen_1",
+    "path": "C:\\Users\\user\\milodo-core\\evolution_test\\gen_1",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "gen_2",
+    "path": "C:\\Users\\user\\milodo-core\\evolution_test\\gen_2",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "final_e2e",
+    "path": "C:\\Users\\user\\milodo-core\\final_e2e",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "gen_1",
+    "path": "C:\\Users\\user\\milodo-core\\genome_evo\\gen_1",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "gen_2",
+    "path": "C:\\Users\\user\\milodo-core\\genome_evo\\gen_2",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "landing",
+    "path": "C:\\Users\\user\\milodo-core\\rank_test\\landing",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "gen_1",
+    "path": "C:\\Users\\user\\milodo-core\\species_battle\\dark\\gen_1",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "gen_1",
+    "path": "C:\\Users\\user\\milodo-core\\species_battle\\minimal\\gen_1",
+    "types": [
+      "HTML"
+    ]
+  },
+  {
+    "name": "test_output",
+    "path": "C:\\Users\\user\\milodo-core\\test_output",
+    "types": [
+      "HTML"
+    ]
+  }
+]

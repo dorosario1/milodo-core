@@ -164,6 +164,61 @@ def analyze(html, url=""):
                 })
                 break
 
+    # 12. Navigation - Nombre de liens
+    nav_links = re.findall(r'<nav[^>]*>.*?</nav>', html, re.DOTALL | re.IGNORECASE)
+    if nav_links:
+        for nav in nav_links:
+            links = re.findall(r'<a[^>]+href="([^"]*)"[^>]*>', nav, re.IGNORECASE)
+            if len(links) > 15:
+                issues.append({
+                    "id": "nav_too_many_links",
+                    "type": "navigation_ux",
+                    "severity": "low",
+                    "confidence": 0.65,
+                    "zone": "navigation",
+                    "file": url,
+                    "description": f"Navigation contient {len(links)} liens. Trop de choix reduit la clarte."
+                })
+                break
+    else:
+        issues.append({
+            "id": "no_nav",
+            "type": "navigation_missing",
+            "severity": "medium",
+            "confidence": 0.75,
+            "zone": "navigation",
+            "file": url,
+            "description": "Aucune balise <nav> detectee. Structure de navigation absente."
+        })
+
+    # 13. Formulaires - Nombre de champs
+    forms_html = re.findall(r'<form[^>]*>(.*?)</form>', html, re.DOTALL | re.IGNORECASE)
+    for form in forms_html:
+        inputs = re.findall(r'<(?:input|textarea|select)[^>]*>', form, re.IGNORECASE)
+        if len(inputs) > 6:
+            issues.append({
+                "id": "form_too_long",
+                "type": "form_friction",
+                "severity": "medium",
+                "confidence": 0.70,
+                "zone": "contact",
+                "file": url,
+                "description": f"Formulaire avec {len(inputs)} champs. Reduire pour augmenter la conversion."
+            })
+            break
+
+        if 'placeholder' not in form.lower():
+            issues.append({
+                "id": "form_no_placeholder",
+                "type": "form_friction",
+                "severity": "low",
+                "confidence": 0.55,
+                "zone": "contact",
+                "file": url,
+                "description": "Formulaire sans attributs placeholder. L'UX mobile en patit."
+            })
+            break
+
     return {
         "success": True,
         "url": url,

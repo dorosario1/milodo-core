@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "pattern_id": "routing_priority",
+  "description": "Routing priority misconfiguration",
+  "strategy": "priority_explicit",
+  "confidence": 0.87,
+  "runtime_compatible": [
+    "docker",
+    "kubernetes"
+  ]
+}

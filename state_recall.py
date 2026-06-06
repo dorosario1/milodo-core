@@ -172,6 +172,10 @@ def get_project(name):
         if project.get("name", "").lower() == name.lower():
             return project
 
+    for project in load_projects():
+        if project.get("name", "").lower() == name.lower():
+            return project
+
     return None
 
 

@@ -134,6 +134,103 @@ class ShopifyAuditor:
     def __init__(self, theme_path):
         self.theme_path = theme_path
         self.issues = []
+        self._performance_issues = []
+        self._current_performance_file = ""
+
+    def _add_performance_issue(self, issue_type, description, severity, tip):
+        self._performance_issues.append({
+            "id": f"{issue_type}_{pathlib.Path(self._current_performance_file).stem}",
+            "type": issue_type,
+            "description": description,
+            "severity": severity,
+            "tip": tip,
+            "file": self._current_performance_file,
+            "confidence": 0.75
+        })
+
+    def _check_image_lazy_loading(self, soup):
+        images = re.findall(r"<img\b[^>]*>", soup, re.IGNORECASE)
+        count = len([img for img in images if not re.search(r'\bloading\s*=\s*["\']lazy["\']', img, re.IGNORECASE)])
+        if count > 3:
+            self._add_performance_issue(
+                "performance_lazy_missing",
+                f"{count} images sans lazy loading",
+                "high",
+                'Ajouter loading="lazy" aux images hors viewport.'
+            )
+
+    def _check_image_dimensions(self, soup):
+        images = re.findall(r"<img\b[^>]*>", soup, re.IGNORECASE)
+        count = len([
+            img for img in images
+            if not re.search(r"\bwidth\s*=", img, re.IGNORECASE)
+            and not re.search(r"\bheight\s*=", img, re.IGNORECASE)
+        ])
+        if count > 0:
+            self._add_performance_issue(
+                "performance_cls_risk",
+                f"{count} images sans dimensions explicites",
+                "medium",
+                "Définir width et height pour limiter le CLS."
+            )
+
+    def _check_too_many_images(self, soup):
+        count = len(re.findall(r"<img\b[^>]*>", soup, re.IGNORECASE))
+        if count > 20:
+            self._add_performance_issue(
+                "performance_too_many_images",
+                f"{count} images sur la page",
+                "medium",
+                "Réduire, compresser ou différer les images non essentielles."
+            )
+
+    def _check_excessive_scripts(self, soup):
+        scripts = re.findall(r"<script\b[^>]*>", soup, re.IGNORECASE)
+        count = len([
+            script for script in scripts
+            if not re.search(r'\btype\s*=\s*["\']application/ld\+json["\']', script, re.IGNORECASE)
+        ])
+        if count > 15:
+            self._add_performance_issue(
+                "performance_excessive_scripts",
+                f"{count} scripts chargés",
+                "high",
+                "Réduire les scripts tiers et différer les scripts non critiques."
+            )
+
+    def _check_multiple_fonts(self, soup):
+        google_fonts = re.findall(r"fonts\.googleapis\.com[^\"']*family=([^&\"']+)", soup, re.IGNORECASE)
+        font_families = sum(len(family.split("|")) for family in google_fonts)
+        if re.search(r"font-awesome|fontawesome", soup, re.IGNORECASE):
+            font_families += 1
+        font_families += len(re.findall(r"@font-face", soup, re.IGNORECASE))
+        if font_families > 3:
+            self._add_performance_issue(
+                "performance_multiple_fonts",
+                f"{font_families} familles de polices",
+                "low",
+                "Limiter les familles et variantes de polices chargées."
+            )
+
+    def _check_video_autoplay(self, soup):
+        if re.search(r"<video\b[^>]*\bautoplay\b", soup, re.IGNORECASE):
+            self._add_performance_issue(
+                "mobile_video_autoplay",
+                "Vidéo en autoplay sur mobile",
+                "high",
+                "Désactiver autoplay ou charger la vidéo à l'interaction."
+            )
+
+    def _check_missing_preconnect(self, soup, base_url):
+        has_preconnect = bool(re.search(r'<link\b[^>]*\brel\s*=\s*["\']preconnect["\']', soup, re.IGNORECASE))
+        has_third_party = bool(re.search(r"fonts\.googleapis|cdn\.jsdelivr|cdn\.shopify", soup, re.IGNORECASE))
+        if not has_preconnect and has_third_party:
+            self._add_performance_issue(
+                "performance_missing_preconnect",
+                "Ajouter preconnect pour les domaines tiers",
+                "medium",
+                "Ajouter des liens rel=preconnect pour les origines tierces critiques."
+            )
 
     def scan_theme(self, theme_path):
         for file in theme_path.rglob('*.liquid') | theme_path.rglob('*.json'):
@@ -151,6 +248,8 @@ class ShopifyAuditor:
 
         theme = Path(theme_path)
         issues = []
+        has_whatsapp = False
+        has_contact_channel = False
 
         # Scanner liquid ET css
         files = list(theme.rglob("*.liquid")) + list(theme.rglob("*.css"))
@@ -170,6 +269,37 @@ class ShopifyAuditor:
                 content = file_path.read_text(encoding="utf-8", errors="replace")
                 relative = str(file_path.relative_to(theme))
                 file_issues = []
+                self._performance_issues = []
+                self._current_performance_file = relative
+                lower_content = content.lower()
+
+                if (
+                    "wa.me" in lower_content
+                    or "api.whatsapp.com" in lower_content
+                    or "whatsapp://" in lower_content
+                    or "whatsapp" in lower_content
+                ):
+                    has_whatsapp = True
+
+                if (
+                    re.search(r"<form\b", content, re.IGNORECASE)
+                    or "mailto:" in lower_content
+                    or re.search(
+                        r"\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b",
+                        content,
+                        re.IGNORECASE,
+                    )
+                ):
+                    has_contact_channel = True
+
+                self._check_image_lazy_loading(content)
+                self._check_image_dimensions(content)
+                self._check_too_many_images(content)
+                self._check_excessive_scripts(content)
+                self._check_multiple_fonts(content)
+                self._check_video_autoplay(content)
+                self._check_missing_preconnect(content, str(theme))
+                file_issues.extend(self._performance_issues)
 
                 # 1. Overflow / bandes blanches
                 if ("max-width: 100%" not in content and "overflow-x: hidden" not in content
@@ -278,6 +408,40 @@ class ShopifyAuditor:
 
             except Exception:
                 continue
+
+        # missing_contact est conservé comme type legacy, mais n'est plus
+        # l'heuristique principale : utiliser les signaux séparés ci-dessous.
+        if not has_whatsapp:
+            issue_type = "missing_whatsapp"
+            description = "Aucun canal WhatsApp détecté."
+            fp = self._should_add_issue("theme", issue_type, description)
+            if fp:
+                issues.append({
+                    "id": "missing_whatsapp_theme",
+                    "type": issue_type,
+                    "severity": "high",
+                    "description": description,
+                    "tip": "Ajouter un canal WhatsApp visible pour améliorer la conversion mobile.",
+                    "file": "theme",
+                    "confidence": 0.85,
+                    "fingerprint": fp
+                })
+
+        if not has_contact_channel:
+            issue_type = "missing_contact_form"
+            description = "Aucun formulaire ou email de contact détecté."
+            fp = self._should_add_issue("theme", issue_type, description)
+            if fp:
+                issues.append({
+                    "id": "missing_contact_form_theme",
+                    "type": issue_type,
+                    "severity": "medium",
+                    "description": description,
+                    "tip": "Ajouter un formulaire simple ou une adresse email visible.",
+                    "file": "theme",
+                    "confidence": 0.80,
+                    "fingerprint": fp
+                })
 
         return {
             "success": True,

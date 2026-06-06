@@ -1,79 +1,33 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from typing import Any
 
-from .runtime_context import SCHEMA_VERSION, RuntimeContext
+from .causal_memory import CausalMemory
+from .pattern_registry import evaluate_patterns, load_patterns
+from .runtime_context import RuntimeContext
 
 
 class CausalEngine:
     def __init__(self, context: RuntimeContext) -> None:
         self.context = context
+        self.registry = load_patterns(context)
+        self.last_event_type = None
+        self.last_runtime = None
+        self.last_timestamp = None
 
-    def identify(self, events: list[dict[str, Any]]) -> dict[str, Any]:
-        for event in events:
-            signals = event.get("signals", {})
-            if (
-                signals.get("generic_route_priority")
-                and signals.get("traffic_capture")
-                and signals.get("intended_route_bypassed")
-                and signals.get("wrong_middleware_chain")
-            ):
-                rules = self.context.load_json(
-                    self.context.pattern_root
-                    / "routing_priority"
-                    / "3_analysis"
-                    / "causal_rules.json"
-                )
-                return {
-                    "schema_version": SCHEMA_VERSION,
-                    "cause": "routing_priority",
-                    "confidence": rules.get("confidence", 0.87),
-                    "evidence": [
-                        "generic_route_priority",
-                        "traffic_capture",
-                        "intended_route_bypassed",
-                        "wrong_middleware_chain",
-                    ],
-                    "learned_patterns": signals.get("learned_patterns", []),
-                }
-            if (
-                signals.get("dependency_unreachable")
-                and signals.get("failed_healthcheck")
-                and signals.get("degraded_service_health")
-            ):
-                rules = self.context.load_json(
-                    self.context.pattern_root
-                    / "service_health"
-                    / "3_analysis"
-                    / "causal_rules.json"
-                )
-                return {
-                    "schema_version": SCHEMA_VERSION,
-                    "cause": "service_health",
-                    "confidence": rules.get("confidence", 0.88),
-                    "evidence": [
-                        "dependency_unreachable",
-                        "failed_healthcheck",
-                        "degraded_service_health",
-                    ],
-                    "learned_patterns": signals.get("learned_patterns", []),
-                }
-            if signals.get("memory_pressure") and signals.get("leak_growth", True):
-                rules = self.context.load_json(
-                    self.context.pattern_root
-                    / "resource_exhaustion"
-                    / "3_analysis"
-                    / "causal_rules.json"
-                )
-                return {
-                    "schema_version": SCHEMA_VERSION,
-                    "cause": "resource_exhaustion",
-                    "confidence": rules.get("confidence", 0.86),
-                    "evidence": ["memory_pressure", "leak_growth"],
-                }
-        return {
-            "schema_version": SCHEMA_VERSION,
-            "cause": "unknown",
-            "confidence": 0.0,
-            "evidence": [],
-        }
+    def identify(self, events: dict[str, Any] | list[dict[str, Any]]) -> dict[str, Any] | None:
+        if isinstance(events, list) and all("event_type" in event for event in events):
+            for event in events:
+                self.last_event_type = event.get("event_type")
+                self.last_runtime = event.get("runtime", self.context.runtime)
+                self.last_timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+                CausalMemory().remember_unknown({
+                    "features": {"signals": [self.last_event_type], "signal_frequency": {self.last_event_type: 1}},
+                    "source": "causal_engine_event",
+                    "timestamp": self.last_timestamp,
+                }, self.last_runtime)
+            return None
+        if isinstance(events, dict):
+            return evaluate_patterns([events], self.registry, runtime_type=self.context.runtime)
+        return evaluate_patterns(events, self.registry, runtime_type=self.context.runtime)

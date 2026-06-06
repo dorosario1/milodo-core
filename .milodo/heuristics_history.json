@@ -1,0 +1,3136 @@
+{
+  "snapshots": [
+    {
+      "timestamp": "2026-05-15T21:34:21.374438",
+      "weights": {
+        "accessibility": {
+          "severity": "low",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "conversion_weak": {
+          "severity": "low",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "cta_weak": {
+          "severity": "medium",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "form_friction": {
+          "severity": "low",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "form_no_placeholder": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "form_too_long": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "hero_weak": {
+          "severity": "high",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "missing_contact": {
+          "severity": "medium",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "missing_contact_form": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "missing_whatsapp": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "mobile_video_autoplay": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "navigation_missing": {
+          "severity": "medium",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "navigation_ux": {
+          "severity": "low",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "no_h1": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "no_nav": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_cls_risk": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_excessive_scripts": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_lazy_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_missing_preconnect": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_multiple_fonts": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_too_many_images": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "seo_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "seo_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "trust_missing": {
+          "severity": "low",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "whatsapp_below_fold": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "whatsapp_ux": {
+          "severity": "medium",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "whatsapp_weak_message": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        }
+      },
+      "summary": {
+        "global_kpi": {
+          "total_sites": 24,
+          "fetch_success_rate": 100.0,
+          "avg_response_time": 1.203,
+          "avg_issues_per_site": 0.79,
+          "sites_0_issue": 20,
+          "top_failure_types": [],
+          "heuristics_par_categorie": {
+            "mobile_first": {
+              "missing_contact": 2,
+              "trust_missing": 2,
+              "conversion_weak": 1,
+              "hero_weak": 1,
+              "accessibility": 1,
+              "cta_weak": 1,
+              "navigation_ux": 1
+            },
+            "weak_sites": {
+              "trust_missing": 2,
+              "form_friction": 2,
+              "whatsapp_ux": 2,
+              "missing_contact": 1,
+              "navigation_ux": 1,
+              "hero_weak": 1,
+              "navigation_missing": 1
+            }
+          },
+          "severity_distribution": {
+            "medium": 7,
+            "low": 10,
+            "high": 2
+          }
+        },
+        "top_heuristics": [
+          {
+            "type": "trust_missing",
+            "count": 4
+          },
+          {
+            "type": "missing_contact",
+            "count": 3
+          },
+          {
+            "type": "hero_weak",
+            "count": 2
+          },
+          {
+            "type": "navigation_ux",
+            "count": 2
+          },
+          {
+            "type": "form_friction",
+            "count": 2
+          },
+          {
+            "type": "whatsapp_ux",
+            "count": 2
+          },
+          {
+            "type": "conversion_weak",
+            "count": 1
+          },
+          {
+            "type": "accessibility",
+            "count": 1
+          },
+          {
+            "type": "cta_weak",
+            "count": 1
+          },
+          {
+            "type": "navigation_missing",
+            "count": 1
+          }
+        ],
+        "top_slowest_sites": [
+          {
+            "url": "https://naivas.online/",
+            "site": "naivas.online",
+            "execution_time": 4.9
+          },
+          {
+            "url": "https://www.harrys.com/",
+            "site": "www.harrys.com",
+            "execution_time": 4.5
+          },
+          {
+            "url": "https://kedougoutourisme.com/",
+            "site": "kedougoutourisme.com",
+            "execution_time": 2.898
+          },
+          {
+            "url": "https://www.boohooman.com/",
+            "site": "www.boohooman.com",
+            "execution_time": 2.042
+          },
+          {
+            "url": "https://www.gymshark.com/",
+            "site": "www.gymshark.com",
+            "execution_time": 1.852
+          },
+          {
+            "url": "https://www.pawfecthouse.com/",
+            "site": "www.pawfecthouse.com",
+            "execution_time": 1.663
+          },
+          {
+            "url": "https://www.colourpop.com/",
+            "site": "www.colourpop.com",
+            "execution_time": 1.373
+          },
+          {
+            "url": "https://www.skatepro.com/",
+            "site": "www.skatepro.com",
+            "execution_time": 1.184
+          },
+          {
+            "url": "https://www.spocket.co/",
+            "site": "www.spocket.co",
+            "execution_time": 1.073
+          },
+          {
+            "url": "https://www.fashionnova.com/",
+            "site": "www.fashionnova.com",
+            "execution_time": 1.019
+          }
+        ],
+        "best_sites": [
+          {
+            "url": "https://bijouterie-en-ligne.shop/",
+            "site": "bijouterie-en-ligne.shop",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.184
+          },
+          {
+            "url": "https://crave-demo.myshopify.com/",
+            "site": "crave-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.754
+          },
+          {
+            "url": "https://dawn-demo.myshopify.com/",
+            "site": "dawn-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.868
+          },
+          {
+            "url": "https://refresh-demo.myshopify.com/",
+            "site": "refresh-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.582
+          },
+          {
+            "url": "https://studio-demo.myshopify.com/",
+            "site": "studio-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.144
+          },
+          {
+            "url": "https://www.allbirds.com/",
+            "site": "www.allbirds.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.299
+          },
+          {
+            "url": "https://www.cider.com/",
+            "site": "www.cider.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.644
+          },
+          {
+            "url": "https://www.colourpop.com/",
+            "site": "www.colourpop.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 1.373
+          },
+          {
+            "url": "https://www.fashionnova.com/",
+            "site": "www.fashionnova.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 1.019
+          },
+          {
+            "url": "https://www.gymshark.com/",
+            "site": "www.gymshark.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 1.852
+          }
+        ],
+        "worst_sites": [
+          {
+            "url": "https://kedougoutourisme.com/",
+            "site": "kedougoutourisme.com",
+            "score": 87,
+            "issues": 6,
+            "execution_time": 2.898
+          },
+          {
+            "url": "https://www.skatepro.com/",
+            "site": "www.skatepro.com",
+            "score": 90,
+            "issues": 5,
+            "execution_time": 1.184
+          },
+          {
+            "url": "https://www.boohooman.com/",
+            "site": "www.boohooman.com",
+            "score": 94,
+            "issues": 4,
+            "execution_time": 2.042
+          },
+          {
+            "url": "https://naivas.online/",
+            "site": "naivas.online",
+            "score": 95,
+            "issues": 4,
+            "execution_time": 4.9
+          },
+          {
+            "url": "https://bijouterie-en-ligne.shop/",
+            "site": "bijouterie-en-ligne.shop",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.184
+          },
+          {
+            "url": "https://crave-demo.myshopify.com/",
+            "site": "crave-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.754
+          },
+          {
+            "url": "https://dawn-demo.myshopify.com/",
+            "site": "dawn-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.868
+          },
+          {
+            "url": "https://refresh-demo.myshopify.com/",
+            "site": "refresh-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.582
+          },
+          {
+            "url": "https://studio-demo.myshopify.com/",
+            "site": "studio-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.144
+          },
+          {
+            "url": "https://www.allbirds.com/",
+            "site": "www.allbirds.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.299
+          }
+        ]
+      },
+      "calibration": {
+        "unused_heuristics": [
+          "no_h1",
+          "seo_missing",
+          "seo_weak",
+          "missing_whatsapp",
+          "missing_contact_form",
+          "no_nav",
+          "form_too_long",
+          "form_no_placeholder",
+          "whatsapp_below_fold",
+          "whatsapp_weak_message",
+          "performance_lazy_missing",
+          "performance_cls_risk",
+          "performance_too_many_images",
+          "performance_excessive_scripts",
+          "performance_multiple_fonts",
+          "performance_missing_preconnect",
+          "mobile_video_autoplay"
+        ],
+        "too_aggressive": [],
+        "under_triggering": [
+          {
+            "heuristic": "no_h1",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "seo_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "seo_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "missing_whatsapp",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "missing_contact_form",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "no_nav",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "navigation_missing",
+            "count": 1,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "form_too_long",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "form_no_placeholder",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "whatsapp_below_fold",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "whatsapp_weak_message",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_lazy_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_cls_risk",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_too_many_images",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_excessive_scripts",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_multiple_fonts",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_missing_preconnect",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "mobile_video_autoplay",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "cta_weak",
+            "count": 1,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "conversion_weak",
+            "count": 1,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "accessibility",
+            "count": 1,
+            "flag": "under_triggering"
+          }
+        ],
+        "potential_false_positives": [],
+        "calibration_suggestions": [
+          {
+            "heuristic": "no_h1",
+            "issue": "false_positive_on_js_sites",
+            "recommendation": "Ignorer si React hydration détectée."
+          },
+          {
+            "heuristic": "missing_whatsapp",
+            "issue": "too_africa_specific",
+            "recommendation": "Appliquer seulement sur catégories tourism/mobile_first/weak_sites."
+          },
+          {
+            "heuristic": "missing_contact",
+            "issue": "legacy_bucket_too_broad",
+            "recommendation": "Remplacer progressivement par missing_whatsapp et missing_contact_form."
+          }
+        ],
+        "heuristic_confidence": {
+          "stable": [
+            "missing_contact",
+            "navigation_ux",
+            "form_friction",
+            "whatsapp_ux",
+            "trust_missing",
+            "hero_weak"
+          ],
+          "needs_review": [
+            "no_h1",
+            "seo_missing",
+            "seo_weak",
+            "missing_whatsapp",
+            "missing_contact_form",
+            "no_nav",
+            "form_too_long",
+            "form_no_placeholder",
+            "whatsapp_below_fold",
+            "whatsapp_weak_message",
+            "performance_lazy_missing",
+            "performance_cls_risk",
+            "performance_too_many_images",
+            "performance_excessive_scripts",
+            "performance_multiple_fonts",
+            "performance_missing_preconnect",
+            "mobile_video_autoplay"
+          ],
+          "experimental": [
+            "navigation_missing",
+            "cta_weak",
+            "conversion_weak",
+            "accessibility"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-17T13:09:14.899520",
+      "weights": {
+        "accessibility": {
+          "severity": "low",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "conversion_weak": {
+          "severity": "low",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "cta_weak": {
+          "severity": "medium",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "form_friction": {
+          "severity": "low",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "form_no_placeholder": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "form_too_long": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "hero_weak": {
+          "severity": "high",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "missing_contact": {
+          "severity": "medium",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "missing_contact_form": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "missing_whatsapp": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "mobile_video_autoplay": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "navigation_missing": {
+          "severity": "medium",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "navigation_ux": {
+          "severity": "low",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "no_h1": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "no_nav": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_cls_risk": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_excessive_scripts": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_lazy_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_missing_preconnect": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_multiple_fonts": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_too_many_images": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "seo_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "seo_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "trust_missing": {
+          "severity": "low",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "whatsapp_below_fold": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "whatsapp_ux": {
+          "severity": "medium",
+          "confidence": 0.5,
+          "status": "active",
+          "adjustment_reason": "default"
+        },
+        "whatsapp_weak_message": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        }
+      },
+      "summary": {
+        "global_kpi": {
+          "total_sites": 24,
+          "fetch_success_rate": 100.0,
+          "avg_response_time": 1.203,
+          "avg_issues_per_site": 0.79,
+          "sites_0_issue": 20,
+          "top_failure_types": [],
+          "heuristics_par_categorie": {
+            "mobile_first": {
+              "missing_contact": 2,
+              "trust_missing": 2,
+              "conversion_weak": 1,
+              "hero_weak": 1,
+              "accessibility": 1,
+              "cta_weak": 1,
+              "navigation_ux": 1
+            },
+            "weak_sites": {
+              "trust_missing": 2,
+              "form_friction": 2,
+              "whatsapp_ux": 2,
+              "missing_contact": 1,
+              "navigation_ux": 1,
+              "hero_weak": 1,
+              "navigation_missing": 1
+            }
+          },
+          "severity_distribution": {
+            "medium": 7,
+            "low": 10,
+            "high": 2
+          }
+        },
+        "top_heuristics": [
+          {
+            "type": "trust_missing",
+            "count": 4
+          },
+          {
+            "type": "missing_contact",
+            "count": 3
+          },
+          {
+            "type": "hero_weak",
+            "count": 2
+          },
+          {
+            "type": "navigation_ux",
+            "count": 2
+          },
+          {
+            "type": "form_friction",
+            "count": 2
+          },
+          {
+            "type": "whatsapp_ux",
+            "count": 2
+          },
+          {
+            "type": "conversion_weak",
+            "count": 1
+          },
+          {
+            "type": "accessibility",
+            "count": 1
+          },
+          {
+            "type": "cta_weak",
+            "count": 1
+          },
+          {
+            "type": "navigation_missing",
+            "count": 1
+          }
+        ],
+        "top_slowest_sites": [
+          {
+            "url": "https://naivas.online/",
+            "site": "naivas.online",
+            "execution_time": 4.9
+          },
+          {
+            "url": "https://www.harrys.com/",
+            "site": "www.harrys.com",
+            "execution_time": 4.5
+          },
+          {
+            "url": "https://kedougoutourisme.com/",
+            "site": "kedougoutourisme.com",
+            "execution_time": 2.898
+          },
+          {
+            "url": "https://www.boohooman.com/",
+            "site": "www.boohooman.com",
+            "execution_time": 2.042
+          },
+          {
+            "url": "https://www.gymshark.com/",
+            "site": "www.gymshark.com",
+            "execution_time": 1.852
+          },
+          {
+            "url": "https://www.pawfecthouse.com/",
+            "site": "www.pawfecthouse.com",
+            "execution_time": 1.663
+          },
+          {
+            "url": "https://www.colourpop.com/",
+            "site": "www.colourpop.com",
+            "execution_time": 1.373
+          },
+          {
+            "url": "https://www.skatepro.com/",
+            "site": "www.skatepro.com",
+            "execution_time": 1.184
+          },
+          {
+            "url": "https://www.spocket.co/",
+            "site": "www.spocket.co",
+            "execution_time": 1.073
+          },
+          {
+            "url": "https://www.fashionnova.com/",
+            "site": "www.fashionnova.com",
+            "execution_time": 1.019
+          }
+        ],
+        "best_sites": [
+          {
+            "url": "https://bijouterie-en-ligne.shop/",
+            "site": "bijouterie-en-ligne.shop",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.184
+          },
+          {
+            "url": "https://crave-demo.myshopify.com/",
+            "site": "crave-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.754
+          },
+          {
+            "url": "https://dawn-demo.myshopify.com/",
+            "site": "dawn-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.868
+          },
+          {
+            "url": "https://refresh-demo.myshopify.com/",
+            "site": "refresh-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.582
+          },
+          {
+            "url": "https://studio-demo.myshopify.com/",
+            "site": "studio-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.144
+          },
+          {
+            "url": "https://www.allbirds.com/",
+            "site": "www.allbirds.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.299
+          },
+          {
+            "url": "https://www.cider.com/",
+            "site": "www.cider.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.644
+          },
+          {
+            "url": "https://www.colourpop.com/",
+            "site": "www.colourpop.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 1.373
+          },
+          {
+            "url": "https://www.fashionnova.com/",
+            "site": "www.fashionnova.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 1.019
+          },
+          {
+            "url": "https://www.gymshark.com/",
+            "site": "www.gymshark.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 1.852
+          }
+        ],
+        "worst_sites": [
+          {
+            "url": "https://kedougoutourisme.com/",
+            "site": "kedougoutourisme.com",
+            "score": 87,
+            "issues": 6,
+            "execution_time": 2.898
+          },
+          {
+            "url": "https://www.skatepro.com/",
+            "site": "www.skatepro.com",
+            "score": 90,
+            "issues": 5,
+            "execution_time": 1.184
+          },
+          {
+            "url": "https://www.boohooman.com/",
+            "site": "www.boohooman.com",
+            "score": 94,
+            "issues": 4,
+            "execution_time": 2.042
+          },
+          {
+            "url": "https://naivas.online/",
+            "site": "naivas.online",
+            "score": 95,
+            "issues": 4,
+            "execution_time": 4.9
+          },
+          {
+            "url": "https://bijouterie-en-ligne.shop/",
+            "site": "bijouterie-en-ligne.shop",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.184
+          },
+          {
+            "url": "https://crave-demo.myshopify.com/",
+            "site": "crave-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.754
+          },
+          {
+            "url": "https://dawn-demo.myshopify.com/",
+            "site": "dawn-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.868
+          },
+          {
+            "url": "https://refresh-demo.myshopify.com/",
+            "site": "refresh-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.582
+          },
+          {
+            "url": "https://studio-demo.myshopify.com/",
+            "site": "studio-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.144
+          },
+          {
+            "url": "https://www.allbirds.com/",
+            "site": "www.allbirds.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 0.299
+          }
+        ]
+      },
+      "calibration": {
+        "unused_heuristics": [
+          "no_h1",
+          "seo_missing",
+          "seo_weak",
+          "missing_whatsapp",
+          "missing_contact_form",
+          "no_nav",
+          "form_too_long",
+          "form_no_placeholder",
+          "whatsapp_below_fold",
+          "whatsapp_weak_message",
+          "performance_lazy_missing",
+          "performance_cls_risk",
+          "performance_too_many_images",
+          "performance_excessive_scripts",
+          "performance_multiple_fonts",
+          "performance_missing_preconnect",
+          "mobile_video_autoplay"
+        ],
+        "too_aggressive": [],
+        "under_triggering": [
+          {
+            "heuristic": "no_h1",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "seo_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "seo_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "missing_whatsapp",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "missing_contact_form",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "no_nav",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "navigation_missing",
+            "count": 1,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "form_too_long",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "form_no_placeholder",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "whatsapp_below_fold",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "whatsapp_weak_message",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_lazy_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_cls_risk",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_too_many_images",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_excessive_scripts",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_multiple_fonts",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_missing_preconnect",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "mobile_video_autoplay",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "cta_weak",
+            "count": 1,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "conversion_weak",
+            "count": 1,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "accessibility",
+            "count": 1,
+            "flag": "under_triggering"
+          }
+        ],
+        "potential_false_positives": [],
+        "calibration_suggestions": [
+          {
+            "heuristic": "no_h1",
+            "issue": "false_positive_on_js_sites",
+            "recommendation": "Ignorer si React hydration détectée."
+          },
+          {
+            "heuristic": "missing_whatsapp",
+            "issue": "too_africa_specific",
+            "recommendation": "Appliquer seulement sur catégories tourism/mobile_first/weak_sites."
+          },
+          {
+            "heuristic": "missing_contact",
+            "issue": "legacy_bucket_too_broad",
+            "recommendation": "Remplacer progressivement par missing_whatsapp et missing_contact_form."
+          }
+        ],
+        "heuristic_confidence": {
+          "stable": [
+            "missing_contact",
+            "navigation_ux",
+            "form_friction",
+            "whatsapp_ux",
+            "trust_missing",
+            "hero_weak"
+          ],
+          "needs_review": [
+            "no_h1",
+            "seo_missing",
+            "seo_weak",
+            "missing_whatsapp",
+            "missing_contact_form",
+            "no_nav",
+            "form_too_long",
+            "form_no_placeholder",
+            "whatsapp_below_fold",
+            "whatsapp_weak_message",
+            "performance_lazy_missing",
+            "performance_cls_risk",
+            "performance_too_many_images",
+            "performance_excessive_scripts",
+            "performance_multiple_fonts",
+            "performance_missing_preconnect",
+            "mobile_video_autoplay"
+          ],
+          "experimental": [
+            "navigation_missing",
+            "cta_weak",
+            "conversion_weak",
+            "accessibility"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-17T13:10:07.941826",
+      "weights": {
+        "accessibility": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "conversion_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "cta_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "form_friction": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "form_no_placeholder": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "form_too_long": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "hero_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "missing_contact": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "missing_contact_form": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "missing_whatsapp": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "mobile_video_autoplay": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "navigation_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "navigation_ux": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "no_h1": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "no_nav": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_cls_risk": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_excessive_scripts": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_lazy_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_missing_preconnect": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_multiple_fonts": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_too_many_images": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "seo_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "seo_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "trust_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "whatsapp_below_fold": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "whatsapp_ux": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "whatsapp_weak_message": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        }
+      },
+      "summary": {
+        "global_kpi": {
+          "total_sites": 24,
+          "fetch_success_rate": 100.0,
+          "avg_response_time": 2.037,
+          "avg_issues_per_site": 0.0,
+          "sites_0_issue": 24,
+          "top_failure_types": [],
+          "heuristics_par_categorie": {},
+          "severity_distribution": {}
+        },
+        "top_heuristics": [],
+        "top_slowest_sites": [
+          {
+            "url": "https://dawn-demo.myshopify.com/",
+            "site": "dawn-demo.myshopify.com",
+            "execution_time": 2.336
+          },
+          {
+            "url": "https://www.cider.com/",
+            "site": "www.cider.com",
+            "execution_time": 2.036
+          },
+          {
+            "url": "https://www.kassoumaye.com/",
+            "site": "www.kassoumaye.com",
+            "execution_time": 2.036
+          },
+          {
+            "url": "https://studio-demo.myshopify.com/",
+            "site": "studio-demo.myshopify.com",
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://www.skatepro.com/",
+            "site": "www.skatepro.com",
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://kedougoutourisme.com/",
+            "site": "kedougoutourisme.com",
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://www.gymshark.com/",
+            "site": "www.gymshark.com",
+            "execution_time": 2.031
+          },
+          {
+            "url": "https://refresh-demo.myshopify.com/",
+            "site": "refresh-demo.myshopify.com",
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://crave-demo.myshopify.com/",
+            "site": "crave-demo.myshopify.com",
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://www.manucurist.com/",
+            "site": "www.manucurist.com",
+            "execution_time": 2.028
+          }
+        ],
+        "best_sites": [
+          {
+            "url": "https://bijouterie-en-ligne.shop/",
+            "site": "bijouterie-en-ligne.shop",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.02
+          },
+          {
+            "url": "https://crave-demo.myshopify.com/",
+            "site": "crave-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://dawn-demo.myshopify.com/",
+            "site": "dawn-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.336
+          },
+          {
+            "url": "https://kedougoutourisme.com/",
+            "site": "kedougoutourisme.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://naivas.online/",
+            "site": "naivas.online",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.019
+          },
+          {
+            "url": "https://refresh-demo.myshopify.com/",
+            "site": "refresh-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://studio-demo.myshopify.com/",
+            "site": "studio-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://www.allbirds.com/",
+            "site": "www.allbirds.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.02
+          },
+          {
+            "url": "https://www.boohooman.com/",
+            "site": "www.boohooman.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.008
+          },
+          {
+            "url": "https://www.cider.com/",
+            "site": "www.cider.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.036
+          }
+        ],
+        "worst_sites": [
+          {
+            "url": "https://bijouterie-en-ligne.shop/",
+            "site": "bijouterie-en-ligne.shop",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.02
+          },
+          {
+            "url": "https://crave-demo.myshopify.com/",
+            "site": "crave-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://dawn-demo.myshopify.com/",
+            "site": "dawn-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.336
+          },
+          {
+            "url": "https://kedougoutourisme.com/",
+            "site": "kedougoutourisme.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://naivas.online/",
+            "site": "naivas.online",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.019
+          },
+          {
+            "url": "https://refresh-demo.myshopify.com/",
+            "site": "refresh-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://studio-demo.myshopify.com/",
+            "site": "studio-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://www.allbirds.com/",
+            "site": "www.allbirds.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.02
+          },
+          {
+            "url": "https://www.boohooman.com/",
+            "site": "www.boohooman.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.008
+          },
+          {
+            "url": "https://www.cider.com/",
+            "site": "www.cider.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.036
+          }
+        ]
+      },
+      "calibration": {
+        "unused_heuristics": [
+          "no_h1",
+          "seo_missing",
+          "seo_weak",
+          "missing_contact",
+          "missing_whatsapp",
+          "missing_contact_form",
+          "no_nav",
+          "navigation_missing",
+          "navigation_ux",
+          "form_too_long",
+          "form_no_placeholder",
+          "form_friction",
+          "whatsapp_below_fold",
+          "whatsapp_weak_message",
+          "whatsapp_ux",
+          "performance_lazy_missing",
+          "performance_cls_risk",
+          "performance_too_many_images",
+          "performance_excessive_scripts",
+          "performance_multiple_fonts",
+          "performance_missing_preconnect",
+          "mobile_video_autoplay",
+          "cta_weak",
+          "trust_missing",
+          "conversion_weak",
+          "hero_weak",
+          "accessibility"
+        ],
+        "too_aggressive": [],
+        "under_triggering": [
+          {
+            "heuristic": "no_h1",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "seo_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "seo_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "missing_contact",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "missing_whatsapp",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "missing_contact_form",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "no_nav",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "navigation_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "navigation_ux",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "form_too_long",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "form_no_placeholder",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "form_friction",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "whatsapp_below_fold",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "whatsapp_weak_message",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "whatsapp_ux",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_lazy_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_cls_risk",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_too_many_images",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_excessive_scripts",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_multiple_fonts",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_missing_preconnect",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "mobile_video_autoplay",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "cta_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "trust_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "conversion_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "hero_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "accessibility",
+            "count": 0,
+            "flag": "under_triggering"
+          }
+        ],
+        "potential_false_positives": [],
+        "calibration_suggestions": [
+          {
+            "heuristic": "no_h1",
+            "issue": "false_positive_on_js_sites",
+            "recommendation": "Ignorer si React hydration détectée."
+          },
+          {
+            "heuristic": "missing_whatsapp",
+            "issue": "too_africa_specific",
+            "recommendation": "Appliquer seulement sur catégories tourism/mobile_first/weak_sites."
+          }
+        ],
+        "heuristic_confidence": {
+          "stable": [],
+          "needs_review": [
+            "no_h1",
+            "seo_missing",
+            "seo_weak",
+            "missing_contact",
+            "missing_whatsapp",
+            "missing_contact_form",
+            "no_nav",
+            "navigation_missing",
+            "navigation_ux",
+            "form_too_long",
+            "form_no_placeholder",
+            "form_friction",
+            "whatsapp_below_fold",
+            "whatsapp_weak_message",
+            "whatsapp_ux",
+            "performance_lazy_missing",
+            "performance_cls_risk",
+            "performance_too_many_images",
+            "performance_excessive_scripts",
+            "performance_multiple_fonts",
+            "performance_missing_preconnect",
+            "mobile_video_autoplay",
+            "cta_weak",
+            "trust_missing",
+            "conversion_weak",
+            "hero_weak",
+            "accessibility"
+          ],
+          "experimental": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-17T14:12:24.090533",
+      "weights": {
+        "accessibility": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "conversion_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "cta_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "form_friction": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "form_no_placeholder": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "form_too_long": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "hero_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "missing_contact": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "missing_contact_form": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "missing_whatsapp": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "mobile_video_autoplay": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "navigation_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "navigation_ux": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "no_h1": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "no_nav": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_cls_risk": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_excessive_scripts": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_lazy_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_missing_preconnect": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_multiple_fonts": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_too_many_images": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "seo_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "seo_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "trust_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "whatsapp_below_fold": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "whatsapp_ux": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "whatsapp_weak_message": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        }
+      },
+      "summary": {
+        "global_kpi": {
+          "total_sites": 24,
+          "fetch_success_rate": 100.0,
+          "avg_response_time": 2.037,
+          "avg_issues_per_site": 0.0,
+          "sites_0_issue": 24,
+          "top_failure_types": [],
+          "heuristics_par_categorie": {},
+          "severity_distribution": {}
+        },
+        "top_heuristics": [],
+        "top_slowest_sites": [
+          {
+            "url": "https://dawn-demo.myshopify.com/",
+            "site": "dawn-demo.myshopify.com",
+            "execution_time": 2.336
+          },
+          {
+            "url": "https://www.cider.com/",
+            "site": "www.cider.com",
+            "execution_time": 2.036
+          },
+          {
+            "url": "https://www.kassoumaye.com/",
+            "site": "www.kassoumaye.com",
+            "execution_time": 2.036
+          },
+          {
+            "url": "https://studio-demo.myshopify.com/",
+            "site": "studio-demo.myshopify.com",
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://www.skatepro.com/",
+            "site": "www.skatepro.com",
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://kedougoutourisme.com/",
+            "site": "kedougoutourisme.com",
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://www.gymshark.com/",
+            "site": "www.gymshark.com",
+            "execution_time": 2.031
+          },
+          {
+            "url": "https://refresh-demo.myshopify.com/",
+            "site": "refresh-demo.myshopify.com",
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://crave-demo.myshopify.com/",
+            "site": "crave-demo.myshopify.com",
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://www.manucurist.com/",
+            "site": "www.manucurist.com",
+            "execution_time": 2.028
+          }
+        ],
+        "best_sites": [
+          {
+            "url": "https://bijouterie-en-ligne.shop/",
+            "site": "bijouterie-en-ligne.shop",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.02
+          },
+          {
+            "url": "https://crave-demo.myshopify.com/",
+            "site": "crave-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://dawn-demo.myshopify.com/",
+            "site": "dawn-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.336
+          },
+          {
+            "url": "https://kedougoutourisme.com/",
+            "site": "kedougoutourisme.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://naivas.online/",
+            "site": "naivas.online",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.019
+          },
+          {
+            "url": "https://refresh-demo.myshopify.com/",
+            "site": "refresh-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://studio-demo.myshopify.com/",
+            "site": "studio-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://www.allbirds.com/",
+            "site": "www.allbirds.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.02
+          },
+          {
+            "url": "https://www.boohooman.com/",
+            "site": "www.boohooman.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.008
+          },
+          {
+            "url": "https://www.cider.com/",
+            "site": "www.cider.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.036
+          }
+        ],
+        "worst_sites": [
+          {
+            "url": "https://bijouterie-en-ligne.shop/",
+            "site": "bijouterie-en-ligne.shop",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.02
+          },
+          {
+            "url": "https://crave-demo.myshopify.com/",
+            "site": "crave-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://dawn-demo.myshopify.com/",
+            "site": "dawn-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.336
+          },
+          {
+            "url": "https://kedougoutourisme.com/",
+            "site": "kedougoutourisme.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://naivas.online/",
+            "site": "naivas.online",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.019
+          },
+          {
+            "url": "https://refresh-demo.myshopify.com/",
+            "site": "refresh-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://studio-demo.myshopify.com/",
+            "site": "studio-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://www.allbirds.com/",
+            "site": "www.allbirds.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.02
+          },
+          {
+            "url": "https://www.boohooman.com/",
+            "site": "www.boohooman.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.008
+          },
+          {
+            "url": "https://www.cider.com/",
+            "site": "www.cider.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.036
+          }
+        ]
+      },
+      "calibration": {
+        "unused_heuristics": [
+          "no_h1",
+          "seo_missing",
+          "seo_weak",
+          "missing_contact",
+          "missing_whatsapp",
+          "missing_contact_form",
+          "no_nav",
+          "navigation_missing",
+          "navigation_ux",
+          "form_too_long",
+          "form_no_placeholder",
+          "form_friction",
+          "whatsapp_below_fold",
+          "whatsapp_weak_message",
+          "whatsapp_ux",
+          "performance_lazy_missing",
+          "performance_cls_risk",
+          "performance_too_many_images",
+          "performance_excessive_scripts",
+          "performance_multiple_fonts",
+          "performance_missing_preconnect",
+          "mobile_video_autoplay",
+          "cta_weak",
+          "trust_missing",
+          "conversion_weak",
+          "hero_weak",
+          "accessibility"
+        ],
+        "too_aggressive": [],
+        "under_triggering": [
+          {
+            "heuristic": "no_h1",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "seo_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "seo_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "missing_contact",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "missing_whatsapp",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "missing_contact_form",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "no_nav",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "navigation_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "navigation_ux",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "form_too_long",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "form_no_placeholder",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "form_friction",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "whatsapp_below_fold",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "whatsapp_weak_message",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "whatsapp_ux",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_lazy_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_cls_risk",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_too_many_images",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_excessive_scripts",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_multiple_fonts",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_missing_preconnect",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "mobile_video_autoplay",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "cta_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "trust_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "conversion_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "hero_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "accessibility",
+            "count": 0,
+            "flag": "under_triggering"
+          }
+        ],
+        "potential_false_positives": [],
+        "calibration_suggestions": [
+          {
+            "heuristic": "no_h1",
+            "issue": "false_positive_on_js_sites",
+            "recommendation": "Ignorer si React hydration détectée."
+          },
+          {
+            "heuristic": "missing_whatsapp",
+            "issue": "too_africa_specific",
+            "recommendation": "Appliquer seulement sur catégories tourism/mobile_first/weak_sites."
+          }
+        ],
+        "heuristic_confidence": {
+          "stable": [],
+          "needs_review": [
+            "no_h1",
+            "seo_missing",
+            "seo_weak",
+            "missing_contact",
+            "missing_whatsapp",
+            "missing_contact_form",
+            "no_nav",
+            "navigation_missing",
+            "navigation_ux",
+            "form_too_long",
+            "form_no_placeholder",
+            "form_friction",
+            "whatsapp_below_fold",
+            "whatsapp_weak_message",
+            "whatsapp_ux",
+            "performance_lazy_missing",
+            "performance_cls_risk",
+            "performance_too_many_images",
+            "performance_excessive_scripts",
+            "performance_multiple_fonts",
+            "performance_missing_preconnect",
+            "mobile_video_autoplay",
+            "cta_weak",
+            "trust_missing",
+            "conversion_weak",
+            "hero_weak",
+            "accessibility"
+          ],
+          "experimental": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-17T14:16:31.471184",
+      "weights": {
+        "accessibility": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "conversion_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "cta_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "form_friction": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "form_no_placeholder": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "form_too_long": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "hero_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "missing_contact": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "missing_contact_form": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "missing_whatsapp": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "mobile_video_autoplay": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "navigation_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "navigation_ux": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "no_h1": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "no_nav": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_cls_risk": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_excessive_scripts": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_lazy_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_missing_preconnect": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_multiple_fonts": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "performance_too_many_images": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "seo_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "seo_weak": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "trust_missing": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "whatsapp_below_fold": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "whatsapp_ux": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        },
+        "whatsapp_weak_message": {
+          "severity": "medium",
+          "confidence": 0.2,
+          "status": "experimental",
+          "adjustment_reason": "unused_heuristic"
+        }
+      },
+      "summary": {
+        "global_kpi": {
+          "total_sites": 24,
+          "fetch_success_rate": 100.0,
+          "avg_response_time": 2.037,
+          "avg_issues_per_site": 0.0,
+          "sites_0_issue": 24,
+          "top_failure_types": [],
+          "heuristics_par_categorie": {},
+          "severity_distribution": {}
+        },
+        "top_heuristics": [],
+        "top_slowest_sites": [
+          {
+            "url": "https://dawn-demo.myshopify.com/",
+            "site": "dawn-demo.myshopify.com",
+            "execution_time": 2.336
+          },
+          {
+            "url": "https://www.cider.com/",
+            "site": "www.cider.com",
+            "execution_time": 2.036
+          },
+          {
+            "url": "https://www.kassoumaye.com/",
+            "site": "www.kassoumaye.com",
+            "execution_time": 2.036
+          },
+          {
+            "url": "https://studio-demo.myshopify.com/",
+            "site": "studio-demo.myshopify.com",
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://www.skatepro.com/",
+            "site": "www.skatepro.com",
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://kedougoutourisme.com/",
+            "site": "kedougoutourisme.com",
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://www.gymshark.com/",
+            "site": "www.gymshark.com",
+            "execution_time": 2.031
+          },
+          {
+            "url": "https://refresh-demo.myshopify.com/",
+            "site": "refresh-demo.myshopify.com",
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://crave-demo.myshopify.com/",
+            "site": "crave-demo.myshopify.com",
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://www.manucurist.com/",
+            "site": "www.manucurist.com",
+            "execution_time": 2.028
+          }
+        ],
+        "best_sites": [
+          {
+            "url": "https://bijouterie-en-ligne.shop/",
+            "site": "bijouterie-en-ligne.shop",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.02
+          },
+          {
+            "url": "https://crave-demo.myshopify.com/",
+            "site": "crave-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://dawn-demo.myshopify.com/",
+            "site": "dawn-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.336
+          },
+          {
+            "url": "https://kedougoutourisme.com/",
+            "site": "kedougoutourisme.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://naivas.online/",
+            "site": "naivas.online",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.019
+          },
+          {
+            "url": "https://refresh-demo.myshopify.com/",
+            "site": "refresh-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://studio-demo.myshopify.com/",
+            "site": "studio-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://www.allbirds.com/",
+            "site": "www.allbirds.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.02
+          },
+          {
+            "url": "https://www.boohooman.com/",
+            "site": "www.boohooman.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.008
+          },
+          {
+            "url": "https://www.cider.com/",
+            "site": "www.cider.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.036
+          }
+        ],
+        "worst_sites": [
+          {
+            "url": "https://bijouterie-en-ligne.shop/",
+            "site": "bijouterie-en-ligne.shop",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.02
+          },
+          {
+            "url": "https://crave-demo.myshopify.com/",
+            "site": "crave-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://dawn-demo.myshopify.com/",
+            "site": "dawn-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.336
+          },
+          {
+            "url": "https://kedougoutourisme.com/",
+            "site": "kedougoutourisme.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://naivas.online/",
+            "site": "naivas.online",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.019
+          },
+          {
+            "url": "https://refresh-demo.myshopify.com/",
+            "site": "refresh-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.03
+          },
+          {
+            "url": "https://studio-demo.myshopify.com/",
+            "site": "studio-demo.myshopify.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.034
+          },
+          {
+            "url": "https://www.allbirds.com/",
+            "site": "www.allbirds.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.02
+          },
+          {
+            "url": "https://www.boohooman.com/",
+            "site": "www.boohooman.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.008
+          },
+          {
+            "url": "https://www.cider.com/",
+            "site": "www.cider.com",
+            "score": 100,
+            "issues": 0,
+            "execution_time": 2.036
+          }
+        ]
+      },
+      "calibration": {
+        "unused_heuristics": [
+          "no_h1",
+          "seo_missing",
+          "seo_weak",
+          "missing_contact",
+          "missing_whatsapp",
+          "missing_contact_form",
+          "no_nav",
+          "navigation_missing",
+          "navigation_ux",
+          "form_too_long",
+          "form_no_placeholder",
+          "form_friction",
+          "whatsapp_below_fold",
+          "whatsapp_weak_message",
+          "whatsapp_ux",
+          "performance_lazy_missing",
+          "performance_cls_risk",
+          "performance_too_many_images",
+          "performance_excessive_scripts",
+          "performance_multiple_fonts",
+          "performance_missing_preconnect",
+          "mobile_video_autoplay",
+          "cta_weak",
+          "trust_missing",
+          "conversion_weak",
+          "hero_weak",
+          "accessibility"
+        ],
+        "too_aggressive": [],
+        "under_triggering": [
+          {
+            "heuristic": "no_h1",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "seo_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "seo_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "missing_contact",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "missing_whatsapp",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "missing_contact_form",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "no_nav",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "navigation_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "navigation_ux",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "form_too_long",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "form_no_placeholder",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "form_friction",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "whatsapp_below_fold",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "whatsapp_weak_message",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "whatsapp_ux",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_lazy_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_cls_risk",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_too_many_images",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_excessive_scripts",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_multiple_fonts",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "performance_missing_preconnect",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "mobile_video_autoplay",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "cta_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "trust_missing",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "conversion_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "hero_weak",
+            "count": 0,
+            "flag": "under_triggering"
+          },
+          {
+            "heuristic": "accessibility",
+            "count": 0,
+            "flag": "under_triggering"
+          }
+        ],
+        "potential_false_positives": [],
+        "calibration_suggestions": [
+          {
+            "heuristic": "no_h1",
+            "issue": "false_positive_on_js_sites",
+            "recommendation": "Ignorer si React hydration détectée."
+          },
+          {
+            "heuristic": "missing_whatsapp",
+            "issue": "too_africa_specific",
+            "recommendation": "Appliquer seulement sur catégories tourism/mobile_first/weak_sites."
+          }
+        ],
+        "heuristic_confidence": {
+          "stable": [],
+          "needs_review": [
+            "no_h1",
+            "seo_missing",
+            "seo_weak",
+            "missing_contact",
+            "missing_whatsapp",
+            "missing_contact_form",
+            "no_nav",
+            "navigation_missing",
+            "navigation_ux",
+            "form_too_long",
+            "form_no_placeholder",
+            "form_friction",
+            "whatsapp_below_fold",
+            "whatsapp_weak_message",
+            "whatsapp_ux",
+            "performance_lazy_missing",
+            "performance_cls_risk",
+            "performance_too_many_images",
+            "performance_excessive_scripts",
+            "performance_multiple_fonts",
+            "performance_missing_preconnect",
+            "mobile_video_autoplay",
+            "cta_weak",
+            "trust_missing",
+            "conversion_weak",
+            "hero_weak",
+            "accessibility"
+          ],
+          "experimental": []
+        }
+      }
+    }
+  ],
+  "evolution": {
+    "severity_changes": [],
+    "confidence_changes": [],
+    "new_stable": [],
+    "new_experimental": [
+      {
+        "heuristic": "accessibility",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "conversion_weak",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "cta_weak",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "form_friction",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "form_no_placeholder",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "form_too_long",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "hero_weak",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "missing_contact",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "missing_contact_form",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "missing_whatsapp",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "mobile_video_autoplay",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "navigation_missing",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "navigation_ux",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "no_h1",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "no_nav",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "performance_cls_risk",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "performance_excessive_scripts",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "performance_lazy_missing",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "performance_missing_preconnect",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "performance_multiple_fonts",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "performance_too_many_images",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "seo_missing",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "seo_weak",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "trust_missing",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "whatsapp_below_fold",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "whatsapp_ux",
+        "confidence": 0.2
+      },
+      {
+        "heuristic": "whatsapp_weak_message",
+        "confidence": 0.2
+      }
+    ]
+  }
+}

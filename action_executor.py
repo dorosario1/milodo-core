@@ -1,5 +1,7 @@
 from importlib import import_module
 from pathlib import Path
+import re
+import unicodedata
 
 from coding_agent import auto_fix_loop
 from logger import log_info, log_error, log_warn, log_debug
@@ -18,6 +20,7 @@ SKILL_NAMES = {
 def execute_actions(actions, output_dir):
     total = len(actions) if isinstance(actions, list) else 0
     results = []
+    files_created = []
     completed = 0
     failed = 0
 
@@ -33,6 +36,7 @@ def execute_actions(actions, output_dir):
                 "action": None,
                 "error": "actions doit etre une liste",
             }],
+            "files_created": files_created,
             "output_dir": str(output_dir),
         }
 
@@ -52,6 +56,82 @@ def execute_actions(actions, output_dir):
 
             log_debug(f"Params : {params}")
             result = _execute_one(action, params, output_dir)
+
+            if (
+                action == "generate_code"
+                and isinstance(result, str)
+                and result.strip()
+            ):
+                prompt_text = str(
+                    params.get("prompt")
+                    or params.get("content")
+                    or params.get("instruction")
+                    or ""
+                )
+                prompt_and_result = f"{prompt_text}\n{result}".lower()
+                file_params = {
+                    "content": result,
+                    "path": params.get("path"),
+                    "name": params.get("name"),
+                }
+
+                if not file_params.get("path") and not file_params.get("name"):
+                    if (
+                        "<!doctype html" in prompt_and_result
+                        or "<html" in prompt_and_result
+                        or " html" in prompt_and_result
+                    ):
+                        file_params["name"] = "index.html"
+                    elif (
+                        "python" in prompt_and_result
+                        or "def " in result
+                        or "print(" in result
+                        or "import " in result
+                    ):
+                        file_params["name"] = "generated.py"
+                    elif (
+                        "readme" in prompt_and_result
+                        or "markdown" in prompt_and_result
+                        or result.lstrip().startswith("#")
+                    ):
+                        file_params["name"] = "README.md"
+                    elif (
+                        "json" in prompt_and_result
+                        or (
+                            result.lstrip().startswith("{")
+                            and result.rstrip().endswith("}")
+                        )
+                        or (
+                            result.lstrip().startswith("[")
+                            and result.rstrip().endswith("]")
+                        )
+                    ):
+                        file_params["name"] = "generated.json"
+                    elif (
+                        "css" in prompt_and_result
+                        or ("{" in result and "}" in result and ":" in result)
+                    ):
+                        file_params["name"] = "styles.css"
+                    elif (
+                        "javascript" in prompt_and_result
+                        or " js" in prompt_and_result
+                        or "console.log(" in result
+                        or "function " in result
+                        or "const " in result
+                        or "let " in result
+                    ):
+                        file_params["name"] = "app.js"
+                    else:
+                        file_params["name"] = "generated.txt"
+
+                result = _create_file(file_params, output_dir)
+
+            if isinstance(result, dict):
+                result_files_created = result.get("files_created")
+                if isinstance(result_files_created, list):
+                    files_created.extend(str(path) for path in result_files_created)
+                elif result.get("path"):
+                    files_created.append(str(result.get("path")))
 
             if _is_success(result):
                 completed += 1
@@ -81,7 +161,7 @@ def execute_actions(actions, output_dir):
         from datetime import datetime
 
         project_info = {
-            "name": output_dir.name if output_dir else "projet",
+            "name": _memory_project_name(output_dir, actions),
             "output_dir": str(output_dir),
             "actions_count": completed,
             "actions": [
@@ -113,6 +193,7 @@ def execute_actions(actions, output_dir):
         "completed": completed,
         "failed": failed,
         "results": results,
+        "files_created": files_created,
         "output_dir": str(output_dir),
     }
 
@@ -334,6 +415,70 @@ def _with_doc_defaults(params, output_dir):
     call_params.setdefault("project_dir", str(output_dir))
     call_params.setdefault("project_name", Path(output_dir).name or "milodo-project")
     return call_params
+
+
+def _memory_project_name(output_dir, actions):
+    if not output_dir:
+        return "projet"
+
+    output_path = Path(output_dir)
+    current_name = output_path.name or "projet"
+
+    if current_name != "project":
+        return current_name
+
+    return _derive_project_name(actions)
+
+
+def _derive_project_name(actions):
+    action_names = set()
+    context_parts = []
+
+    for item in actions if isinstance(actions, list) else []:
+        if not isinstance(item, dict):
+            continue
+
+        action = str(item.get("action") or "").strip()
+        if action:
+            action_names.add(action)
+            context_parts.append(action)
+
+        params = item.get("params") or {}
+        if isinstance(params, dict):
+            for key in ("prompt", "content", "instruction", "name", "type", "description", "path"):
+                value = params.get(key)
+                if value:
+                    context_parts.append(str(value))
+
+    context = _normalize_project_name(" ".join(context_parts))
+    context_tokens = set(context.split("_"))
+
+    if "create_landing" in action_names or "landing" in context:
+        return "create_landing_page"
+
+    if action_names.intersection({"create_site", "generate_site"}) or "site" in context:
+        if "html" in context:
+            return "create_site_html"
+        return "create_site"
+
+    if "python" in context_tokens or "py" in context_tokens:
+        return "generated_python_script"
+
+    if "script" in context:
+        return "generated_script"
+
+    return context or "generated_project"
+
+
+def _normalize_project_name(value):
+    text = unicodedata.normalize("NFKD", str(value or ""))
+    text = text.encode("ascii", "ignore").decode("ascii")
+    text = text.lower()
+    text = re.sub(r"\b(cree|creer|creez|créer|crée|créez)\b", "create", text)
+    text = re.sub(r"\b(un|une|le|la|les|des|de|du|d|a|the)\b", " ", text)
+    text = re.sub(r"[^a-z0-9]+", "_", text)
+    text = re.sub(r"_+", "_", text).strip("_")
+    return text
 
 
 def _resolve_output_path(path, output_dir):

@@ -28,11 +28,29 @@ IGNORED_DIRS = {
 
 def get_scan_roots():
     home = Path.home()
-    return [
+    roots = [
         home / "Desktop",
         home / "Documents",
         home / "projects",
+        home / "milodo-core",
+        Path.cwd(),
     ]
+    unique_roots = []
+    seen_roots = set()
+
+    for root in roots:
+        try:
+            resolved_root = str(root.resolve())
+        except OSError:
+            resolved_root = str(root)
+
+        if resolved_root in seen_roots:
+            continue
+
+        seen_roots.add(resolved_root)
+        unique_roots.append(root)
+
+    return unique_roots
 
 
 def detect_project_types(directory):
@@ -42,6 +60,9 @@ def detect_project_types(directory):
     for project_type, markers in PROJECT_MARKERS.items():
         if any(marker in found_files for marker in markers):
             project_types.append(project_type)
+
+    if (directory / ".git").is_dir():
+        project_types.append("Git")
 
     return project_types
 

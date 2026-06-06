@@ -1,13 +1,174 @@
 [
   {
-    "name": "business_outputs",
-    "output_dir": "C:\\Users\\user\\milodo-core\\business_outputs",
+    "name": "generated_python_script",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T233059Z\\project",
+    "actions_count": 1,
+    "actions": [
+      "generate_code"
+    ],
+    "date": "2026-06-02T23:31:10.339446",
+    "files_created": 1
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T134530Z\\project",
+    "actions_count": 1,
+    "actions": [
+      "generate_code"
+    ],
+    "date": "2026-06-02T13:45:59.532995",
+    "files_created": 1
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T134518Z\\project",
+    "actions_count": 1,
+    "actions": [
+      "create_landing"
+    ],
+    "date": "2026-06-02T13:45:20.441330",
+    "files_created": 0
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T134503Z\\project",
+    "actions_count": 1,
+    "actions": [
+      "create_site"
+    ],
+    "date": "2026-06-02T13:45:07.442356",
+    "files_created": 0
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T134126Z\\project",
     "actions_count": 2,
     "actions": [
       "create_landing",
       "create_site"
     ],
-    "date": "2026-05-10T21:15:32.211613",
+    "date": "2026-06-02T13:41:26.780811",
+    "files_created": 0
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T131822Z\\project",
+    "actions_count": 1,
+    "actions": [
+      "generate_code"
+    ],
+    "date": "2026-06-02T13:19:11.416799",
+    "files_created": 1
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T131844Z\\project",
+    "actions_count": 1,
+    "actions": [
+      "create_landing"
+    ],
+    "date": "2026-06-02T13:18:46.532602",
+    "files_created": 0
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T131832Z\\project",
+    "actions_count": 2,
+    "actions": [
+      "create_landing",
+      "create_site"
+    ],
+    "date": "2026-06-02T13:18:34.310675",
+    "files_created": 0
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T131313Z\\project",
+    "actions_count": 1,
+    "actions": [
+      "generate_code"
+    ],
+    "date": "2026-06-02T13:14:20.112255",
+    "files_created": 1
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T131259Z\\project",
+    "actions_count": 1,
+    "actions": [
+      "generate_code"
+    ],
+    "date": "2026-06-02T13:13:31.355573",
+    "files_created": 1
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T130711Z\\project",
+    "actions_count": 1,
+    "actions": [
+      "generate_code"
+    ],
+    "date": "2026-06-02T13:08:22.371691",
+    "files_created": 1
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T130652Z\\project",
+    "actions_count": 1,
+    "actions": [
+      "generate_docs"
+    ],
+    "date": "2026-06-02T13:06:53.157469",
+    "files_created": 0
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T130549Z\\project",
+    "actions_count": 1,
+    "actions": [
+      "generate_code"
+    ],
+    "date": "2026-06-02T13:06:22.800556",
+    "files_created": 1
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T130322Z\\project",
+    "actions_count": 1,
+    "actions": [
+      "generate_code"
+    ],
+    "date": "2026-06-02T13:03:33.311172",
+    "files_created": 1
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T125558Z\\project",
+    "actions_count": 1,
+    "actions": [
+      "generate_code"
+    ],
+    "date": "2026-06-02T12:56:06.982107",
+    "files_created": 0
+  },
+  {
+    "name": "project",
+    "output_dir": "C:\\Users\\user\\milodo-core\\.milodo\\workspaces\\milodo-core-20260602T125031Z\\project",
+    "actions_count": 0,
+    "actions": [
+      "run_tests"
+    ],
+    "date": "2026-06-02T12:50:32.694578",
+    "files_created": 0
+  },
+  {
+    "name": "business_outputs",
+    "output_dir": "C:\\Users\\user\\milodo-core\\business_outputs",
+    "actions_count": 0,
+    "actions": [
+      "run_tests"
+    ],
+    "date": "2026-06-02T09:56:55.179438",
     "files_created": 0
   }
 ]

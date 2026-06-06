@@ -1,0 +1,164 @@
+{
+  "accessibility": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "conversion_weak": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "cta_weak": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "form_friction": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "form_no_placeholder": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "form_too_long": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "hero_weak": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "missing_contact": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "missing_contact_form": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "missing_whatsapp": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "mobile_video_autoplay": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "navigation_missing": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "navigation_ux": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "no_h1": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "no_nav": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "performance_cls_risk": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "performance_excessive_scripts": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "performance_lazy_missing": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "performance_missing_preconnect": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "performance_multiple_fonts": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "performance_too_many_images": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "seo_missing": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "seo_weak": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "trust_missing": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "whatsapp_below_fold": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "whatsapp_ux": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  },
+  "whatsapp_weak_message": {
+    "severity": "medium",
+    "confidence": 0.2,
+    "status": "experimental",
+    "adjustment_reason": "unused_heuristic"
+  }
+}

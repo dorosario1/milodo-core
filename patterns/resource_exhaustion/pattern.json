@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "pattern_id": "resource_exhaustion",
+  "description": "Runtime resource exhaustion",
+  "strategy": "fix_memory_leak",
+  "confidence": 0.86,
+  "runtime_compatible": [
+    "docker",
+    "kubernetes"
+  ]
+}

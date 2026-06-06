@@ -10,6 +10,11 @@ from datetime import datetime
 from logger import log_info, log_error
 
 
+def emit_signal(runtime_signals, event_type, runtime="local"):
+    if not any(signal.get("event_type") == event_type for signal in runtime_signals):
+        runtime_signals.append({"event_type": event_type, "runtime": runtime})
+
+
 class LearningLoop:
     def __init__(self):
         self.state_file = Path(".milodo/learning_state.json")
@@ -41,13 +46,23 @@ class LearningLoop:
 
     def run_once(self):
         log_info("Learning Loop : démarrage cycle")
+        cycle_start_time = time.perf_counter()
+        from core.runtime_context import RuntimeContext
+
+        context = RuntimeContext(runtime="local")
+        runtime_signals = []
 
         self._write_heartbeat()
 
         try:
             from skills.web_learner import WebLearner
             wl = WebLearner()
+            web_fetch_start_time = time.perf_counter()
             result = wl.inject_into_genome()
+            log_info(
+                f"TIMING web_fetch: "
+                f"{time.perf_counter() - web_fetch_start_time:.2f}s"
+            )
             log_info(f"Web fetch : {result.get('success')}")
         except Exception as e:
             log_error(f"Web fetch error : {e}")
@@ -57,8 +72,16 @@ class LearningLoop:
         try:
             from coding_agent import genome_aware_evolve
             evo = genome_aware_evolve("landing", f"auto_cycle_{self.state['cycles']}", generations=2)
+            from coding_agent import runtime_signals as coding_runtime_signals
+            for key, event_type in {"ollama_timeout": "ollama_timeout", "fallback_triggered": "fallback_triggered", "repair_attempt": "repair_attempt", "repair_success": "repair_success"}.items():
+                if coding_runtime_signals.get(key):
+                    emit_signal(runtime_signals, event_type, context.runtime)
+            for signal in coding_runtime_signals:
+                coding_runtime_signals[signal] = False
             scores = [g.get("score", 0) for g in evo.get("evolution", [])]
             best_this_cycle = max(scores) if scores else 0
+            if abs(best_this_cycle - self.state["best_score"]) < 1:
+                emit_signal(runtime_signals, "evolution_plateau", context.runtime)
             log_info(f"Evolution : best = {best_this_cycle}")
             self._write_heartbeat()
         except Exception as e:
@@ -80,15 +103,28 @@ class LearningLoop:
         self._save_state()
         self._write_heartbeat()
 
-        return {
+        if runtime_signals:
+            try:
+                from core.causal_engine import CausalEngine
+
+                CausalEngine(context).identify(runtime_signals)
+            except Exception as e:
+                log_error(f"Causal event wiring error : {e}")
+
+        result = {
             "success": True,
             "cycle": self.state["cycles"],
             "score": best_this_cycle,
             "improved": improved,
             "best_overall": self.state["best_score"]
         }
+        log_info(
+            f"Learning Loop timing cycle_total: "
+            f"{time.perf_counter() - cycle_start_time:.2f}s"
+        )
+        return result
 
-    def run_scheduled(self, interval_hours=6):
+    def run_scheduled(self, interval_hours=2):
         log_info(f"Learning Loop scheduler démarré ({interval_hours}h)")
         try:
             while True:
@@ -111,7 +147,7 @@ def run(action="start", **kwargs):
     if action == "start":
         return loop.run_once()
     elif action == "schedule":
-        interval_hours = kwargs.get("interval", 6)
+        interval_hours = kwargs.get("interval", 2)
         return loop.run_scheduled(interval_hours)
     elif action == "status":
         return loop.status()

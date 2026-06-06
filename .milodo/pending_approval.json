@@ -1,17 +1,49 @@
 {
-  "preview_id": "prev_20260514_204233",
+  "preview_id": "prev_20260515_002544",
   "project": "dofitpro",
   "theme_path": "C:/PROJECTS/DOFITPRO/theme",
-  "created_at": "2026-05-14T20:42:33.625307",
-  "status": "applied",
+  "created_at": "2026-05-15T00:25:44.698480",
+  "status": "pending",
   "issues": [
     {
-      "issue_id": "container__header-menu",
-      "file": "blocks\\_header-menu.liquid",
-      "type": "constrained_container",
-      "severity": "medium",
-      "confidence": 0.85,
-      "estimated_risk": "medium"
+      "issue_id": "cta_button",
+      "file": "blocks\\button.liquid",
+      "type": "cta_weak",
+      "severity": "low",
+      "confidence": 0.55,
+      "estimated_risk": "high"
+    },
+    {
+      "issue_id": "cta_buy-buttons",
+      "file": "blocks\\buy-buttons.liquid",
+      "type": "cta_weak",
+      "severity": "low",
+      "confidence": 0.55,
+      "estimated_risk": "high"
+    },
+    {
+      "issue_id": "cta_contact-form-submit-button",
+      "file": "blocks\\contact-form-submit-button.liquid",
+      "type": "cta_weak",
+      "severity": "low",
+      "confidence": 0.55,
+      "estimated_risk": "high"
+    },
+    {
+      "issue_id": "cta__product-list-button",
+      "file": "blocks\\_product-list-button.liquid",
+      "type": "cta_weak",
+      "severity": "low",
+      "confidence": 0.55,
+      "estimated_risk": "high"
+    },
+    {
+      "issue_id": "cta_add-to-cart-button",
+      "file": "snippets\\add-to-cart-button.liquid",
+      "type": "cta_weak",
+      "severity": "low",
+      "confidence": 0.55,
+      "estimated_risk": "high"
     }
   ]
 }

@@ -1,0 +1,215 @@
+{
+  "unused_heuristics": [
+    "no_h1",
+    "seo_missing",
+    "seo_weak",
+    "missing_contact",
+    "missing_whatsapp",
+    "missing_contact_form",
+    "no_nav",
+    "navigation_missing",
+    "navigation_ux",
+    "form_too_long",
+    "form_no_placeholder",
+    "form_friction",
+    "whatsapp_below_fold",
+    "whatsapp_weak_message",
+    "whatsapp_ux",
+    "performance_lazy_missing",
+    "performance_cls_risk",
+    "performance_too_many_images",
+    "performance_excessive_scripts",
+    "performance_multiple_fonts",
+    "performance_missing_preconnect",
+    "mobile_video_autoplay",
+    "cta_weak",
+    "trust_missing",
+    "conversion_weak",
+    "hero_weak",
+    "accessibility"
+  ],
+  "too_aggressive": [],
+  "under_triggering": [
+    {
+      "heuristic": "no_h1",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "seo_missing",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "seo_weak",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "missing_contact",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "missing_whatsapp",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "missing_contact_form",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "no_nav",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "navigation_missing",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "navigation_ux",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "form_too_long",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "form_no_placeholder",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "form_friction",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "whatsapp_below_fold",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "whatsapp_weak_message",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "whatsapp_ux",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "performance_lazy_missing",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "performance_cls_risk",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "performance_too_many_images",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "performance_excessive_scripts",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "performance_multiple_fonts",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "performance_missing_preconnect",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "mobile_video_autoplay",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "cta_weak",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "trust_missing",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "conversion_weak",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "hero_weak",
+      "count": 0,
+      "flag": "under_triggering"
+    },
+    {
+      "heuristic": "accessibility",
+      "count": 0,
+      "flag": "under_triggering"
+    }
+  ],
+  "potential_false_positives": [],
+  "calibration_suggestions": [
+    {
+      "heuristic": "no_h1",
+      "issue": "false_positive_on_js_sites",
+      "recommendation": "Ignorer si React hydration détectée."
+    },
+    {
+      "heuristic": "missing_whatsapp",
+      "issue": "too_africa_specific",
+      "recommendation": "Appliquer seulement sur catégories tourism/mobile_first/weak_sites."
+    }
+  ],
+  "heuristic_confidence": {
+    "stable": [],
+    "needs_review": [
+      "no_h1",
+      "seo_missing",
+      "seo_weak",
+      "missing_contact",
+      "missing_whatsapp",
+      "missing_contact_form",
+      "no_nav",
+      "navigation_missing",
+      "navigation_ux",
+      "form_too_long",
+      "form_no_placeholder",
+      "form_friction",
+      "whatsapp_below_fold",
+      "whatsapp_weak_message",
+      "whatsapp_ux",
+      "performance_lazy_missing",
+      "performance_cls_risk",
+      "performance_too_many_images",
+      "performance_excessive_scripts",
+      "performance_multiple_fonts",
+      "performance_missing_preconnect",
+      "mobile_video_autoplay",
+      "cta_weak",
+      "trust_missing",
+      "conversion_weak",
+      "hero_weak",
+      "accessibility"
+    ],
+    "experimental": []
+  }
+}

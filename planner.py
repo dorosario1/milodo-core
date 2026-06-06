@@ -151,6 +151,7 @@ def plan_goal(goal: str) -> list[dict]:
 def plan_to_actions(plan_text, goal):
     text = f"{plan_text or ''} {goal or ''}".lower()
     actions = []
+    site_requested = "vitrine" in text or "site vitrine" in text or "site html" in text
 
     def add_action(action, params=None):
         item = {
@@ -161,10 +162,10 @@ def plan_to_actions(plan_text, goal):
         if item not in actions:
             actions.append(item)
 
-    if "landing" in text or "accueil" in text or "homepage" in text:
+    if not site_requested and ("landing" in text or "accueil" in text or "homepage" in text):
         add_action("create_landing", {"type": "landing"})
 
-    if "vitrine" in text or "site vitrine" in text:
+    if "vitrine" in text or "site vitrine" in text or "site html" in text:
         add_action("create_site", {"type": "vitrine"})
 
     if "page menu" in text or "menu" in text:

@@ -1,0 +1,18 @@
+FROM python:3.12-slim
+
+LABEL org.milodo.service="worker"
+LABEL org.milodo.version="1.0.0"
+LABEL org.milodo.mode="standby"
+LABEL org.milodo.future="redis-worker"
+
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+WORKDIR /app
+
+COPY skills/ ./skills/
+COPY tests/ ./tests/
+
+RUN mkdir -p /app/.milodo/workspaces /app/.milodo/logs
+
+CMD ["python", "-c", "import time; print('[MILODO WORKER] Standby mode — waiting for distributed queue backend'); time.sleep(999999)"]
